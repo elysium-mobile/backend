@@ -1,0 +1,60 @@
+package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
+
+import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.aggregates.Survey;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurveyCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurveyCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyCommandService;
+import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
+
+import java.util.Optional;
+
+@Service
+public class SurveyCommandServiceImpl implements SurveyCommandService {
+    private final SurveyRepository surveyRepository;
+
+    public SurveyCommandServiceImpl(SurveyRepository surveyRepository) {
+        this.surveyRepository = surveyRepository;
+    }
+
+    @Override
+    public Long handle(CreateSurveyCommand command) {
+        var survey = new Survey(command);
+        try {
+            surveyRepository.save(survey);
+        } catch (Exception e) {
+            throw new RuntimeException("Error creating Survey: " + e.getMessage(), e);
+        }
+        return survey.getId();
+    }
+
+    @Override
+    public Optional<Survey> handle(UpdateSurveyCommand command) {
+        var surveyId = command.surveyId();
+        if (!this.surveyRepository.existsById(surveyId)) {
+            throw new RuntimeException("Survey with ID " + surveyId + " does not exist.");
+        }
+
+        var surveyToUpdate = this.surveyRepository.findById(surveyId).get();
+        surveyToUpdate.updateSurvey(command);
+        try {
+            var updatedSurvey = this.surveyRepository.save(surveyToUpdate);
+            return Optional.of(updatedSurvey);
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating Survey: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void handle(DeleteSurveyCommand command) {
+        if (!surveyRepository.existsById(command.surveyId())) {
+            throw new RuntimeException("Survey with ID " + command.surveyId() + " does not exist.");
+        }
+        try {
+            surveyRepository.deleteById(command.surveyId());
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting Survey: " + e.getMessage(), e);
+        }
+    }
+}

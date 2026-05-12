@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.re
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Dashboard commands.
+ */
 @Service
 public class DashboardCommandServiceImpl implements DashboardCommandService {
     private final DashboardRepository dashboardRepository;
 
+    /**
+     * Constructor for DashboardCommandServiceImpl.
+     * @param dashboardRepository the repository for Dashboard persistence
+     */
     public DashboardCommandServiceImpl(DashboardRepository dashboardRepository) {
         this.dashboardRepository = dashboardRepository;
     }
 
+    /**
+     * Handles the creation of a new Dashboard.
+     * @param command the command to create a Dashboard
+     * @return the generated ID of the new Dashboard
+     */
     @Override
     public Long handle(CreateDashboardCommand command) {
         var dashboard = new Dashboard(command);
@@ -29,6 +41,11 @@ public class DashboardCommandServiceImpl implements DashboardCommandService {
         return dashboard.getId();
     }
 
+    /**
+     * Handles the update of an existing Dashboard.
+     * @param command the command to update a Dashboard
+     * @return the updated Dashboard as an Optional
+     */
     @Override
     public Optional<Dashboard> handle(UpdateDashboardCommand command) {
         var dashboardId = command.dashboardId();
@@ -46,6 +63,10 @@ public class DashboardCommandServiceImpl implements DashboardCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of a Dashboard.
+     * @param command the command to delete a Dashboard
+     */
     @Override
     public void handle(DeleteDashboardCommand command) {
         if (!dashboardRepository.existsById(command.dashboardId())) {

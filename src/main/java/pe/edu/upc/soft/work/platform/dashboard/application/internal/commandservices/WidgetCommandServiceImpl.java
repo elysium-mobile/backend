@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.re
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Widget commands.
+ */
 @Service
 public class WidgetCommandServiceImpl implements WidgetCommandService {
     private final WidgetRepository widgetRepository;
 
+    /**
+     * Constructor for WidgetCommandServiceImpl.
+     * @param widgetRepository the repository for Widget persistence
+     */
     public WidgetCommandServiceImpl(WidgetRepository widgetRepository) {
         this.widgetRepository = widgetRepository;
     }
 
+    /**
+     * Handles the creation of a new Widget.
+     * @param command the command to create a Widget
+     * @return the generated ID of the new Widget
+     */
     @Override
     public Long handle(CreateWidgetCommand command) {
         var widget = new Widget(command);
@@ -29,6 +41,11 @@ public class WidgetCommandServiceImpl implements WidgetCommandService {
         return widget.getId();
     }
 
+    /**
+     * Handles the update of an existing Widget.
+     * @param command the command to update a Widget
+     * @return the updated Widget as an Optional
+     */
     @Override
     public Optional<Widget> handle(UpdateWidgetCommand command) {
         var widgetId = command.widgetId();
@@ -46,6 +63,10 @@ public class WidgetCommandServiceImpl implements WidgetCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of a Widget.
+     * @param command the command to delete a Widget
+     */
     @Override
     public void handle(DeleteWidgetCommand command) {
         if (!widgetRepository.existsById(command.widgetId())) {

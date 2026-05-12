@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.re
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Company commands.
+ */
 @Service
 public class CompanyCommandServiceImpl implements CompanyCommandService {
     private final CompanyRepository companyRepository;
 
+    /**
+     * Constructor for CompanyCommandServiceImpl.
+     * @param companyRepository the repository for Company persistence
+     */
     public CompanyCommandServiceImpl(CompanyRepository companyRepository) {
         this.companyRepository = companyRepository;
     }
 
+    /**
+     * Handles the creation of a new Company.
+     * @param command the command to create a Company
+     * @return the generated ID of the new Company
+     */
     @Override
     public Long handle(CreateCompanyCommand command) {
         var company = new Company(command);
@@ -29,6 +41,11 @@ public class CompanyCommandServiceImpl implements CompanyCommandService {
         return company.getId();
     }
 
+    /**
+     * Handles the update of an existing Company.
+     * @param command the command to update a Company
+     * @return the updated Company as an Optional
+     */
     @Override
     public Optional<Company> handle(UpdateCompanyCommand command) {
         var companyId = command.companyId();
@@ -46,6 +63,10 @@ public class CompanyCommandServiceImpl implements CompanyCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of a Company.
+     * @param command the command to delete a Company
+     */
     @Override
     public void handle(DeleteCompanyCommand command) {
         if (!companyRepository.existsById(command.companyId())) {

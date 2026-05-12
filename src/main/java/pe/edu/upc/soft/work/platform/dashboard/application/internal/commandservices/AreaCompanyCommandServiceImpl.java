@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.re
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling AreaCompany commands.
+ */
 @Service
 public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService {
     private final AreaCompanyRepository areacompanyRepository;
 
+    /**
+     * Constructor for AreaCompanyCommandServiceImpl.
+     * @param areacompanyRepository the repository for AreaCompany persistence
+     */
     public AreaCompanyCommandServiceImpl(AreaCompanyRepository areacompanyRepository) {
         this.areacompanyRepository = areacompanyRepository;
     }
 
+    /**
+     * Handles the creation of an AreaCompany.
+     * @param command the command to create an AreaCompany
+     * @return the generated ID of the new AreaCompany
+     */
     @Override
     public Long handle(CreateAreaCompanyCommand command) {
         var areacompany = new AreaCompany(command);
@@ -29,6 +41,11 @@ public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService 
         return areacompany.getId();
     }
 
+    /**
+     * Handles the update of an existing AreaCompany.
+     * @param command the command to update an AreaCompany
+     * @return the updated AreaCompany as an Optional
+     */
     @Override
     public Optional<AreaCompany> handle(UpdateAreaCompanyCommand command) {
         var areacompanyId = command.areacompanyId();
@@ -46,6 +63,10 @@ public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService 
         }
     }
 
+    /**
+     * Handles the deletion of an AreaCompany.
+     * @param command the command to delete an AreaCompany
+     */
     @Override
     public void handle(DeleteAreaCompanyCommand command) {
         if (!areacompanyRepository.existsById(command.areacompanyId())) {

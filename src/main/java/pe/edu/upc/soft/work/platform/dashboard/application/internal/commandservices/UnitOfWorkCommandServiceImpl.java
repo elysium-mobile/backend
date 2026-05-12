@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.re
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling UnitOfWork commands.
+ */
 @Service
 public class UnitOfWorkCommandServiceImpl implements UnitOfWorkCommandService {
     private final UnitOfWorkRepository unitofworkRepository;
 
+    /**
+     * Constructor for UnitOfWorkCommandServiceImpl.
+     * @param unitofworkRepository the repository for UnitOfWork persistence
+     */
     public UnitOfWorkCommandServiceImpl(UnitOfWorkRepository unitofworkRepository) {
         this.unitofworkRepository = unitofworkRepository;
     }
 
+    /**
+     * Handles the creation of a new UnitOfWork.
+     * @param command the command to create a UnitOfWork
+     * @return the generated ID of the new UnitOfWork
+     */
     @Override
     public Long handle(CreateUnitOfWorkCommand command) {
         var unitofwork = new UnitOfWork(command);
@@ -29,6 +41,11 @@ public class UnitOfWorkCommandServiceImpl implements UnitOfWorkCommandService {
         return unitofwork.getId();
     }
 
+    /**
+     * Handles the update of an existing UnitOfWork.
+     * @param command the command to update a UnitOfWork
+     * @return the updated UnitOfWork as an Optional
+     */
     @Override
     public Optional<UnitOfWork> handle(UpdateUnitOfWorkCommand command) {
         var unitofworkId = command.unitofworkId();
@@ -46,6 +63,10 @@ public class UnitOfWorkCommandServiceImpl implements UnitOfWorkCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of a UnitOfWork.
+     * @param command the command to delete a UnitOfWork
+     */
     @Override
     public void handle(DeleteUnitOfWorkCommand command) {
         if (!unitofworkRepository.existsById(command.unitofworkId())) {

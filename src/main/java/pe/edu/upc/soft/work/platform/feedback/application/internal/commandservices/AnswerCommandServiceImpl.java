@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.rep
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Answer commands.
+ */
 @Service
 public class AnswerCommandServiceImpl implements AnswerCommandService {
     private final AnswerRepository answerRepository;
 
+    /**
+     * Constructor for AnswerCommandServiceImpl.
+     * @param answerRepository the repository for Answer persistence
+     */
     public AnswerCommandServiceImpl(AnswerRepository answerRepository) {
         this.answerRepository = answerRepository;
     }
 
+    /**
+     * Handles the creation of an Answer.
+     * @param command the command to create an Answer
+     * @return the generated ID of the new Answer
+     */
     @Override
     public Long handle(CreateAnswerCommand command) {
         var answer = new Answer(command);
@@ -29,6 +41,11 @@ public class AnswerCommandServiceImpl implements AnswerCommandService {
         return answer.getId();
     }
 
+    /**
+     * Handles the update of an existing Answer
+     * @param command the command to update an Answer
+     * @return the updated Answer as an Optional
+     */
     @Override
     public Optional<Answer> handle(UpdateAnswerCommand command) {
         var answerId = command.answerId();
@@ -46,6 +63,10 @@ public class AnswerCommandServiceImpl implements AnswerCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of a Answer
+     * @param command the command to delete an Answer
+     */
     @Override
     public void handle(DeleteAnswerCommand command) {
         if (!answerRepository.existsById(command.answerId())) {

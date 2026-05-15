@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.rep
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling SurveyResponse commands.
+ */
 @Service
 public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandService {
     private final SurveyResponseRepository surveyresponseRepository;
 
+    /**
+     * Constructor for SurveyResponseCommandServiceImpl.
+     * @param surveyresponseRepository the repository for SurveyResponse persistence
+     */
     public SurveyResponseCommandServiceImpl(SurveyResponseRepository surveyresponseRepository) {
         this.surveyresponseRepository = surveyresponseRepository;
     }
 
+    /**
+     * Handles the creation of an SurveyResponse.
+     * @param command the command to create a SurveyResponse
+     * @return the generated ID of the new SurveyResponse
+     */
     @Override
     public Long handle(CreateSurveyResponseCommand command) {
         var surveyresponse = new SurveyResponse(command);
@@ -29,6 +41,11 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
         return surveyresponse.getId();
     }
 
+    /**
+     * Handles the update of an existing SurveyResponse.
+     * @param command the command to update an SurveyResponse
+     * @return the updated SurveyResponse as a Optional
+     */
     @Override
     public Optional<SurveyResponse> handle(UpdateSurveyResponseCommand command) {
         var surveyresponseId = command.surveyresponseId();
@@ -46,6 +63,10 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
         }
     }
 
+    /**
+     * Handles the deletion of an SurveyResponse
+     * @param command the command to delete an SurveyResponse
+     */
     @Override
     public void handle(DeleteSurveyResponseCommand command) {
         if (!surveyresponseRepository.existsById(command.surveyresponseId())) {

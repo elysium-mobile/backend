@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.rep
 
 import java.util.Optional;
 
+/**
+ * Services implementation for handling Survey commands
+ */
 @Service
 public class SurveyCommandServiceImpl implements SurveyCommandService {
     private final SurveyRepository surveyRepository;
 
+    /**
+     * Constructor for SurveyCommandServiceImpl
+     * @param surveyRepository the repository for Survey persistence
+     */
     public SurveyCommandServiceImpl(SurveyRepository surveyRepository) {
         this.surveyRepository = surveyRepository;
     }
 
+    /**
+     * Handles the creation of an Survey
+     * @param command the command to create a Survey
+     * @return the generated ID of the new Survey
+     */
     @Override
     public Long handle(CreateSurveyCommand command) {
         var survey = new Survey(command);
@@ -29,6 +41,11 @@ public class SurveyCommandServiceImpl implements SurveyCommandService {
         return survey.getId();
     }
 
+    /**
+     * Handles the update of an existing Survey
+     * @param command the command to update an Survey
+     * @return the updated Survey as an Optional
+     */
     @Override
     public Optional<Survey> handle(UpdateSurveyCommand command) {
         var surveyId = command.surveyId();
@@ -46,6 +63,10 @@ public class SurveyCommandServiceImpl implements SurveyCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of a Survey
+     * @param command the command to delete a Survey
+     */
     @Override
     public void handle(DeleteSurveyCommand command) {
         if (!surveyRepository.existsById(command.surveyId())) {

@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Thread
+ */
 @Service
 public class ThreadCommandServiceImpl implements ThreadCommandService {
     private final ThreadRepository threadRepository;
 
+    /**
+     * Constructor for ThreadCommandServiceImpl.
+     * @param threadRepository the repository for Thread persistence
+     */
     public ThreadCommandServiceImpl(ThreadRepository threadRepository) {
         this.threadRepository = threadRepository;
     }
 
+    /**
+     * Handles the creation of a Thread
+     * @param command the command to create an Thread
+     * @return the generated ID of the new Thread
+     */
     @Override
     public Long handle(CreateThreadCommand command) {
         var thread = new Thread(command);
@@ -29,6 +41,11 @@ public class ThreadCommandServiceImpl implements ThreadCommandService {
         return thread.getId();
     }
 
+    /**
+     * Handles the update of an existing Thread
+     * @param command the command to update an Thread
+     * @return the updated Thread as an Optional
+     */
     @Override
     public Optional<Thread> handle(UpdateThreadCommand command) {
         var threadId = command.threadId();
@@ -46,6 +63,10 @@ public class ThreadCommandServiceImpl implements ThreadCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of an Thread
+     * @param command the command to delete an Thread
+     */
     @Override
     public void handle(DeleteThreadCommand command) {
         if (!threadRepository.existsById(command.threadId())) {

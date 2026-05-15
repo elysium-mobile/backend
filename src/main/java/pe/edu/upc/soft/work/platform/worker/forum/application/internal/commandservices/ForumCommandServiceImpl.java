@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Forum commands
+ */
 @Service
 public class ForumCommandServiceImpl implements ForumCommandService {
     private final ForumRepository forumRepository;
 
+    /**
+     * Constructor for ForumCommandServiceImpl.
+     * @param forumRepository the repository for Forum persistence
+     */
     public ForumCommandServiceImpl(ForumRepository forumRepository) {
         this.forumRepository = forumRepository;
     }
 
+    /**
+     * Handles the creation of a Forum
+     * @param command the command to create a Forum
+     * @return the generated ID of the new Forum
+     */
     @Override
     public Long handle(CreateForumCommand command) {
         var forum = new Forum(command);
@@ -29,6 +41,11 @@ public class ForumCommandServiceImpl implements ForumCommandService {
         return forum.getId();
     }
 
+    /**
+     * Handles the update of an existing Forum
+     * @param command the command to update an Forum
+     * @return the updated Forum as an Optional
+     */
     @Override
     public Optional<Forum> handle(UpdateForumCommand command) {
         var forumId = command.forumId();
@@ -46,6 +63,10 @@ public class ForumCommandServiceImpl implements ForumCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of an Forum
+     * @param command the command to delete a Forum
+     */
     @Override
     public void handle(DeleteForumCommand command) {
         if (!forumRepository.existsById(command.forumId())) {

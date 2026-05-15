@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa
 
 import java.util.Optional;
 
+/**
+ * Services implementation for handling Category commands
+ */
 @Service
 public class CategoryCommandServiceImpl implements CategoryCommandService {
     private final CategoryRepository categoryRepository;
 
+    /**
+     * Constructor for CategoryCommandServiceImpl.
+     * @param categoryRepository the repository for Category persistence
+     */
     public CategoryCommandServiceImpl(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
 
+    /**
+     * Handles the creation of an Category
+     * @param command the command to create a Category
+     * @return the generated ID of the new Category
+     */
     @Override
     public Long handle(CreateCategoryCommand command) {
         var category = new Category(command);
@@ -29,6 +41,11 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
         return category.getId();
     }
 
+    /**
+     * Handles the update of an existing Category
+     * @param command the command to update a Category
+     * @return to updated Category as an Optional
+     */
     @Override
     public Optional<Category> handle(UpdateCategoryCommand command) {
         var categoryId = command.categoryId();
@@ -46,6 +63,10 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of an Category
+     * @param command the command to delete an Category
+     */
     @Override
     public void handle(DeleteCategoryCommand command) {
         if (!categoryRepository.existsById(command.categoryId())) {

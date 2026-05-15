@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Message commands
+ */
 @Service
 public class MessageCommandServiceImpl implements MessageCommandService {
     private final MessageRepository messageRepository;
 
+    /**
+     * Constructor for MessageCommandServiceImpl.
+     * @param messageRepository the repository for Message persistence
+     */
     public MessageCommandServiceImpl(MessageRepository messageRepository) {
         this.messageRepository = messageRepository;
     }
 
+    /**
+     * Handles the creation of an Message
+     * @param command the command to create an Message
+     * @return the generated ID of the new Message
+     */
     @Override
     public Long handle(CreateMessageCommand command) {
         var message = new Message(command);
@@ -29,6 +41,11 @@ public class MessageCommandServiceImpl implements MessageCommandService {
         return message.getId();
     }
 
+    /**
+     * Handles the update of an existing Message
+     * @param command the command to update a Message
+     * @return the updated Message as an Optional
+     */
     @Override
     public Optional<Message> handle(UpdateMessageCommand command) {
         var messageId = command.messageId();
@@ -46,6 +63,10 @@ public class MessageCommandServiceImpl implements MessageCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of an Message
+     * @param command the command to delete an Message
+     */
     @Override
     public void handle(DeleteMessageCommand command) {
         if (!messageRepository.existsById(command.messageId())) {

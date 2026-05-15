@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Attachment commands
+ */
 @Service
 public class AttachmentCommandServiceImpl implements AttachmentCommandService {
     private final AttachmentRepository attachmentRepository;
 
+    /**
+     * Constructor for AttachmentCommandServiceImpl.
+     * @param attachmentRepository the repository for Attachment persistence
+     */
     public AttachmentCommandServiceImpl(AttachmentRepository attachmentRepository) {
         this.attachmentRepository = attachmentRepository;
     }
 
+    /**
+     * Handles the creation of an Attachment
+     * @param command the command to create an Attachment
+     * @return the generated ID of the new Attachment
+     */
     @Override
     public Long handle(CreateAttachmentCommand command) {
         var attachment = new Attachment(command);
@@ -29,6 +41,11 @@ public class AttachmentCommandServiceImpl implements AttachmentCommandService {
         return attachment.getId();
     }
 
+    /**
+     * Handles the update of an existing Attachment
+     * @param command the command to update an Attachment
+     * @return the updated Attachment as an Optional
+     */
     @Override
     public Optional<Attachment> handle(UpdateAttachmentCommand command) {
         var attachmentId = command.attachmentId();
@@ -46,6 +63,10 @@ public class AttachmentCommandServiceImpl implements AttachmentCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of an Attachment
+     * @param command the command to delete an Attachment
+     */
     @Override
     public void handle(DeleteAttachmentCommand command) {
         if (!attachmentRepository.existsById(command.attachmentId())) {

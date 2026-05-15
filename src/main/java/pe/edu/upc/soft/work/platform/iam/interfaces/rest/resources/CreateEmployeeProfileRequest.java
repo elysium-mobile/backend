@@ -11,7 +11,7 @@ import java.util.Date;
 
 /**
  * Request record for creating a new employee profile.
- * @param starStart the start date of the employee
+ * @param dateStart the start date of the employee
  * @param position the position of the employee
  * @param salary the salary of the employee
  * @param workOfTeamId the ID of the work team the employee belongs to

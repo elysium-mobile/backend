@@ -10,14 +10,27 @@ import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling MembershipPlan commands
+ */
 @Service
 public class MembershipPlanCommandServiceImpl implements MembershipPlanCommandService {
     private final MembershipPlanRepository membershipplanRepository;
 
+    /**
+     * Constructor for MembershipPlanCommandServiceImpl
+     * @param membershipplanRepository the repository for MembershipPlan persistence
+     */
     public MembershipPlanCommandServiceImpl(MembershipPlanRepository membershipplanRepository) {
         this.membershipplanRepository = membershipplanRepository;
     }
 
+
+    /**
+     * Handles the creation of a MembershipPlan
+     * @param command the command to create a MembershipPlan
+     * @return the generated ID of the new MembershipPlan
+     */
     @Override
     public Long handle(CreateMembershipPlanCommand command) {
         var membershipplan = new MembershipPlan(command);
@@ -29,6 +42,11 @@ public class MembershipPlanCommandServiceImpl implements MembershipPlanCommandSe
         return membershipplan.getId();
     }
 
+    /**
+     * Handles the updated of an existing MembershipPlan
+     * @param command the command to update a MembershipPlan
+     * @return the updated MembershipPlan as an Optional
+     */
     @Override
     public Optional<MembershipPlan> handle(UpdateMembershipPlanCommand command) {
         var membershipplanId = command.membershipplanId();
@@ -46,6 +64,10 @@ public class MembershipPlanCommandServiceImpl implements MembershipPlanCommandSe
         }
     }
 
+    /**
+     *  Handles the deletion of a MembershipPlan
+     * @param command the command to delete a MembershipPlan
+     */
     @Override
     public void handle(DeleteMembershipPlanCommand command) {
         if (!membershipplanRepository.existsById(command.membershipplanId())) {

@@ -2,6 +2,10 @@ package pe.edu.upc.soft.work.platform.profile.performance.domain.model.valueobje
 
 import jakarta.persistence.Embeddable;
 
+/**
+ * Value Object representing the identifier of a employee profile.
+ * @param employeeProfileId the identifier of the employee
+ */
 @Embeddable
 public record EmployeeProfileId(Long employeeProfileId) {
 

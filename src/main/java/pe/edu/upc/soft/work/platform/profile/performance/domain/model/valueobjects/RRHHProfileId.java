@@ -3,6 +3,10 @@ package pe.edu.upc.soft.work.platform.profile.performance.domain.model.valueobje
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
 
+/**
+ * Value Object representing the identifier of a RRHHProfile.
+ * @param rrhhProfileId the identifier of the RRHHProfile
+ */
 @Embeddable
 public record RRHHProfileId(Long rrhhProfileId) {
 

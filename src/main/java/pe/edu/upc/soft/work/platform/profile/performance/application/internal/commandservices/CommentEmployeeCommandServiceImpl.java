@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persiste
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling CommentEmployee commands, including creation, update, and deletion of CommentEmployee entities.
+ */
 @Service
 public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommandService {
     private final CommentEmployeeRepository commentemployeeRepository;
 
+    /**
+     * Constructor for CommentEmployeeCommandServiceImpl
+     * @param commentemployeeRepository the repository for CommentEmployee persistence
+     */
     public CommentEmployeeCommandServiceImpl(CommentEmployeeRepository commentemployeeRepository) {
         this.commentemployeeRepository = commentemployeeRepository;
     }
 
+    /**
+     * Handles the creation of a CommentEmployee entity based on the provided command.
+     * @param command the command to create an CommentEmployee
+     * @return the generated ID of the new CommentEmployee
+     */
     @Override
     public Long handle(CreateCommentEmployeeCommand command) {
         var commentemployee = new CommentEmployee(command);
@@ -29,6 +41,11 @@ public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommand
         return commentemployee.getId();
     }
 
+    /**
+     * Handle the update of an existing CommentEmployee
+     * @param command the command to update a CommentEmployee
+     * @return the updated CommentEmployee as an Optional
+     */
     @Override
     public Optional<CommentEmployee> handle(UpdateCommentEmployeeCommand command) {
         var commentemployeeId = command.commentemployeeId();
@@ -46,6 +63,10 @@ public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommand
         }
     }
 
+    /**
+     * Handles the deletion of an CommentEmployee
+     * @param command the command to delete a CommentEmployee
+     */
     @Override
     public void handle(DeleteCommentEmployeeCommand command) {
         if (!commentemployeeRepository.existsById(command.commentemployeeId())) {

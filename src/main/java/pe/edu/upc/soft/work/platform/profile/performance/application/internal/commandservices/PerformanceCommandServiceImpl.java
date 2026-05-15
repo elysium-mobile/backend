@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persiste
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Performance commands
+ */
 @Service
 public class PerformanceCommandServiceImpl implements PerformanceCommandService {
     private final PerformanceRepository performanceRepository;
 
+    /**
+     * Constructor for PerformanceCommandServiceImpl
+     * @param performanceRepository the repository for Performance persistence
+     */
     public PerformanceCommandServiceImpl(PerformanceRepository performanceRepository) {
         this.performanceRepository = performanceRepository;
     }
 
+    /**
+     * Handles the creation of a Performance entity based on the provided command.
+     * @param command the command to create a Performance
+     * @return the generated ID of the new Performance
+     */
     @Override
     public Long handle(CreatePerformanceCommand command) {
         var performance = new Performance(command);
@@ -29,6 +41,11 @@ public class PerformanceCommandServiceImpl implements PerformanceCommandService 
         return performance.getId();
     }
 
+    /**
+     * Handles the update of an existing Performance
+     * @param command the command to update a Performance
+     * @return the updated Performance as an Optional
+     */
     @Override
     public Optional<Performance> handle(UpdatePerformanceCommand command) {
         var performanceId = command.performanceId();
@@ -46,6 +63,10 @@ public class PerformanceCommandServiceImpl implements PerformanceCommandService 
         }
     }
 
+    /**
+     * Handles the deletion of an exiting Performance
+     * @param command  the command to delete a Performance
+     */
     @Override
     public void handle(DeletePerformanceCommand command) {
         if (!performanceRepository.existsById(command.performanceId())) {

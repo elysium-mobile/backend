@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Payment commands
+ */
 @Service
 public class PaymentCommandServiceImpl implements PaymentCommandService {
     private final PaymentRepository paymentRepository;
 
+    /**
+     * Constructor for PaymentCommandServiceImpl
+     * @param paymentRepository the repository for Payment persistence
+     */
     public PaymentCommandServiceImpl(PaymentRepository paymentRepository) {
         this.paymentRepository = paymentRepository;
     }
 
+    /**
+     * Handles the creation of a Payment
+     * @param command the command to create a Payment
+     * @return the generated ID of the new Payment
+     */
     @Override
     public Long handle(CreatePaymentCommand command) {
         var payment = new Payment(command);
@@ -29,6 +41,11 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
         return payment.getId();
     }
 
+    /**
+     * Handles the update of an existing Payment
+     * @param command the command to update a Payment
+     * @return the updated Payment as an Optional
+     */
     @Override
     public Optional<Payment> handle(UpdatePaymentCommand command) {
         var paymentId = command.paymentId();
@@ -46,6 +63,10 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of a Payment
+     * @param command the command to delete a Payment
+     */
     @Override
     public void handle(DeletePaymentCommand command) {
         if (!paymentRepository.existsById(command.paymentId())) {

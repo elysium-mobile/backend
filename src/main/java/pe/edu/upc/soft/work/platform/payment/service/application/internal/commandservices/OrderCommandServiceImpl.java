@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Order commands
+ */
 @Service
 public class OrderCommandServiceImpl implements OrderCommandService {
     private final OrderRepository orderRepository;
 
+    /**
+     * Constructor for OrderCommandServiceImpl
+     * @param orderRepository the repository for Order persistence
+     */
     public OrderCommandServiceImpl(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 
+    /**
+     * Handles the creation of an Order
+     * @param command the command to create an Order
+     * @return the generated ID of the new Order
+     */
     @Override
     public Long handle(CreateOrderCommand command) {
         var order = new Order(command);
@@ -29,6 +41,11 @@ public class OrderCommandServiceImpl implements OrderCommandService {
         return order.getId();
     }
 
+    /**
+     * Handles the update of an existing Order
+     * @param command the command to update an Order
+     * @return the updated Order as an Optional
+     */
     @Override
     public Optional<Order> handle(UpdateOrderCommand command) {
         var orderId = command.orderId();
@@ -46,6 +63,10 @@ public class OrderCommandServiceImpl implements OrderCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of an Order
+     * @param command the command to delete an Order
+     */
     @Override
     public void handle(DeleteOrderCommand command) {
         if (!orderRepository.existsById(command.orderId())) {

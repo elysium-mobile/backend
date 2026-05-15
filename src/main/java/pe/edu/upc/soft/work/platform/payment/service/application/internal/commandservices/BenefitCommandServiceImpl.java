@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling Benefit commands.
+ */
 @Service
 public class BenefitCommandServiceImpl implements BenefitCommandService {
     private final BenefitRepository benefitRepository;
 
+    /**
+     * Constructor for BenefitCommandServiceImpl
+     * @param benefitRepository the repository for Benefit persistence
+     */
     public BenefitCommandServiceImpl(BenefitRepository benefitRepository) {
         this.benefitRepository = benefitRepository;
     }
 
+    /**
+     * Handles the creation of an Benefit
+     * @param command the command to create a Benefit
+     * @return the generated ID of the new Benefit
+     */
     @Override
     public Long handle(CreateBenefitCommand command) {
         var benefit = new Benefit(command);
@@ -29,6 +41,11 @@ public class BenefitCommandServiceImpl implements BenefitCommandService {
         return benefit.getId();
     }
 
+    /**
+     * Handles the update of an existing Benefit
+     * @param command the command to update an Benefit
+     * @return the updated Benefit as an Optional
+     */
     @Override
     public Optional<Benefit> handle(UpdateBenefitCommand command) {
         var benefitId = command.benefitId();
@@ -46,6 +63,10 @@ public class BenefitCommandServiceImpl implements BenefitCommandService {
         }
     }
 
+    /**
+     * Handle the deletion of an Benefit
+     * @param command the command to delete an Benefit
+     */
     @Override
     public void handle(DeleteBenefitCommand command) {
         if (!benefitRepository.existsById(command.benefitId())) {

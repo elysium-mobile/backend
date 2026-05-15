@@ -12,7 +12,7 @@ public record NotificationResponse(
         boolean seen,
 
         @JsonProperty("notification_type")
-        NotificationType notificationType,
+        String notificationType,
 
         @JsonProperty("user_account_id")
         Long userAccountId

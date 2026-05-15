@@ -11,5 +11,5 @@ public record ForumResponse(
         Long forumId,
         String title,
         String description,
-        CompanyId companyId
+        Long companyId
 ) {}

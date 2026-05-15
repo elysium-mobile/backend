@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.notification.interfaces.rest.assemblers;
 import pe.edu.upc.soft.work.platform.notification.domain.model.aggregates.Notification;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.CreateNotificationCommand;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.UpdateNotificationCommand;
+import pe.edu.upc.soft.work.platform.notification.domain.model.valueobjects.NotificationType;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.CreateNotificationRequest;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.NotificationResponse;
 
@@ -12,7 +13,7 @@ public class NotificationAssembler {
     public static CreateNotificationCommand toCommandFromRequest(CreateNotificationRequest request){
         return new CreateNotificationCommand(
                 request.seen(),
-                request.notificationType(),
+                NotificationType.valueOf(request.notificationType()),
                 request.userAccountId()
         );
     }
@@ -21,7 +22,7 @@ public class NotificationAssembler {
         return new UpdateNotificationCommand(
                 notificationId,
                 request.seen(),
-                request.notificationType(),
+                NotificationType.valueOf(request.notificationType()),
                 request.userAccountId()
         );
     }
@@ -30,7 +31,7 @@ public class NotificationAssembler {
         return new NotificationResponse(
                 entity.getId(),
                 entity.isSeen(),
-                entity.getNotificationType(),
+                entity.getNotificationType().name(),
                 entity.getUserAccountId()
         );
     }

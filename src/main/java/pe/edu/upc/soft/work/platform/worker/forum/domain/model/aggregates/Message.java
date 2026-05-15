@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates;
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
@@ -12,11 +13,18 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.User
  * Message aggregate root entity.
  */
 @Entity
+@Table(name = "messages")
 public class Message extends AuditableAbstractAggregateRoot<Message> {
 
     @Getter
+    @Embedded
+    @AttributeOverrides(
+            @AttributeOverride(name = "userAccountId", column = @Column(name = "user_account_id", nullable = false, length = 10)
+    ))
+    @JsonProperty("id_user_account")
     private UserAccountId userAccountId;
     @Getter
+    @Column(name = "content_message", nullable = false, length = 500)
     private String contentMessage;
 
     /**

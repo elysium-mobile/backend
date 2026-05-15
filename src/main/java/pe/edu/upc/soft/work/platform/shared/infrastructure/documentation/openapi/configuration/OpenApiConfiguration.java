@@ -23,12 +23,12 @@ public class OpenApiConfiguration {
     private String swaggerServerUrl;
 
     /**
-     * Creates the OpenAPI bean for Prime Fix Platform.
+     * Creates the OpenAPI bean for SoftWork Platform.
      *
      * @return the OpenAPI configuration
      */
     @Bean
-    public OpenAPI primeFixPlatformOpenApi() {
+    public OpenAPI softworkPlatformOpenApi() {
         // Define the security scheme name
         final String securitySchemeName = "bearerAuth";
 
@@ -37,19 +37,19 @@ public class OpenApiConfiguration {
                 // Configure the server
                 .addServersItem(new Server()
                         .url(swaggerServerUrl)
-                        .description("Prime Fix Platform server"))
+                        .description("SoftWork Platform server"))
                 // Set API information
                 .info(new Info()
-                        .title("Prime Fix Platform API")
-                        .description("Prime Fix Platform application REST API documentation.")
+                        .title("SoftWork Platform API")
+                        .description("SoftWork Platform application REST API documentation.")
                         .version("v1.0.0")
                         .license(new License()
                                 .name("Apache 2.0")
                                 .url("https://springdoc.org")))
                 // Set external documentation
                 .externalDocs(new ExternalDocumentation()
-                        .description("Prime Fix Platform Documentation")
-                        .url("https://github.com/prime-fix/backend"))
+                        .description("SoftWork Platform Documentation")
+                        .url("https://github.com/softwork/backend"))
                 // Configure security requirements
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 // Define security schemes

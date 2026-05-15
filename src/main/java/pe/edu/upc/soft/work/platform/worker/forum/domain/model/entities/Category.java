@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateCategoryCommand;
@@ -11,11 +13,14 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
  * Category aggregate root entity.
  */
 @Entity
+@Table(name = "categories")
 public class Category extends AuditableAbstractAggregateRoot<Category> {
 
     @Getter
+    @Column(name = "title", nullable = false, length = 100)
     private String title;
     @Getter
+    @Column(name = "description", nullable = false, length = 500)
     private String description;
 
     /**

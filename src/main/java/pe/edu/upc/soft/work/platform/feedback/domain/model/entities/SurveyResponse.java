@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.feedback.domain.model.entities;
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyResponseCommand;
@@ -12,13 +13,20 @@ import java.util.Date;
  * SurveyResponse aggregate root entity.
  */
 @Entity
+@Table(name = "survey_responses")
 public class SurveyResponse extends AuditableAbstractAggregateRoot<SurveyResponse> {
 
     @Getter
     private Long surveyId;
+
     @Getter
+    @Embedded
+    @AttributeOverride(name = "employeeProfileId", column = @Column(name = "employee_profile_id"))
+    @JsonProperty("employeeProfileId")
+
     private EmployeeProfileId employeeProfileId;
     @Getter
+    @Column(name = "submitted_at")
     private Date submittedAt;
 
     /**

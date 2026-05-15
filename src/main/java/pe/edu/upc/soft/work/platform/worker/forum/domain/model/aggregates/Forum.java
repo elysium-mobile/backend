@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates;
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateForumCommand;
@@ -12,13 +13,21 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.Comp
  * Forum aggregate root entity.
  */
 @Entity
+@Table(name = "forums")
 public class Forum extends AuditableAbstractAggregateRoot<Forum> {
 
     @Getter
+    @Column(name = "title", nullable = false, length = 100)
     private String title;
     @Getter
+    @Column(name = "description", nullable = false, length = 500)
     private String description;
     @Getter
+    @Embedded
+    @AttributeOverrides(
+            @AttributeOverride(name = "companyId", column = @Column(name = "company_id", nullable = false, length = 10))
+    )
+    @JsonProperty("id_company")
     private CompanyId companyId;
 
     /**

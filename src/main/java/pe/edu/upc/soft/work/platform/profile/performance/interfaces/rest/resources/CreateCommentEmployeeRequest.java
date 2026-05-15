@@ -18,5 +18,5 @@ public record CreateCommentEmployeeRequest(
         String content,
         @NotNull
         @NotBlank
-        RRHHProfileId rrhhProfileId
+        Long rrhhProfileId
 ) {}

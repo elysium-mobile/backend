@@ -11,6 +11,6 @@ public record SurveyResponse(
         Long surveyId,
         String title,
         String description,
-        TargetType targetType,
+        String targetType,
         Date expirationTime
 ) {}

@@ -9,6 +9,6 @@ import java.util.Date;
  */
 public record MessageResponse(
         Long messageId,
-        UserAccountId userAccountId,
+        Long userAccountId,
         String contentMessage
 ) {}

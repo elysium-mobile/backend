@@ -12,7 +12,7 @@ import java.util.Date;
 public record CreateMessageRequest(
         @NotNull
         @NotBlank
-        UserAccountId userAccountId,
+        Long userAccountId,
         @NotNull
         @NotBlank
         String contentMessage

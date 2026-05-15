@@ -18,5 +18,5 @@ public record CreateMembershipRequest(
         Date membershipOver,
         @NotNull
         @NotBlank
-        MembershipStatus membershipStatus
+        String membershipStatus
 ) {}

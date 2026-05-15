@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateDashboardCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateDashboardCommand;
@@ -11,10 +13,12 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
  * Dashboard aggregate root entity.
  */
 @Entity
+@Table(name = "dashboards")
 public class Dashboard extends AuditableAbstractAggregateRoot<Dashboard> {
 
     @Getter
-    private Long ruc;
+    @Column(name = "RUC", nullable = false)
+    private String ruc;
 
     /**
      * Default constructor for JPA.

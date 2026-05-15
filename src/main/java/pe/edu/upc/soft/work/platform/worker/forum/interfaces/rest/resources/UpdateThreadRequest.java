@@ -15,7 +15,7 @@ public record UpdateThreadRequest(
         String title,
         @NotNull
         @NotBlank
-        AreaCompanyId areaCompanyId,
+        Long areaCompanyId,
         @NotNull
         @NotBlank
         Date lastMessage

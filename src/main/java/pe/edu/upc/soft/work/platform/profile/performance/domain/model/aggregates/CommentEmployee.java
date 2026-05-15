@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates;
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreateCommentEmployeeCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdateCommentEmployeeCommand;
@@ -11,13 +12,21 @@ import pe.edu.upc.soft.work.platform.profile.performance.domain.model.valueobjec
  * CommentEmployee aggregate root entity.
  */
 @Entity
+@Table(name = "comment_employees")
 public class CommentEmployee extends AuditableAbstractAggregateRoot<CommentEmployee> {
 
     @Getter
+    @Column(name = "title", nullable = false, length = 100)
     private String title;
     @Getter
+    @Column(name = "content", nullable = false, length = 500)
     private String content;
     @Getter
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "rrhhProfileId", column = @Column(name = "rrhh_profile_id", nullable = false))
+    })
+    @JsonProperty("id_rrhh_profile")
     private RRHHProfileId rrhhProfileId;
 
     /**

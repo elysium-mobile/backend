@@ -42,7 +42,7 @@ public class UserAccountController {
                     description = "Create user account request",
                     required = true,
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CreateUserRequest.class)
+                            schema = @Schema(implementation = CreateUserAccountRequest.class)
                     )
             ))
 
@@ -52,7 +52,7 @@ public class UserAccountController {
             @ApiResponse(responseCode = "404", description = "User Account not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<UserAccountResponse> createUserAccountt(@RequestBody CreateUserAccountRequest request){
+    public ResponseEntity<UserAccountResponse> createUserAccount(@RequestBody CreateUserAccountRequest request){
 
         var createUserAccountCommand = UserAccountAssembler.toCommandFromRequest(request);
         var userAccountId = this.userAccountCommandService.handle( createUserAccountCommand );

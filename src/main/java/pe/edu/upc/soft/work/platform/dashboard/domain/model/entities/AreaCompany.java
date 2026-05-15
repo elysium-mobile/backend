@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateAreaCompanyCommand;
@@ -11,11 +13,14 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
  * AreaCompany aggregate root entity.
  */
 @Entity
+@Table(name = "area_company")
 public class AreaCompany extends AuditableAbstractAggregateRoot<AreaCompany> {
 
     @Getter
+    @Column(name = "name", nullable = false)
     private String name;
     @Getter
+    @Column(name = "annual_budget", nullable = false)
     private Integer annualBudget;
 
     /**

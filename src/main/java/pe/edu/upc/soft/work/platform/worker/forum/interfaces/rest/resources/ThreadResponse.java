@@ -10,6 +10,6 @@ import java.util.Date;
 public record ThreadResponse(
         Long threadId,
         String title,
-        AreaCompanyId areaCompanyId,
+        Long areaCompanyId,
         Date lastMessage
 ) {}

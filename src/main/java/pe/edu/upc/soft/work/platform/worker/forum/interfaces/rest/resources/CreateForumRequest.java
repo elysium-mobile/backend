@@ -18,5 +18,5 @@ public record CreateForumRequest(
         String description,
         @NotNull
         @NotBlank
-        CompanyId companyId
+        Long companyId
 ) {}

@@ -15,7 +15,7 @@ public record UpdateNotificationRequest(
         @NotNull
         @NotBlank
         @JsonProperty("notification_type")
-        NotificationType notificationType,
+        String notificationType,
 
         @NotNull
         @NotBlank

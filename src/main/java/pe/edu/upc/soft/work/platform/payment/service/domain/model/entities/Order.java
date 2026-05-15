@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.payment.service.domain.model.entities;
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateOrderCommand;
@@ -11,13 +12,21 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.U
  * Order aggregate root entity.
  */
 @Entity
+@Table(name="orders")
 public class Order extends AuditableAbstractAggregateRoot<Order> {
 
     @Getter
+    @Embedded
+    @AttributeOverrides(
+            @AttributeOverride(name = "id", column = @Column(name = "user_account_id", nullable = false, length = 50))
+    )
+    @JsonProperty("id_user_account")
     private UserAccountId userAccountId;
     @Getter
+    @Column(name = "amount", nullable = false)
     private Integer amount;
     @Getter
+    @Column(name = "membership_id", nullable = false)
     private Long membershipId;
 
     /**

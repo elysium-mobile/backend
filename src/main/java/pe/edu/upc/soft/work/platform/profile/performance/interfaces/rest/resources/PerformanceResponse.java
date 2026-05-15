@@ -9,7 +9,7 @@ import java.util.Date;
  */
 public record PerformanceResponse(
         Long performanceId,
-        EmployeeProfileId employeeProfileId,
+        Long employeeProfileId,
         Date dateTime,
         Integer classification
 ) {}

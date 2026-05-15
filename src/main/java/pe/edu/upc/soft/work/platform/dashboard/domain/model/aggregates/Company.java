@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateCompanyCommand;
@@ -11,15 +13,20 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
  * Company aggregate root entity.
  */
 @Entity
+@Table(name = "companies")
 public class Company extends AuditableAbstractAggregateRoot<Company> {
 
     @Getter
+    @Column(name = "name", nullable = false)
     private String name;
     @Getter
+    @Column(name = "RUC", nullable = false)
     private String RUC;
     @Getter
+    @Column(name = "contact_email", nullable = false)
     private String contactEmail;
     @Getter
+    @Column(name = "contact_phone", nullable = false)
     private String contactPhone;
 
     /**

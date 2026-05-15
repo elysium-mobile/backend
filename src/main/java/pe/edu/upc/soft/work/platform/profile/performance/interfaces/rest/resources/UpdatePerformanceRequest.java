@@ -12,7 +12,7 @@ import java.util.Date;
 public record UpdatePerformanceRequest(
         @NotNull
         @NotBlank
-        EmployeeProfileId employeeProfileId,
+        Long employeeProfileId,
         @NotNull
         @NotBlank
         Date dateTime,

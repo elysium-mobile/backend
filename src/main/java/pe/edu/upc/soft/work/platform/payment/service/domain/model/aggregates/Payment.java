@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.payment.service.domain.model.aggregates;
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreatePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdatePaymentCommand;
@@ -11,13 +12,17 @@ import java.util.Date;
  * Payment aggregate root entity.
  */
 @Entity
+@Table(name = "payments")
 public class Payment extends AuditableAbstractAggregateRoot<Payment> {
 
     @Getter
+    @Column(name = "order_id", nullable = false)
     private Long orderId;
     @Getter
+    @Column(name = "transaction_id", nullable = false, length = 50)
     private String transactionId;
     @Getter
+    @Column(name = "payment_date", nullable = false)
     private Date paymentDate;
 
     /**

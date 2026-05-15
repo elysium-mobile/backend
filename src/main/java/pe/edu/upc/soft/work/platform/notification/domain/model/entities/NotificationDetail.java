@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.notification.domain.model.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jdk.jfr.Name;
@@ -13,9 +14,11 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
 public class NotificationDetail extends AuditableAbstractAggregateRoot<NotificationDetail> {
 
     @Getter
+    @Column(name = "title", nullable = false)
     private String title;
 
     @Getter
+    @Column(name = "content", nullable = false)
     private String content;
 
     /**

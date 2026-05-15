@@ -1,6 +1,6 @@
 package pe.edu.upc.soft.work.platform.feedback.domain.model.entities;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateQuestionSurveyCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateQuestionSurveyCommand;
@@ -11,11 +11,17 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
  * QuestionSurvey aggregate root entity.
  */
 @Entity
+@Table(name = "question_surveys")
 public class QuestionSurvey extends AuditableAbstractAggregateRoot<QuestionSurvey> {
 
     @Getter
+    @Column(nullable = false)
     private String textQuestion;
+
+
     @Getter
+    @Enumerated(EnumType.STRING)
+    @Column(name = "question_type", nullable = false)
     private QuestionType questionType;
 
     /**

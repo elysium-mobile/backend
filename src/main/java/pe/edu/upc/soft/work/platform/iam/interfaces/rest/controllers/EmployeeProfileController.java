@@ -49,7 +49,7 @@ public class EmployeeProfileController {
                     description = "Create employee profile request",
                     required = true,
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = CreateUserRequest.class)
+                            schema = @Schema(implementation = CreateEmployeeProfileRequest.class)
                     )
             ))
 

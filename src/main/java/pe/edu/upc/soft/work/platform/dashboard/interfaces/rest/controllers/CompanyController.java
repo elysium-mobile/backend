@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
-@RequestMapping(value = "/api/v1/companys", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "Companys", description = "Endpoints for managing Companys")
+@RequestMapping(value = "/api/v1/companies", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Companies", description = "Endpoints for managing Companies")
 public class CompanyController {
 
     private final CompanyCommandService companyCommandService;

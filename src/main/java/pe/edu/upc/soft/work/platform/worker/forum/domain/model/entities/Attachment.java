@@ -1,6 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAttachmentCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAttachmentCommand;
@@ -11,17 +11,24 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.File
  * Attachment aggregate root entity.
  */
 @Entity
+@Table(name = "attachments")
 public class Attachment extends AuditableAbstractAggregateRoot<Attachment> {
 
     @Getter
+    @Column(name = "message_id", nullable = false)
     private Long messageId;
     @Getter
+    @Column(name = "name", nullable = false)
     private String name;
     @Getter
+    @Column(name = "url", nullable = false)
     private String url;
     @Getter
+    @Column(name = "file_size", nullable = false)
     private String fileSize;
     @Getter
+    @Enumerated(EnumType.STRING)
+    @Column(name = "file_type", nullable = false)
     private FileType fileType;
 
     /**

@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates;
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdatePerformanceCommand;
@@ -12,13 +13,21 @@ import pe.edu.upc.soft.work.platform.profile.performance.domain.model.valueobjec
  * Performance aggregate root entity.
  */
 @Entity
+@Table(name = "performances")
 public class Performance extends AuditableAbstractAggregateRoot<Performance> {
 
     @Getter
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "employeeProfileId", column = @Column(name = "employee_profile_id", nullable = false))
+    })
+    @JsonProperty("id_employee_profile")
     private EmployeeProfileId employeeProfileId;
     @Getter
+    @Column(name = "date_time", nullable = false)
     private Date dateTime;
     @Getter
+    @Column(name = "classification", nullable = false)
     private Integer classification;
 
     /**

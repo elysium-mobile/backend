@@ -10,5 +10,5 @@ import java.util.Date;
 public record CreateDashboardRequest(
         @NotNull
         @NotBlank
-        Long ruc
+        String ruc
 ) {}

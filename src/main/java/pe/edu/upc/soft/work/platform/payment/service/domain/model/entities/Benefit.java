@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.payment.service.domain.model.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateBenefitCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateBenefitCommand;
@@ -11,6 +12,7 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
  * Benefit aggregate root entity.
  */
 @Entity
+@Table(name="benefits")
 public class Benefit extends AuditableAbstractAggregateRoot<Benefit> {
 
     @Getter

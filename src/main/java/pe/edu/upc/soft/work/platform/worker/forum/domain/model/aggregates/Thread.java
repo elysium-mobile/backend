@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates;
 
-import jakarta.persistence.Entity;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateThreadCommand;
@@ -13,13 +14,21 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.Area
  * Thread aggregate root entity.
  */
 @Entity
+@Table(name = "threads")
 public class Thread extends AuditableAbstractAggregateRoot<Thread> {
 
     @Getter
+    @Column(name = "title", nullable = false)
     private String title;
     @Getter
+    @Embedded
+    @AttributeOverrides(
+            @AttributeOverride(name = "areaCompanyId", column = @Column(name = "area_company_id", nullable = false)
+    ))
+    @JsonProperty("area_company_id")
     private AreaCompanyId areaCompanyId;
     @Getter
+    @Column(name = "last_message", nullable = false)
     private Date lastMessage;
 
     /**

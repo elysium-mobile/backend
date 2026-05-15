@@ -1,9 +1,7 @@
 package pe.edu.upc.soft.work.platform.notification.domain.model.aggregates;
 
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.CreateNotificationCommand;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.UpdateNotificationCommand;
@@ -20,9 +18,14 @@ public class Notification extends AuditableAbstractAggregateRoot<Notification> {
     private boolean seen;
 
     @Getter
+    @Embedded
+    @AttributeOverrides({
+            @AttributeOverride(name = "notificationType", column = @Column(name = "notification_type", nullable = false))
+    })
     private NotificationType notificationType;
 
     @Getter
+    @Column(name="user_account_id", nullable = false)
     private Long userAccountId;
 
     /**

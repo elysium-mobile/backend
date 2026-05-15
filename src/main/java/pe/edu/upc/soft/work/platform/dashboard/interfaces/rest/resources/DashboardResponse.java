@@ -7,5 +7,5 @@ import java.util.Date;
  */
 public record DashboardResponse(
         Long dashboardId,
-        Long ruc
+        String ruc
 ) {}

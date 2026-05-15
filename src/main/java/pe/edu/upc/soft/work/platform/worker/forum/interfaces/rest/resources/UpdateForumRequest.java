@@ -18,5 +18,5 @@ public record UpdateForumRequest(
         String description,
         @NotNull
         @NotBlank
-        CompanyId companyId
+        Long companyId
 ) {}

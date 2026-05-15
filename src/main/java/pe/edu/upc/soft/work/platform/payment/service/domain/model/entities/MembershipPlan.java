@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.payment.service.domain.model.entities;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateMembershipPlanCommand;
@@ -11,6 +12,7 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
  * MembershipPlan aggregate root entity.
  */
 @Entity
+@Table(name="membership_plans")
 public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPlan> {
 
     @Getter

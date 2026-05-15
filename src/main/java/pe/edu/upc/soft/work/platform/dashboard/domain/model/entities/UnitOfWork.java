@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateUnitOfWorkCommand;
@@ -11,9 +13,11 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
  * UnitOfWork aggregate root entity.
  */
 @Entity
+@Table(name = "unit_of_work")
 public class UnitOfWork extends AuditableAbstractAggregateRoot<UnitOfWork> {
 
     @Getter
+    @Column(name = "name", nullable = false)
     private String name;
 
     /**

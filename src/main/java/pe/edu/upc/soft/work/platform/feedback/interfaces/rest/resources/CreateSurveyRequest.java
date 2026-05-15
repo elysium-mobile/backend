@@ -18,7 +18,7 @@ public record CreateSurveyRequest(
         String description,
         @NotNull
         @NotBlank
-        TargetType targetType,
+        String targetType,
         @NotNull
         @NotBlank
         Date expirationTime

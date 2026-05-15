@@ -1,6 +1,6 @@
 package pe.edu.upc.soft.work.platform.feedback.domain.model.aggregates;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurveyCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyCommand;
@@ -12,14 +12,21 @@ import java.util.Date;
  * Survey aggregate root entity.
  */
 @Entity
+@Table(name = "surveys")
 public class Survey extends AuditableAbstractAggregateRoot<Survey> {
 
     @Getter
+    @Column(name ="title", nullable = false)
     private String title;
     @Getter
+    @Column(name ="description", nullable = false)
     private String description;
+
     @Getter
+    @Enumerated(EnumType.STRING)
+    @Column(name ="target_type", nullable = false)
     private TargetType targetType;
+
     @Getter
     private Date expirationTime;
 

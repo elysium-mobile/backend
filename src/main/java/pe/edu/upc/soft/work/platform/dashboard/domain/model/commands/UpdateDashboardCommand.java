@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Command to update an existing Dashboard
  */
-public record UpdateDashboardCommand(Long dashboardId, Long ruc) {
+public record UpdateDashboardCommand(Long dashboardId, String ruc) {
 
     /**
      * Constructor with validation

@@ -11,5 +11,5 @@ public record MembershipResponse(
         Long membershipId,
         Date membershipStart,
         Date membershipOver,
-        MembershipStatus membershipStatus
+        String membershipStatus
 ) {}

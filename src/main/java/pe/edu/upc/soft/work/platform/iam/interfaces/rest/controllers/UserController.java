@@ -47,7 +47,6 @@ public class UserController {
                     schema = @Schema(implementation = CreateUserRequest.class)
             )
     ))
-
     @ApiResponses(value ={
             @ApiResponse(responseCode = "201", description = "User created successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),

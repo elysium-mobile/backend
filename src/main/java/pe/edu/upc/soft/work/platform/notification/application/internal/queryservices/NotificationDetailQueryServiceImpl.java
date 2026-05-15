@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.notification.application.internal.queryser
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.notification.domain.model.entities.NotificationDetail;
+import pe.edu.upc.soft.work.platform.notification.domain.model.queries.GetAllNotificationDetailQuery;
 import pe.edu.upc.soft.work.platform.notification.domain.model.queries.GetAllNotificationsQuery;
 import pe.edu.upc.soft.work.platform.notification.domain.model.queries.GetNotificationDetailByIdQuery;
 import pe.edu.upc.soft.work.platform.notification.domain.services.NotificationDetailQueryService;
@@ -21,7 +22,7 @@ public class NotificationDetailQueryServiceImpl implements NotificationDetailQue
     }
 
     @Override
-    public List<NotificationDetail> handle(GetAllNotificationsQuery query) {
+    public List<NotificationDetail> handle(GetAllNotificationDetailQuery query) {
         return notificationDetailRepository.findAll();
     }
 

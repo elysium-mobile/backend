@@ -1,0 +1,22 @@
+package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.CompanyId;
+
+import java.util.Date;
+
+/**
+ * Request object for creating a new Forum.
+ */
+public record CreateForumRequest(
+        @NotNull
+        @NotBlank
+        String title,
+        @NotNull
+        @NotBlank
+        String description,
+        @NotNull
+        @NotBlank
+        Long companyId
+) {}

@@ -1,4 +1,22 @@
 package pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources;
 
-public record UpdateSurveyResponseRequest() {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+import java.util.Date;
+
+public record UpdateSurveyResponseRequest(
+
+        @NotNull
+        @NotBlank
+        Long surveyId,
+
+        @NotNull
+        @NotBlank
+        Long employeeProfileId,
+
+        @NotNull
+        @NotBlank
+        Date SubmittedAt
+) {
 }

@@ -49,7 +49,7 @@ public class QuestionSurveyCommandServiceImpl implements QuestionSurveyCommandSe
      */
     @Override
     public Optional<QuestionSurvey> handle(UpdateQuestionSurveyCommand command) {
-        var questionsurveyId = command.questionsurveyId();
+        var questionsurveyId = command.questionSurveyId();
         if (!this.questionsurveyRepository.existsById(questionsurveyId)) {
             throw new RuntimeException("QuestionSurvey with ID " + questionsurveyId + " does not exist.");
         }

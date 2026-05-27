@@ -8,12 +8,12 @@ import java.util.Date;
 /**
  * Command to update an existing QuestionSurvey
  */
-public record UpdateQuestionSurveyCommand(Long questionsurveyId, String textQuestion, QuestionType questionType) {
+public record UpdateQuestionSurveyCommand(Long questionSurveyId, String textQuestion, QuestionType questionType) {
 
     /**
      * Constructor with validation
      */
     public UpdateQuestionSurveyCommand {
-        Objects.requireNonNull(questionsurveyId, "[UpdateQuestionSurveyCommand] questionsurveyId must not be null");
+        Objects.requireNonNull(questionSurveyId, "[UpdateQuestionSurveyCommand] questionsurveyId must not be null");
     }
 }

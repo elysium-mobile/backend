@@ -6,6 +6,7 @@ import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetSurveyResp
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetAllSurveyResponseQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyResponseQueryService;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyResponseRepository;
+import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.SurveyResponseResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,7 +29,7 @@ public class SurveyResponseQueryServiceImpl implements SurveyResponseQueryServic
      * Handles the GetAllSurveyResponseQuery.
      */
     @Override
-    public List<SurveyResponse> handle(GetAllSurveyResponseQuery query) {
+    public List<SurveyResponseResponse> handle(GetAllSurveyResponseQuery query) {
         return surveyresponseRepository.findAll();
     }
 
@@ -36,7 +37,7 @@ public class SurveyResponseQueryServiceImpl implements SurveyResponseQueryServic
      * Handles the GetSurveyResponseByIdQuery.
      */
     @Override
-    public Optional<SurveyResponse> handle(GetSurveyResponseByIdQuery query) {
+    public Optional<SurveyResponseResponse> handle(GetSurveyResponseByIdQuery query) {
         return surveyresponseRepository.findById(query.surveyresponseId());
     }
 }

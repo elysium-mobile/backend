@@ -1,4 +1,12 @@
 package pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources;
 
-public record SurveyResponseResponse() {
+import java.util.Date;
+
+public record SurveyResponseResponse(
+
+        Long surveyResponseId,
+        Long surveyId,
+        Long employeeProfileId,
+        Date SubmittedAt
+) {
 }

@@ -4,6 +4,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateWorkT
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateWorkTeamCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.WorkTeam;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateWorkTeamRequest;
+import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateWorkTeamRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.WorkTeamResponse;
 
 public class WorkTeamAssembler {
@@ -18,7 +19,7 @@ public class WorkTeamAssembler {
     /**
      *  Converts an UpdateWorkTeamRequest to an UpdateWorkTeamCommand.
      */
-    public static UpdateWorkTeamCommand toCommandFromRequest(Long workTeamId, CreateWorkTeamRequest request) {
+    public static UpdateWorkTeamCommand toCommandFromRequest(Long workTeamId, UpdateWorkTeamRequest request) {
         return new UpdateWorkTeamCommand(workTeamId, request.teamName(), request.leaderOfTeam());
     }
 

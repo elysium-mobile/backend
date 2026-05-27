@@ -65,19 +65,19 @@ public class CompanyController {
         return new ResponseEntity<>(companyResponse, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Get all Companys", description = "Retrieve a list of all Companys in the system")
+    @Operation(summary = "Get all Companies", description = "Retrieve a list of all Companies in the system")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Companys retrieved successfully",
+            @ApiResponse(responseCode = "200", description = "Companies retrieved successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = CompanyResponse.class))),
-            @ApiResponse(responseCode = "404", description = "No Companys found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "No Companies found", content = @Content)
     })
     @GetMapping
-    public ResponseEntity<List<CompanyResponse>> getAllCompanys() {
+    public ResponseEntity<List<CompanyResponse>> getAllCompanies() {
         var getAllCompanyQuery = new GetAllCompanyQuery();
-        var companys = this.companyQueryService.handle(getAllCompanyQuery);
+        var company = this.companyQueryService.handle(getAllCompanyQuery);
 
-        var companyResponses = companys.stream()
+        var companyResponses = company.stream()
                 .map(CompanyAssembler::toResponseFromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(companyResponses);

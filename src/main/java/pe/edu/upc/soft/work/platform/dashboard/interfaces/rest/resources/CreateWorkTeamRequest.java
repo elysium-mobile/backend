@@ -1,4 +1,16 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources;
 
-public record CreateWorkTeamRequest() {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record CreateWorkTeamRequest(
+
+        @NotNull
+        @NotBlank
+        String teamName,
+        @NotNull
+        @NotBlank
+        String leaderOfTeam
+
+) {
 }

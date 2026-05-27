@@ -1,4 +1,15 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources;
 
-public record CreateWidgetRequest() {
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+public record CreateWidgetRequest(
+        @NotNull
+        @NotBlank
+        String title,
+
+        @NotNull
+        @NotBlank
+        Integer refreshPeriod
+) {
 }

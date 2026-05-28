@@ -1,4 +1,16 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources;
 
-public record UpdateCategoryRequest() {
-}
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
+/**
+ * Request object for updating an existing Category.
+ */
+public record UpdateCategoryRequest(
+        @NotNull
+        @NotBlank
+        String title,
+        @NotNull
+        @NotBlank
+        String description
+) {}

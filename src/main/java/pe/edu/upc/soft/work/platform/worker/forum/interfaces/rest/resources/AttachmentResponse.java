@@ -1,4 +1,15 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources;
 
-public record AttachmentResponse() {
-}
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.FileType;
+
+/**
+ * Response object representing an Attachment in the system.
+ */
+public record AttachmentResponse(
+        Long attachmentId,
+        Long messageId,
+        String name,
+        String url,
+        String fileSize,
+        FileType fileType
+) {}

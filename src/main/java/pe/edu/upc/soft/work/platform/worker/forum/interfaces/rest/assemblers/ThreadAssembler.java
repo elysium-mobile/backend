@@ -5,8 +5,8 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateTh
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.AreaCompanyId;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateThreadRequest;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateThreadRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.ThreadResponse;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateThreadRequest;
 
 public class ThreadAssembler {
 

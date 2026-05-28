@@ -11,14 +11,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteThreadCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThreadByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllThreadQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThreadByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ThreadCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ThreadQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.ThreadAssembler;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateThreadRequest;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateThreadRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.ThreadResponse;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateThreadRequest;
 
 import java.util.List;
 import java.util.Objects;

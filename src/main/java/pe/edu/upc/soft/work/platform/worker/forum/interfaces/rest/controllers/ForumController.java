@@ -11,14 +11,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteForumCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllForumQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.ForumAssembler;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateForumRequest;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateForumRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.ForumResponse;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateForumRequest;
 
 import java.util.List;
 import java.util.Objects;

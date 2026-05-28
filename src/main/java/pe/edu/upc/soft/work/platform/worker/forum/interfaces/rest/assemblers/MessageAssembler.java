@@ -5,8 +5,8 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMe
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.UserAccountId;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateMessageRequest;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateMessageRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.MessageResponse;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateMessageRequest;
 
 public class MessageAssembler {
 

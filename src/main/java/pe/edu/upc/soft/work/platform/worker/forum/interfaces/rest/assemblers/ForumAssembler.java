@@ -5,8 +5,8 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateFo
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.CompanyId;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateForumRequest;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateForumRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.ForumResponse;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateForumRequest;
 
 public class ForumAssembler {
 

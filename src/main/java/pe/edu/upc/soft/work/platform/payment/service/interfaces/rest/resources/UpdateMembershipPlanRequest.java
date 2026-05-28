@@ -1,4 +1,6 @@
 package pe.edu.upc.soft.work.platform.payment.service.interfaces.rest.resources;
 
-public record UpdateMembershipPlanRequest() {
+public record UpdateMembershipPlanRequest(
+        String planName
+) {
 }

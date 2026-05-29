@@ -2,8 +2,8 @@ package pe.edu.upc.soft.work.platform.feedback.application.internal.queryservice
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.aggregates.Survey;
-import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetSurveyByIdQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetAllSurveyQuery;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetSurveyByIdQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyQueryService;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
 

@@ -1,7 +1,5 @@
 package pe.edu.upc.soft.work.platform.iam.domain.model.commands;
 
-import pe.edu.upc.soft.work.platform.shared.utils.Util;
-
 import java.util.Objects;
 
 /**

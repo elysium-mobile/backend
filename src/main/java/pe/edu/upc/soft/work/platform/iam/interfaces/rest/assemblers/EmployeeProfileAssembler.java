@@ -2,7 +2,6 @@ package pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers;
 
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateEmployeeProfileCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateEmployeeProfileCommand;
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.entities.EmployeeProfile;
 import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.WorkOfTeamId;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.CreateEmployeeProfileRequest;

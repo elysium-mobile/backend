@@ -2,9 +2,7 @@ package pe.edu.upc.soft.work.platform.iam.domain.services;
 
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetAllUserAccountQuery;
-import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetAllUsersQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetUserAccountByIdQuery;
-import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetUserByIdQuery;
 
 import java.util.List;
 import java.util.Optional;

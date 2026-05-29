@@ -1,7 +1,5 @@
 package pe.edu.upc.soft.work.platform.iam.domain.model.commands;
 
-import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
-
 /**
  * Command to create a new RRHH profile.
  * @param RRHHDepartment the department of the RRHH profile

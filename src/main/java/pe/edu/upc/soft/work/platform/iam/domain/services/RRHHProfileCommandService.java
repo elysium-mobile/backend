@@ -1,8 +1,8 @@
 package pe.edu.upc.soft.work.platform.iam.domain.services;
 
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateRRHHProfileCommand;
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteRRHHProfileCommand;
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateRRHHProfileCommand;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
+import pe.edu.upc.soft.work.platform.iam.domain.model.commands.*;
 import pe.edu.upc.soft.work.platform.iam.domain.model.entities.RRHHProfile;
 
 import java.util.Optional;
@@ -28,6 +28,11 @@ public interface RRHHProfileCommandService {
      * @param command The command containing the identifier of the RRHHProfile to be deleted.
      */
     void handle(DeleteRRHHProfileCommand command);
+
+
+    Optional<RRHHProfile> handle(RRHHSignUpCommand command);
+
+    Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
 
 
 }

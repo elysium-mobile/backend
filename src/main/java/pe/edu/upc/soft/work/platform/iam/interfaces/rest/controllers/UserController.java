@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteUserCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetAllUsersQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetUserByIdQuery;

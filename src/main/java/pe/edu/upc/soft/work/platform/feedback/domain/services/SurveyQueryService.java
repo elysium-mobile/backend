@@ -1,8 +1,8 @@
 package pe.edu.upc.soft.work.platform.feedback.domain.services;
 
 import pe.edu.upc.soft.work.platform.feedback.domain.model.aggregates.Survey;
-import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetSurveyByIdQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetAllSurveyQuery;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetSurveyByIdQuery;
 
 import java.util.List;
 import java.util.Optional;

@@ -36,11 +36,11 @@ public class SurveyResponseController {
 
     @Operation(summary = "Create a new Survey-Response", description = "Create a new Survey-Response in the system")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Survey-Response created successfully"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid request"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Survey-Response not found")
+            @ApiResponse(responseCode = "201", description = "Survey-Response created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "Survey-Response not found")
     })
-    @GetMapping
+    @PostMapping
     public ResponseEntity<SurveyResponseResponse> createSurveyResponse(@RequestBody CreateSurveyResponseRequest request){
         var createSurveyResponseCommand = SurveyResponseAssembler.toCommandFromRequest(request);
         var responseId= this.surveyResponseCommandService.handle(createSurveyResponseCommand);
@@ -67,12 +67,10 @@ public class SurveyResponseController {
     public ResponseEntity<List<SurveyResponseResponse>> getAllSurveyResponses() {
         var getAllSurveyResponseQuery = new GetAllSurveyResponseQuery();
         var surveyResponses = this.surveyResponseQueryService.handle(getAllSurveyResponseQuery);
-
         var surveyResponseResponses = surveyResponses.stream()
                 .map(SurveyResponseAssembler::toResponseFromEntity).
                 collect(Collectors.toList());
-        return ResponseEntity.ok(surveyResponses);
+        return ResponseEntity.ok(surveyResponseResponses);
     }
 
-    public ResponseEntity<SurveyResponseResponse> getSurveyResponseById
 }

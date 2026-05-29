@@ -3,7 +3,6 @@ package pe.edu.upc.soft.work.platform.feedback.domain.model.commands;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.valueObjects.QuestionType;
 
 import java.util.Objects;
-import java.util.Date;
 
 /**
  * Command to update an existing QuestionSurvey

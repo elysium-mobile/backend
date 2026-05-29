@@ -1,8 +1,6 @@
 package pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 /**
  * UserAccountResponse record to represent user account data in API responses.

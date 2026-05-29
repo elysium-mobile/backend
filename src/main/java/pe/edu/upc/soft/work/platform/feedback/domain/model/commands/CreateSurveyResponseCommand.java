@@ -2,8 +2,8 @@ package pe.edu.upc.soft.work.platform.feedback.domain.model.commands;
 
 import pe.edu.upc.soft.work.platform.feedback.domain.model.valueObjects.EmployeeProfileId;
 
-import java.util.Objects;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Command to create a new SurveyResponse

@@ -17,7 +17,10 @@ import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetRRHHProfileById
 import pe.edu.upc.soft.work.platform.iam.domain.services.RRHHProfileCommandService;
 import pe.edu.upc.soft.work.platform.iam.domain.services.RRHHProfileQueryService;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers.RRHHProfileAssembler;
-import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.*;
+import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.CreateRRHHProfileRequest;
+import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.RRHHProfileResponse;
+import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UpdateRRHHProfileRequest;
+import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserResponse;
 
 import java.util.List;
 import java.util.Objects;

@@ -1,7 +1,5 @@
 package pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources;
 
-import pe.edu.upc.soft.work.platform.feedback.domain.model.valueObjects.TargetType;
-
 import java.util.Date;
 
 /**

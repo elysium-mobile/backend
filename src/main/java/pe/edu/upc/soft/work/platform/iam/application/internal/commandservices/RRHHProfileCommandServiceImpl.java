@@ -1,12 +1,16 @@
 package pe.edu.upc.soft.work.platform.iam.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateRRHHProfileCommand;
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteRRHHProfileCommand;
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateRRHHProfileCommand;
+import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.hashing.HashingService;
+import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.tokens.TokenService;
+import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
+import pe.edu.upc.soft.work.platform.iam.domain.model.commands.*;
 import pe.edu.upc.soft.work.platform.iam.domain.model.entities.RRHHProfile;
 import pe.edu.upc.soft.work.platform.iam.domain.services.RRHHProfileCommandService;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.RRHHProfileRepository;
+import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
 
 import java.util.Optional;
 
@@ -14,9 +18,18 @@ import java.util.Optional;
 public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService {
 
     private final RRHHProfileRepository rrhhProfileRepository;
+    private final UserAccountRepository userAccountRepository;
+    private final HashingService hashingService;
+    private final TokenService tokenService;
 
-    public RRHHProfileCommandServiceImpl(RRHHProfileRepository rrhhProfileRepository) {
+    public RRHHProfileCommandServiceImpl(RRHHProfileRepository rrhhProfileRepository,
+                                         UserAccountRepository userAccountRepository,
+                                         HashingService hashingService,
+                                         TokenService tokenService) {
         this.rrhhProfileRepository = rrhhProfileRepository;
+        this.userAccountRepository = userAccountRepository;
+        this.hashingService = hashingService;
+        this.tokenService=tokenService;
     }
 
     @Override
@@ -54,5 +67,54 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
             throw new IllegalArgumentException("Error while deleting RRHH profile: %s".formatted(e.getMessage()));
         }
 
+    }
+
+
+    @Transactional
+    @Override
+    public Optional<RRHHProfile> handle(RRHHSignUpCommand command) {
+        if (userAccountRepository.existsByEmail(command.email())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        var userAccount = new UserAccount(new CreateUserAccountCommand(
+                2L,
+                command.email(),
+                hashingService.encode(command.password()),
+                command.email()
+        ));
+
+        try {
+            userAccountRepository.save(userAccount);
+
+            var rrhhProfile = new RRHHProfile(new CreateRRHHProfileCommand(
+                    command.RRHHDepartment(),
+                    command.statusHierarchy(),
+                    userAccount.getId()
+            ));
+
+            rrhhProfileRepository.save(rrhhProfile);
+            return Optional.of(rrhhProfile);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error during RRHH sign up: %s".formatted(e.getMessage()));
+        }
+    }
+
+
+    @Transactional
+    @Override
+    public Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command) {
+        var userAccount = userAccountRepository.findByEmail(command.email());
+
+        if (userAccount.isEmpty()) {
+            throw new IllegalArgumentException("User Account not found");
+        }
+
+        if (!hashingService.matches(command.password(), userAccount.get().getPassword())) {
+            throw new IllegalArgumentException("Invalid password");
+        }
+
+        var token = tokenService.generateToken(userAccount.get().getEmail());
+        return Optional.of(ImmutablePair.of(userAccount.get(), token));
     }
 }

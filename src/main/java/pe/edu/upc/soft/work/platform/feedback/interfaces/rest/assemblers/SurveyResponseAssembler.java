@@ -2,9 +2,9 @@ package pe.edu.upc.soft.work.platform.feedback.interfaces.rest.assemblers;
 
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyResponseCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.SurveyResponse;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.valueObjects.EmployeeProfileId;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.CreateSurveyResponseRequest;
-import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.SurveyResponse;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.SurveyResponseResponse;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.UpdateSurveyResponseRequest;
 
@@ -27,7 +27,7 @@ public class SurveyResponseAssembler {
     /**
      *  Converts a SurveyResponse entity to a SurveyResponseResponse.
      */
-    public static SurveyResponseResponse toResponseFromEntity(SurveyResponseResponse response){
-        return new SurveyResponseResponse(response.surveyId(), response.surveyId(), response.employeeProfileId(), response.SubmittedAt());
+    public static SurveyResponseResponse toResponseFromEntity(SurveyResponse response){
+        return new SurveyResponseResponse(response.getId(), response.getSurveyId(), response.getEmployeeProfileId().employeeProfileId(), response.getSubmittedAt());
     }
 }

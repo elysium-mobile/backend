@@ -12,14 +12,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteEmployeeProfileCommand;
-import pe.edu.upc.soft.work.platform.iam.domain.model.entities.EmployeeProfile;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetAllEmployeeProfileQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetEmployeeProfileByIdQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.services.EmployeeProfileCommandService;
 import pe.edu.upc.soft.work.platform.iam.domain.services.EmployeeProfileQueryService;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers.EmployeeProfileAssembler;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.CreateEmployeeProfileRequest;
-import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.CreateUserRequest;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.EmployeeProfileResponse;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserResponse;
 

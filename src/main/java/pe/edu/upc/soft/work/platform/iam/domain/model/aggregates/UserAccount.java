@@ -1,7 +1,10 @@
 package pe.edu.upc.soft.work.platform.iam.domain.model.aggregates;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateUserAccountCommand;

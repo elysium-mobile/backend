@@ -38,9 +38,9 @@ public class AnswerController {
 
     @Operation(summary = "Create a new Answer", description = "Create a new Answer in the system")
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Answer created successfully"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid request"),
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Answer not found")
+            @ApiResponse(responseCode = "201", description = "Answer created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "Answer not found")
     })
     @PostMapping
     public ResponseEntity<AnswerResponse> createAnswer(@RequestBody CreateAnswerRequest request){

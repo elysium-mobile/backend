@@ -1,7 +1,5 @@
 package pe.edu.upc.soft.work.platform.iam.domain.model.commands;
 
-import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.User;
-
 import java.util.Objects;
 
 /**

@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -14,8 +15,10 @@ public record CreateThreadRequest(
         String title,
         @NotNull
         @NotBlank
+        @JsonProperty("areaCompnayId")
         Long areaCompanyId,
         @NotNull
         @NotBlank
+        @JsonProperty("lastMessage")
         Date lastMessage
 ) {}

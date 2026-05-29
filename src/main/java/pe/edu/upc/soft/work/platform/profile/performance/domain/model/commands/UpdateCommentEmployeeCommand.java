@@ -8,12 +8,12 @@ import java.util.Date;
 /**
  * Command to update an existing CommentEmployee
  */
-public record UpdateCommentEmployeeCommand(Long commentemployeeId, String title, String content, RRHHProfileId rrhhProfileId) {
+public record UpdateCommentEmployeeCommand(Long commentEmployeeId, String title, String content, RRHHProfileId rrhhProfileId) {
 
     /**
      * Constructor with validation
      */
     public UpdateCommentEmployeeCommand {
-        Objects.requireNonNull(commentemployeeId, "[UpdateCommentEmployeeCommand] commentemployeeId must not be null");
+        Objects.requireNonNull(commentEmployeeId, "[UpdateCommentEmployeeCommand] commentemployeeId must not be null");
     }
 }

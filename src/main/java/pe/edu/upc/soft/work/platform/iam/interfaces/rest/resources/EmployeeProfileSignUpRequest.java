@@ -23,6 +23,7 @@ public record EmployeeProfileSignUpRequest(
         @JsonProperty("anonymous_name")
         String anonymousName,
         @NotNull @NotBlank
+        @JsonProperty("dateStart")
         Date dateStart,
         @NotNull @NotBlank
         @JsonProperty("position")

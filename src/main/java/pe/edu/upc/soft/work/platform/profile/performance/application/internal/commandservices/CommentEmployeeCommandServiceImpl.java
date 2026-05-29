@@ -48,7 +48,7 @@ public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommand
      */
     @Override
     public Optional<CommentEmployee> handle(UpdateCommentEmployeeCommand command) {
-        var commentemployeeId = command.commentemployeeId();
+        var commentemployeeId = command.commentEmployeeId();
         if (!this.commentemployeeRepository.existsById(commentemployeeId)) {
             throw new RuntimeException("CommentEmployee with ID " + commentemployeeId + " does not exist.");
         }

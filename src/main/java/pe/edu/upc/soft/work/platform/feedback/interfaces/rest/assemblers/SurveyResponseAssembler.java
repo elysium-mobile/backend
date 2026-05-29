@@ -21,7 +21,7 @@ public class SurveyResponseAssembler {
      *  Converts an UpdateSurveyResponseRequest to an UpdateSurveyResponseCommand.
      */
     public static UpdateSurveyResponseCommand toCommandFromRequest(Long surveyResponseId, UpdateSurveyResponseRequest request){
-        return new UpdateSurveyResponseCommand(surveyResponseId, request.surveyId(), new EmployeeProfileId(request.employeeProfileId()), request.SubmittedAt());
+        return new UpdateSurveyResponseCommand(surveyResponseId, request.surveyId(), new EmployeeProfileId(request.employeeProfileId()), request.submittedAt());
     }
 
     /**

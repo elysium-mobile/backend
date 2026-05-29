@@ -8,7 +8,7 @@ import java.util.Date;
  * Response object representing a CommentEmployee in the system.
  */
 public record CommentEmployeeResponse(
-        Long commentemployeeId,
+        Long commentEmployeeId,
         String title,
         String content,
         Long rrhhProfileId

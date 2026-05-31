@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.AreaCompany;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateAreaCompanyCommand;
@@ -17,12 +18,16 @@ import java.util.Optional;
 public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService {
     private final AreaCompanyRepository areacompanyRepository;
 
+    private final ExternalIamServiceFromDashboard externalIamServiceFromDashboard;
+
     /**
      * Constructor for AreaCompanyCommandServiceImpl.
      * @param areacompanyRepository the repository for AreaCompany persistence
      */
-    public AreaCompanyCommandServiceImpl(AreaCompanyRepository areacompanyRepository) {
+    public AreaCompanyCommandServiceImpl(AreaCompanyRepository areacompanyRepository,
+                                         ExternalIamServiceFromDashboard externalIamServiceFromDashboard) {
         this.areacompanyRepository = areacompanyRepository;
+        this.externalIamServiceFromDashboard = externalIamServiceFromDashboard;
     }
 
     /**

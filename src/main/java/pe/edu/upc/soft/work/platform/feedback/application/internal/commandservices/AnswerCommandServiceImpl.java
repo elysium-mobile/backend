@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateAnswerCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteAnswerCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateAnswerCommand;
@@ -16,13 +17,16 @@ import java.util.Optional;
 @Service
 public class AnswerCommandServiceImpl implements AnswerCommandService {
     private final AnswerRepository answerRepository;
+    private final ExternalIamServiceFromDashboard externalIamServiceFromDashboard;
 
     /**
      * Constructor for AnswerCommandServiceImpl.
      * @param answerRepository the repository for Answer persistence
      */
-    public AnswerCommandServiceImpl(AnswerRepository answerRepository) {
+    public AnswerCommandServiceImpl(AnswerRepository answerRepository,
+                                    ExternalIamServiceFromDashboard externalIamServiceFromDashboard) {
         this.answerRepository = answerRepository;
+        this.externalIamServiceFromDashboard = externalIamServiceFromDashboard;
     }
 
     /**

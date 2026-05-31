@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
+import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalDashboardServiceFromWorkerForum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Thread;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateThreadCommand;
@@ -17,12 +19,16 @@ import java.util.Optional;
 public class ThreadCommandServiceImpl implements ThreadCommandService {
     private final ThreadRepository threadRepository;
 
+    private final ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum;
+
     /**
      * Constructor for ThreadCommandServiceImpl.
      * @param threadRepository the repository for Thread persistence
      */
-    public ThreadCommandServiceImpl(ThreadRepository threadRepository) {
+    public ThreadCommandServiceImpl(ThreadRepository threadRepository,
+                                    ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum) {
         this.threadRepository = threadRepository;
+        this.externalDashboardServiceFromWorkerForum = externalDashboardServiceFromWorkerForum;
     }
 
     /**
@@ -32,6 +38,13 @@ public class ThreadCommandServiceImpl implements ThreadCommandService {
      */
     @Override
     public Long handle(CreateThreadCommand command) {
+
+        if (!this.externalDashboardServiceFromWorkerForum.existsCompanyById(command.areaCompanyId().areaCompanyId())){
+            throw new NotFoundArgumentException(
+                    String.format("[ThreadCommandServiceImpl] Company ID: %s not found in the external Dashboard Context",
+                            command.areaCompanyId().areaCompanyId())
+            );
+        }
         var thread = new Thread(command);
         try {
             threadRepository.save(thread);

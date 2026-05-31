@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(path = "/api/v1/employee-profile", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name="Employee Profile", description = "Endpoints for managing employee profiles")
+@Tag(name="Employee Profiles", description = "Endpoints for managing employee profiles")
 public class EmployeeProfileController {
 
 

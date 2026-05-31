@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/question-surveys", produces = "application/json")
-@Tag(name = "Question-Surveys", description = "Endpoints for managing Question-Surveys")
+@Tag(name = "Question Surveys", description = "Endpoints for managing Question-Surveys")
 public class QuestionSurveyController {
 
     private final QuestionSurveyCommandService questionSurveyCommandService;

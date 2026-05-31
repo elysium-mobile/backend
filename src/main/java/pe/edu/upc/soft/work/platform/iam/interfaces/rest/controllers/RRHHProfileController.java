@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/rrhh-profiles", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "RRHHProfiles", description = "Endpoints for managing rrhh profiles in the IAM system")
+@Tag(name = "RRHH Profiles", description = "Endpoints for managing rrhh profiles in the IAM system")
 public class RRHHProfileController {
 
     private final RRHHProfileCommandService rrhhProfileCommandService;

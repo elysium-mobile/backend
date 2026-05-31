@@ -24,8 +24,8 @@ public class SurveyResponse extends AuditableAbstractAggregateRoot<SurveyRespons
     @Embedded
     @AttributeOverride(name = "employeeProfileId", column = @Column(name = "employee_profile_id"))
     @JsonProperty("employeeProfileId")
-
     private EmployeeProfileId employeeProfileId;
+
     @Getter
     @Column(name = "submitted_at")
     private Date submittedAt;

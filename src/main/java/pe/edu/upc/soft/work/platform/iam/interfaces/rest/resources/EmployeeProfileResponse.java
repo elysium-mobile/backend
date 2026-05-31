@@ -16,7 +16,7 @@ public record EmployeeProfileResponse(
 
         Long employeeProfileId,
 
-        @JsonProperty("start_date")
+        @JsonProperty("dateStart")
         Date starStart,
 
         @JsonProperty("position")

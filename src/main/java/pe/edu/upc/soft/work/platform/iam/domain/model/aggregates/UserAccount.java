@@ -8,6 +8,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateUserAccountCommand;
+import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.CompanyId;
+import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.MembershipId;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
 @Entity
@@ -30,6 +32,14 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
     @Column(name = "anonymous_name", nullable = false)
     private String anonymousName;
 
+    @Getter
+    @Column(name = "membership_id", nullable = false)
+    private MembershipId membershipId;
+
+    @Getter
+    @Column(name = "company_id", nullable = false)
+    private CompanyId companyId;
+
     /**
      * Default constructor for JPA.
      */
@@ -45,6 +55,8 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
         this.email = command.email();
         this.password = command.password();
         this.anonymousName = command.anonymousName();
+        this.membershipId = command.membershipId();
+        this.companyId = command.companyId();
     }
 
     /**
@@ -56,6 +68,8 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
         this.email = command.email();
         this.password = command.password();
         this.anonymousName = command.anonymousName();
+        this.membershipId = command.membershipId();
+        this.companyId = command.companyId();
     }
 
 

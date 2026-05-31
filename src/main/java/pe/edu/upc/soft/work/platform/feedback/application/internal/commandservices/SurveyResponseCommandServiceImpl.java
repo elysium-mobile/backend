@@ -1,12 +1,14 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.feedback.application.internal.outboundservices.acl.ExternalIamServiceFromFeedback;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.SurveyResponse;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyResponseCommandService;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyResponseRepository;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
 import java.util.Optional;
 
@@ -16,13 +18,16 @@ import java.util.Optional;
 @Service
 public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandService {
     private final SurveyResponseRepository surveyResponseRepository;
+    private final ExternalIamServiceFromFeedback externalIamServiceFromFeedback;
 
     /**
      * Constructor for SurveyResponseCommandServiceImpl.
      * @param surveyresponseRepository the repository for SurveyResponse persistence
      */
-    public SurveyResponseCommandServiceImpl(SurveyResponseRepository surveyresponseRepository) {
+    public SurveyResponseCommandServiceImpl(SurveyResponseRepository surveyresponseRepository,
+                                            ExternalIamServiceFromFeedback externalIamServiceFromFeedback) {
         this.surveyResponseRepository = surveyresponseRepository;
+        this.externalIamServiceFromFeedback = externalIamServiceFromFeedback;
     }
 
     /**
@@ -32,6 +37,12 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
      */
     @Override
     public Long handle(CreateSurveyResponseCommand command) {
+
+        if(!externalIamServiceFromFeedback.existEmployeeProfileById(command.employeeProfileId().employeeProfileId())){
+            throw new NotFoundArgumentException(
+                    String.format("[SurveyResponseCommandServiceImpl] Employee Profile ID: %s not found in the external IAM service",
+                            command.employeeProfileId().employeeProfileId()));
+        }
         var surveyResponse = new SurveyResponse(command);
         try {
             surveyResponseRepository.save(surveyResponse);

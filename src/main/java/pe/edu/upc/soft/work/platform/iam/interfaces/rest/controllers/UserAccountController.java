@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/user_accounts", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "UsersAccount", description = "Endpoints for managing user accounts in the IAM system")
+@Tag(name = "User Accounts", description = "Endpoints for managing user accounts in the IAM system")
 public class UserAccountController {
 
     private final UserAccountCommandService userAccountCommandService;

@@ -33,4 +33,9 @@ public class ExternalIamServiceFromFeedback {
     public boolean existsUserAccountById(Long userAccountId) {
         return this.iamContextFacade.existsUserAccountById(userAccountId);
     }
+
+
+    public boolean existEmployeeProfileById(Long employeeProfileId){
+        return this.iamContextFacade.existsEmployeeProfileById(employeeProfileId);
+    }
 }

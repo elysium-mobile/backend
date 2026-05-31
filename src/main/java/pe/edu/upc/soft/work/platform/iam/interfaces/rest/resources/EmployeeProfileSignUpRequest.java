@@ -10,8 +10,10 @@ public record EmployeeProfileSignUpRequest(
         @NotNull @NotBlank
         String name,
         @NotNull @NotBlank
-        String lastname,
+        @JsonProperty("lastName")
+        String lastName,
         @NotNull @NotBlank
+        @JsonProperty("phoneNumber")
         String phoneNumber,
         @NotNull @NotBlank
         String dni,
@@ -20,7 +22,7 @@ public record EmployeeProfileSignUpRequest(
         @NotNull @NotBlank
         String password,
         @NotNull @NotBlank
-        @JsonProperty("anonymous_name")
+        @JsonProperty("anonymousName")
         String anonymousName,
         @NotNull @NotBlank
         @JsonProperty("dateStart")

@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * UserAccountResponse record to represent user account data in API responses.
@@ -13,7 +15,7 @@ public record UserAccountResponse(
 
         Long userAccountId,
 
-        @JsonProperty("user_id")
+        @JsonProperty("userId")
         Long userId,
 
         @JsonProperty("email")
@@ -22,8 +24,14 @@ public record UserAccountResponse(
         @JsonProperty("password")
         String password,
 
-        @JsonProperty("anonymous_name")
-        String anonymousName
+        @JsonProperty("anonymousName")
+        String anonymousName,
+
+        @JsonProperty("membershipId")
+        Long membershipId,
+
+        @JsonProperty("companyId")
+        Long companyId
 
 ) {
 }

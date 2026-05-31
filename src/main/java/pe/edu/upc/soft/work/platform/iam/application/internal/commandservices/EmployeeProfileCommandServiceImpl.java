@@ -5,13 +5,17 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.tokens.TokenService;
+import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.User;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.*;
 import pe.edu.upc.soft.work.platform.iam.domain.model.entities.EmployeeProfile;
+import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.CompanyId;
+import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.MembershipId;
 import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.WorkOfTeamId;
 import pe.edu.upc.soft.work.platform.iam.domain.services.EmployeeProfileCommandService;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.EmployeeProfileRepository;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
+import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
 
 import java.util.Optional;
 
@@ -22,15 +26,18 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
     private final UserAccountRepository userAccountRepository;
     private final HashingService hashingService;
     private final TokenService tokenService;
+    private final UserRepository userRepository;
 
     public EmployeeProfileCommandServiceImpl(EmployeeProfileRepository employeeProfileRepository,
                                              UserAccountRepository userAccountRepository,
                                              HashingService hashingService,
-                                             TokenService tokenService) {
+                                             TokenService tokenService,
+                                             UserRepository userRepository) {
         this.employeeProfileRepository = employeeProfileRepository;
         this.userAccountRepository = userAccountRepository;
         this.hashingService = hashingService;
         this.tokenService=tokenService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -75,22 +82,33 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
             throw new IllegalArgumentException("Email already exists");
         }
 
-        var userAccount = new UserAccount(new CreateUserAccountCommand(
-                3L,
-                command.email(),
-                hashingService.encode(command.password()),
-                command.anonymousName()
+
+        var user = new User(new CreateUserCommand(
+                command.name(),
+                command.lastName(),
+                command.phoneNumber(),
+                command.dni()
         ));
 
         try {
+            userRepository.save(user);
+            var userAccount = new UserAccount(new CreateUserAccountCommand(
+                    user.getId(),
+                    command.email(),
+                    hashingService.encode(command.password()),
+                    command.anonymousName(),
+                    new MembershipId(0L),
+                    new CompanyId(0L)
+            ));
             userAccountRepository.save(userAccount);
+
 
             var employeeProfile = new EmployeeProfile(new CreateEmployeeProfileCommand(
                     command.dateStart(),
                     command.position(),
                     command.salary(),
                     userAccount.getId(),
-                    new WorkOfTeamId(3L)
+                    new WorkOfTeamId(0L)
             ));
             employeeProfileRepository.save(employeeProfile);
             return Optional.of(employeeProfile);

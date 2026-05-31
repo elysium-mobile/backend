@@ -5,12 +5,16 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.tokens.TokenService;
+import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.User;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.*;
 import pe.edu.upc.soft.work.platform.iam.domain.model.entities.RRHHProfile;
+import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.CompanyId;
+import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.MembershipId;
 import pe.edu.upc.soft.work.platform.iam.domain.services.RRHHProfileCommandService;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.RRHHProfileRepository;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
+import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
 
 import java.util.Optional;
 
@@ -21,15 +25,18 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
     private final UserAccountRepository userAccountRepository;
     private final HashingService hashingService;
     private final TokenService tokenService;
+    private final UserRepository userRepository;
 
     public RRHHProfileCommandServiceImpl(RRHHProfileRepository rrhhProfileRepository,
                                          UserAccountRepository userAccountRepository,
                                          HashingService hashingService,
-                                         TokenService tokenService) {
+                                         TokenService tokenService,
+                                         UserRepository userRepository) {
         this.rrhhProfileRepository = rrhhProfileRepository;
         this.userAccountRepository = userAccountRepository;
         this.hashingService = hashingService;
         this.tokenService=tokenService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -76,15 +83,23 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
         if (userAccountRepository.existsByEmail(command.email())) {
             throw new IllegalArgumentException("Email already exists");
         }
-
-        var userAccount = new UserAccount(new CreateUserAccountCommand(
-                2L,
-                command.email(),
-                hashingService.encode(command.password()),
-                command.email()
+        var user = new User(new CreateUserCommand(
+                command.name(),
+                command.lastName(),
+                command.phoneNumber(),
+                command.dni()
         ));
-
         try {
+            userRepository.save(user);
+            var userAccount = new UserAccount(new CreateUserAccountCommand(
+                    user.getId(),
+                    command.email(),
+                    hashingService.encode(command.password()),
+                    command.anonymousName(),
+                    new MembershipId(0L),
+                    new CompanyId(0L)
+            ));
+
             userAccountRepository.save(userAccount);
 
             var rrhhProfile = new RRHHProfile(new CreateRRHHProfileCommand(

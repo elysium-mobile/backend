@@ -3,7 +3,7 @@ package pe.edu.upc.soft.work.platform.iam.domain.model.commands;
 import java.util.Date;
 
 public record EmployeeSignUpCommand(String name,
-                                    String lastname,
+                                    String lastName,
                                     String phoneNumber,
                                     String dni,
                                     String email,

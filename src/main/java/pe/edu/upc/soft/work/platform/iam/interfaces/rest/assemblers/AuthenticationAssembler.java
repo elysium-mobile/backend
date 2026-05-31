@@ -22,7 +22,7 @@ public class AuthenticationAssembler {
     public static EmployeeSignUpCommand toCommandFromRequestSignUpEmployeeProfile(EmployeeProfileSignUpRequest request){
         return new EmployeeSignUpCommand(
                 request.name(),
-                request.lastname(),
+                request.lastName(),
                 request.phoneNumber(),
                 request.dni(),
                 request.email(),
@@ -37,11 +37,12 @@ public class AuthenticationAssembler {
     public static RRHHSignUpCommand toCommandFromRequestSignUpRRHHProfile(RRHHProfileSignUpRequest request){
         return new RRHHSignUpCommand(
                 request.name(),
-                request.lastname(),
+                request.lastName(),
                 request.phoneNumber(),
                 request.dni(),
                 request.email(),
                 request.password(),
+                request.anonymousName(),
                 request.RRHHDepartment(),
                 request.statusHierarchy()
         );

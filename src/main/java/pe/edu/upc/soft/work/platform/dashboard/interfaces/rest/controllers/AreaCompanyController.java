@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/area-companies", produces = "application/json")
-@Tag(name = "Area Companies", description = "Endpoints for managing Area Companies")
+@Tag(name = "Company Areas", description = "Endpoints for managing Company Areas")
 public class AreaCompanyController {
 
     private final AreaCompanyCommandService areaCompanyCommandService;

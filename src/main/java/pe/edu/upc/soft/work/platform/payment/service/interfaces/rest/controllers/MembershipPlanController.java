@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/memberships-plans", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "MembershipsPlans", description = "Endpoints for managing Memberships Plans")
+@Tag(name = "Membership Plans", description = "Endpoints for managing Memberships Plans")
 public class MembershipPlanController {
 
 

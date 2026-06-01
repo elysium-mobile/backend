@@ -37,8 +37,8 @@ public class UserAccountAssembler {
      public static UpdateUserAccountCommand toCommandFromRequest(Long userAccountId, UpdateUserAccountRequest request) {
         return new UpdateUserAccountCommand(
                 userAccountId,
-                request.password(),
                 request.email(),
+                request.password(),
                 request.anonymousName(),
                 new MembershipId(request.membershipId()),
                 new CompanyId(request.companyId())

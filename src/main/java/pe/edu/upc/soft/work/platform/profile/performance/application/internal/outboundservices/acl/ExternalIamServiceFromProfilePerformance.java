@@ -33,4 +33,8 @@ public class ExternalIamServiceFromProfilePerformance {
     public boolean existsEmployeeProfileById(Long employeeProfileId) {
         return this.iamContextFacade.existsEmployeeProfileById(employeeProfileId);
     }
+
+    public boolean existsRRHHProfileById(Long RRHHProfileId){
+        return this.iamContextFacade.existsRRHHProfileById(RRHHProfileId);
+    }
 }

@@ -1,12 +1,15 @@
 package pe.edu.upc.soft.work.platform.profile.performance.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
+import pe.edu.upc.soft.work.platform.profile.performance.application.internal.outboundservices.acl.ExternalIamServiceFromProfilePerformance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.Performance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeletePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.PerformanceCommandService;
 import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.PerformanceRepository;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
 import java.util.Optional;
 
@@ -16,13 +19,16 @@ import java.util.Optional;
 @Service
 public class PerformanceCommandServiceImpl implements PerformanceCommandService {
     private final PerformanceRepository performanceRepository;
+    private final ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance;
 
     /**
      * Constructor for PerformanceCommandServiceImpl
      * @param performanceRepository the repository for Performance persistence
      */
-    public PerformanceCommandServiceImpl(PerformanceRepository performanceRepository) {
+    public PerformanceCommandServiceImpl(PerformanceRepository performanceRepository,
+                                         ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance) {
         this.performanceRepository = performanceRepository;
+        this.externalIamServiceFromProfilePerformance = externalIamServiceFromProfilePerformance;
     }
 
     /**
@@ -32,6 +38,12 @@ public class PerformanceCommandServiceImpl implements PerformanceCommandService 
      */
     @Override
     public Long handle(CreatePerformanceCommand command) {
+        if(!externalIamServiceFromProfilePerformance.existsEmployeeProfileById(command.employeeProfileId().employeeProfileId())){
+            throw new NotFoundArgumentException(
+                    String.format("[PerformanceCommandServiceImpl] Employee Profile ID: %s not found in the external IAM service",
+                            command.employeeProfileId().employeeProfileId())
+            );
+        }
         var performance = new Performance(command);
         try {
             performanceRepository.save(performance);

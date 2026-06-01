@@ -33,4 +33,8 @@ public class ExternalIamServiceFromPaymentService {
     public boolean existsUserAccountById(Long userAccountId) {
         return this.iamContextFacade.existsUserAccountById(userAccountId);
     }
+
+    public boolean existEmployeeProfileId(Long employeeProfileId){
+        return this.iamContextFacade.existsEmployeeProfileById(employeeProfileId);
+    }
 }

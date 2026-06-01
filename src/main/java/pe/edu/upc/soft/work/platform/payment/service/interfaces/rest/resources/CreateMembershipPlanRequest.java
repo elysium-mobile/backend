@@ -6,6 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 public record CreateMembershipPlanRequest(
         @NotBlank
         @JsonProperty("planName")
-        String planName
+        String planName,
+
+        @NotBlank
+        @JsonProperty("price")
+        Integer price
 ) {
 }

@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.iam.application.internal.commandservices;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.acl.ExternalDashboardServiceFromIAM;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.tokens.TokenService;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.User;
@@ -16,6 +17,7 @@ import pe.edu.upc.soft.work.platform.iam.domain.services.EmployeeProfileCommandS
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.EmployeeProfileRepository;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
 import java.util.Optional;
 
@@ -27,21 +29,34 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
     private final HashingService hashingService;
     private final TokenService tokenService;
     private final UserRepository userRepository;
+    private final ExternalDashboardServiceFromIAM externalDashboardServiceFromIAM;
 
     public EmployeeProfileCommandServiceImpl(EmployeeProfileRepository employeeProfileRepository,
                                              UserAccountRepository userAccountRepository,
                                              HashingService hashingService,
                                              TokenService tokenService,
-                                             UserRepository userRepository) {
+                                             UserRepository userRepository,
+                                             ExternalDashboardServiceFromIAM externalDashboardServiceFromIAM) {
         this.employeeProfileRepository = employeeProfileRepository;
         this.userAccountRepository = userAccountRepository;
         this.hashingService = hashingService;
         this.tokenService=tokenService;
         this.userRepository = userRepository;
+        this.externalDashboardServiceFromIAM= externalDashboardServiceFromIAM;
     }
 
     @Override
     public Long handle(CreateEmployeeProfileCommand command) {
+        if(!this.userAccountRepository.existsById(command.userAccountId())){
+            throw new NotFoundArgumentException(String.format("[EmployeeProfileCommandServiceImpl] User Account ID: %s not found in the IAM service",
+                    command.userAccountId()));
+        }
+
+        if (!this.externalDashboardServiceFromIAM.existsWorkTeamById(command.workOfTeamId().workOfTeamId())){
+            throw new NotFoundArgumentException(String.format("[EmployeeProfileCommandServiceImpl] Work Of Team ID: %s not found in the Dashboard service",
+                    command.workOfTeamId().workOfTeamId()));
+        }
+
         var employeeProfile = new EmployeeProfile(command);
         try {
             employeeProfileRepository.save(employeeProfile);
@@ -117,21 +132,21 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
         }
     }
 
-    @Transactional
-    @Override
-    public Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command) {
-        var userAccount = userAccountRepository.findByEmail(command.email());
-
-        if (userAccount.isEmpty()){
-            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] User Account not found");
-        }
-
-        if(!hashingService.matches(command.password(), userAccount.get().getPassword())){
-            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Invalid password");
-        }
-
-        var token = tokenService.generateToken(userAccount.get().getEmail());
-        return Optional.of(ImmutablePair.of(userAccount.get(),token));
-    }
+//    @Transactional
+//    @Override
+//    public Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command) {
+//        var userAccount = userAccountRepository.findByEmail(command.email());
+//
+//        if (userAccount.isEmpty()){
+//            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] User Account not found");
+//        }
+//
+//        if(!hashingService.matches(command.password(), userAccount.get().getPassword())){
+//            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Invalid password");
+//        }
+//
+//        var token = tokenService.generateToken(userAccount.get().getEmail());
+//        return Optional.of(ImmutablePair.of(userAccount.get(),token));
+//    }
 
 }

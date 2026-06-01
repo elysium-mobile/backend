@@ -34,23 +34,33 @@ public class AuthenticationController {
         this.userAccountCommandService = userAccountCommandService;
     }
 
-    @PostMapping("/sign-in/employee")
-    public ResponseEntity<AuthenticatedUserAccountResponse> signInEmployee(@RequestBody SignInRequest request) {
-        var signInCommand = AuthenticationAssembler.toCommandFromRequestSignIn(request);
-        var authenticatedUserAccount = employeeProfileCommandService.handle(signInCommand);
-        if (authenticatedUserAccount.isEmpty()) return ResponseEntity.notFound().build();
-        var response = AuthenticationAssembler.toResponseFromEntityUserAccount(
-                authenticatedUserAccount.get().getLeft(), authenticatedUserAccount.get().getRight());
-        return ResponseEntity.ok(response);
-    }
+//    @PostMapping("/sign-in/employee")
+//    public ResponseEntity<AuthenticatedUserAccountResponse> signInEmployee(@RequestBody SignInRequest request) {
+//        var signInCommand = AuthenticationAssembler.toCommandFromRequestSignIn(request);
+//        var authenticatedUserAccount = employeeProfileCommandService.handle(signInCommand);
+//        if (authenticatedUserAccount.isEmpty()) return ResponseEntity.notFound().build();
+//        var response = AuthenticationAssembler.toResponseFromEntityUserAccount(
+//                authenticatedUserAccount.get().getLeft(), authenticatedUserAccount.get().getRight());
+//        return ResponseEntity.ok(response);
+//    }
+//
+//    @PostMapping("/sign-in/rrhh")
+//    public ResponseEntity<AuthenticatedUserAccountResponse> signInRRHH(@RequestBody SignInRequest request) {
+//        var signInCommand = AuthenticationAssembler.toCommandFromRequestSignIn(request);
+//        var authenticatedUserAccount = rrhhProfileCommandService.handle(signInCommand);
+//        if (authenticatedUserAccount.isEmpty()) return ResponseEntity.notFound().build();
+//        var response = AuthenticationAssembler.toResponseFromEntityUserAccount(
+//                authenticatedUserAccount.get().getLeft(), authenticatedUserAccount.get().getRight());
+//        return ResponseEntity.ok(response);
+//    }
 
-    @PostMapping("/sign-in/rrhh")
-    public ResponseEntity<AuthenticatedUserAccountResponse> signInRRHH(@RequestBody SignInRequest request) {
+    @PostMapping("/sign-in")
+    public ResponseEntity<AuthenticatedUserAccountResponse> signIn(@RequestBody SignInRequest request) {
         var signInCommand = AuthenticationAssembler.toCommandFromRequestSignIn(request);
-        var authenticatedUserAccount = rrhhProfileCommandService.handle(signInCommand);
-        if (authenticatedUserAccount.isEmpty()) return ResponseEntity.notFound().build();
+        var result = userAccountCommandService.handle(signInCommand);
+        if (result.isEmpty()) return ResponseEntity.notFound().build();
         var response = AuthenticationAssembler.toResponseFromEntityUserAccount(
-                authenticatedUserAccount.get().getLeft(), authenticatedUserAccount.get().getRight());
+                result.get().getLeft(), result.get().getRight());
         return ResponseEntity.ok(response);
     }
 

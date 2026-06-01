@@ -9,4 +9,6 @@ import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.QuestionSurv
  */
 @Repository
 public interface QuestionSurveyRepository extends JpaRepository<QuestionSurvey, Long> {
+
+    boolean existsQuestionSurveyById(Long questionSurveyId);
 }

@@ -5,8 +5,11 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.aggregates.Pay
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreatePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdatePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeletePaymentCommand;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Order;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.PaymentCommandService;
+import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.OrderRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.PaymentRepository;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
 import java.util.Optional;
 
@@ -16,13 +19,16 @@ import java.util.Optional;
 @Service
 public class PaymentCommandServiceImpl implements PaymentCommandService {
     private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
 
     /**
      * Constructor for PaymentCommandServiceImpl
      * @param paymentRepository the repository for Payment persistence
      */
-    public PaymentCommandServiceImpl(PaymentRepository paymentRepository) {
+    public PaymentCommandServiceImpl(PaymentRepository paymentRepository,
+                                     OrderRepository orderRepository) {
         this.paymentRepository = paymentRepository;
+        this.orderRepository = orderRepository;
     }
 
     /**
@@ -32,6 +38,13 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
      */
     @Override
     public Long handle(CreatePaymentCommand command) {
+        if (!this.orderRepository.existsById(command.orderId()))
+        {
+            throw new NotFoundArgumentException(
+                    String.format("[PaymentCommandServiceImpl] Order ID: %s not found in the Payment context",
+                            command.orderId())
+            );
+        }
         var payment = new Payment(command);
         try {
             paymentRepository.save(payment);

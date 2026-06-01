@@ -1,12 +1,14 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Attachment;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAttachmentCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAttachmentCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteAttachmentCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.AttachmentCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.AttachmentRepository;
+import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.MessageRepository;
 
 import java.util.Optional;
 
@@ -16,13 +18,16 @@ import java.util.Optional;
 @Service
 public class AttachmentCommandServiceImpl implements AttachmentCommandService {
     private final AttachmentRepository attachmentRepository;
+    private final MessageRepository messageRepository;
 
     /**
      * Constructor for AttachmentCommandServiceImpl.
      * @param attachmentRepository the repository for Attachment persistence
      */
-    public AttachmentCommandServiceImpl(AttachmentRepository attachmentRepository) {
+    public AttachmentCommandServiceImpl(AttachmentRepository attachmentRepository,
+                                        MessageRepository messageRepository) {
         this.attachmentRepository = attachmentRepository;
+        this.messageRepository=messageRepository;
     }
 
     /**
@@ -32,6 +37,11 @@ public class AttachmentCommandServiceImpl implements AttachmentCommandService {
      */
     @Override
     public Long handle(CreateAttachmentCommand command) {
+        if (!this.attachmentRepository.existsById(command.messageId())){
+            throw new NotFoundArgumentException(
+                    String.format("[SurveyResponseCommandServiceImpl] Message ID: %s not found in the external Workers Forum context",
+                            command.messageId()));
+        }
         var attachment = new Attachment(command);
         try {
             attachmentRepository.save(attachment);

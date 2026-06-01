@@ -7,6 +7,7 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.Creat
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.OrderCommandService;
+import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.OrderRepository;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
@@ -19,14 +20,18 @@ import java.util.Optional;
 public class OrderCommandServiceImpl implements OrderCommandService {
     private final OrderRepository orderRepository;
     private final ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService;
+    private final MembershipRepository membershipRepository;
+
     /**
      * Constructor for OrderCommandServiceImpl
      * @param orderRepository the repository for Order persistence
      */
     public OrderCommandServiceImpl(OrderRepository orderRepository,
-                                   ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService) {
+                                   ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService,
+                                   MembershipRepository membershipRepository) {
         this.orderRepository = orderRepository;
         this.externalIamServiceFromPaymentService = externalIamServiceFromPaymentService;
+        this.membershipRepository = membershipRepository;
     }
 
     /**
@@ -38,9 +43,17 @@ public class OrderCommandServiceImpl implements OrderCommandService {
     public Long handle(CreateOrderCommand command) {
         if (!externalIamServiceFromPaymentService.existsUserAccountById(command.userAccountId().userAccountId())){
             throw new NotFoundArgumentException(
-                    String.format("[AutoRepairCommandServiceImpl] User Account ID: %s not found in the external IAM service",
+                    String.format("[OrderCommandServiceImpl] User Account ID: %s not found in the external IAM service",
                             command.userAccountId().userAccountId()));
         }
+
+        if (!membershipRepository.existsById(command.membershipId())){
+            throw new NotFoundArgumentException(
+                    String.format("[OrderCommandServiceImpl] Membership ID: %s not found in the external IAM service",
+                            command.membershipId())
+            );
+        }
+
         var order = new Order(command);
         try {
             orderRepository.save(order);

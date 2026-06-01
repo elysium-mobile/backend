@@ -7,6 +7,7 @@ import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurvey
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.SurveyResponse;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyResponseCommandService;
+import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyResponseRepository;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
@@ -19,15 +20,18 @@ import java.util.Optional;
 public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandService {
     private final SurveyResponseRepository surveyResponseRepository;
     private final ExternalIamServiceFromFeedback externalIamServiceFromFeedback;
+    private final SurveyRepository surveyRepository;
 
     /**
      * Constructor for SurveyResponseCommandServiceImpl.
      * @param surveyresponseRepository the repository for SurveyResponse persistence
      */
     public SurveyResponseCommandServiceImpl(SurveyResponseRepository surveyresponseRepository,
-                                            ExternalIamServiceFromFeedback externalIamServiceFromFeedback) {
+                                            ExternalIamServiceFromFeedback externalIamServiceFromFeedback,
+                                            SurveyRepository surveyRepository) {
         this.surveyResponseRepository = surveyresponseRepository;
         this.externalIamServiceFromFeedback = externalIamServiceFromFeedback;
+        this.surveyRepository = surveyRepository;
     }
 
     /**
@@ -38,6 +42,11 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
     @Override
     public Long handle(CreateSurveyResponseCommand command) {
 
+        if (!surveyRepository.existsById(command.surveyId())){
+            throw new NotFoundArgumentException(
+                    String.format("[SurveyResponseCommandServiceImpl] Survey ID: %s not found in the external Feedback service",
+                            command.surveyId()));
+        }
         if(!externalIamServiceFromFeedback.existEmployeeProfileById(command.employeeProfileId().employeeProfileId())){
             throw new NotFoundArgumentException(
                     String.format("[SurveyResponseCommandServiceImpl] Employee Profile ID: %s not found in the external IAM service",

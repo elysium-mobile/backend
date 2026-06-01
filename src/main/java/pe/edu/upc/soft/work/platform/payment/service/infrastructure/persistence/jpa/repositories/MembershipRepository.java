@@ -9,4 +9,5 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.aggregates.Mem
  */
 @Repository
 public interface MembershipRepository extends JpaRepository<Membership, Long> {
+
 }

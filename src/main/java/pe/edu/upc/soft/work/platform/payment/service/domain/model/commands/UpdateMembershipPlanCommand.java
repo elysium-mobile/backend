@@ -6,12 +6,14 @@ import java.util.Date;
 /**
  * Command to update an existing MembershipPlan
  */
-public record UpdateMembershipPlanCommand(Long membershipplanId, String planName) {
+public record UpdateMembershipPlanCommand(Long membershipplanId, String planName, Integer price) {
 
     /**
      * Constructor with validation
      */
     public UpdateMembershipPlanCommand {
         Objects.requireNonNull(membershipplanId, "[UpdateMembershipPlanCommand] membershipplanId must not be null");
+        Objects.requireNonNull(price,"[CreateMembershipPlanCommand] price must not be null");
+        Objects.requireNonNull(planName,"[CreateMembershipPlanCommand] plan Name must not be null");
     }
 }

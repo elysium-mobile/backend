@@ -2,8 +2,10 @@ package pe.edu.upc.soft.work.platform.iam.interfaces.acl;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetEmployeeProfileByIdQuery;
+import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetRRHHProfileByIdQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetUserAccountByIdQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.services.EmployeeProfileQueryService;
+import pe.edu.upc.soft.work.platform.iam.domain.services.RRHHProfileQueryService;
 import pe.edu.upc.soft.work.platform.iam.domain.services.UserAccountQueryService;
 
 /**
@@ -23,6 +25,8 @@ public class IamContextFacade {
      */
     private final EmployeeProfileQueryService employeeProfileQueryService;
 
+    private final RRHHProfileQueryService rrhhProfileQueryService;
+
     /**
      * Constructor for IamContextFacade.
      *
@@ -30,9 +34,11 @@ public class IamContextFacade {
      * @param employeeProfileQueryService  the employee profile query service
      */
     public IamContextFacade(UserAccountQueryService userAccountQueryService,
-                            EmployeeProfileQueryService employeeProfileQueryService) {
+                            EmployeeProfileQueryService employeeProfileQueryService,
+                            RRHHProfileQueryService rrhhProfileQueryService) {
         this.userAccountQueryService = userAccountQueryService;
         this.employeeProfileQueryService = employeeProfileQueryService;
+        this.rrhhProfileQueryService = rrhhProfileQueryService;
     }
 
     /**
@@ -55,5 +61,10 @@ public class IamContextFacade {
     public boolean existsEmployeeProfileById(Long employeeProfileId) {
         var query = new GetEmployeeProfileByIdQuery(employeeProfileId);
         return this.employeeProfileQueryService.handle(query).isPresent();
+    }
+
+    public boolean existsRRHHProfileById(Long RRHHProfileId){
+        var query = new GetRRHHProfileByIdQuery(RRHHProfileId);
+        return this.rrhhProfileQueryService.handle(query).isPresent();
     }
 }

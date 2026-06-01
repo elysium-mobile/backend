@@ -42,7 +42,7 @@ public class QuestionSurveyController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Question-Survey not found")
     })
     @PostMapping
-    public ResponseEntity<QuestionSurveyResponse> createQuestionSurvey(@PathVariable CreateQuestionSurveyRequest request){
+    public ResponseEntity<QuestionSurveyResponse> createQuestionSurvey(@RequestBody CreateQuestionSurveyRequest request){
         var createQuestionSurveyCommand = QuestionSurveyAssembler.toCommandFromRequest(request);
         var questionSurveyId = this.questionSurveyCommandService.handle(createQuestionSurveyCommand);
 

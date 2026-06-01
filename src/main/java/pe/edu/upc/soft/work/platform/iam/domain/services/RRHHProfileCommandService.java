@@ -32,7 +32,7 @@ public interface RRHHProfileCommandService {
 
     Optional<RRHHProfile> handle(RRHHSignUpCommand command);
 
-    Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
+//    Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
 
 
 }

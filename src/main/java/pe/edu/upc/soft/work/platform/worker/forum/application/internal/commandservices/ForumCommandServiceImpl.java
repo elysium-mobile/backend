@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
+import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalDashboardServiceFromWorkerForum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Forum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateForumCommand;
@@ -16,13 +18,15 @@ import java.util.Optional;
 @Service
 public class ForumCommandServiceImpl implements ForumCommandService {
     private final ForumRepository forumRepository;
-
+    private final ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum;
     /**
      * Constructor for ForumCommandServiceImpl.
      * @param forumRepository the repository for Forum persistence
      */
-    public ForumCommandServiceImpl(ForumRepository forumRepository) {
+    public ForumCommandServiceImpl(ForumRepository forumRepository,
+                                   ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum) {
         this.forumRepository = forumRepository;
+        this.externalDashboardServiceFromWorkerForum = externalDashboardServiceFromWorkerForum;
     }
 
     /**
@@ -32,6 +36,11 @@ public class ForumCommandServiceImpl implements ForumCommandService {
      */
     @Override
     public Long handle(CreateForumCommand command) {
+        if (!this.externalDashboardServiceFromWorkerForum.existsCompanyById(command.companyId().companyId())){
+            throw new NotFoundArgumentException(String.format("[ForumCommandServiceImpl] Company ID: %s not found in the external Dashboard service",
+                    command.companyId().companyId()));
+        }
+
         var forum = new Forum(command);
         try {
             forumRepository.save(forum);

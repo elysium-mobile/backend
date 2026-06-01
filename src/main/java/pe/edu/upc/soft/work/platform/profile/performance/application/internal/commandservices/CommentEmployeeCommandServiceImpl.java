@@ -1,12 +1,14 @@
 package pe.edu.upc.soft.work.platform.profile.performance.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.profile.performance.application.internal.outboundservices.acl.ExternalIamServiceFromProfilePerformance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.CommentEmployee;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreateCommentEmployeeCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdateCommentEmployeeCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeleteCommentEmployeeCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.CommentEmployeeCommandService;
 import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.CommentEmployeeRepository;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
 import java.util.Optional;
 
@@ -16,13 +18,16 @@ import java.util.Optional;
 @Service
 public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommandService {
     private final CommentEmployeeRepository commentemployeeRepository;
+    private final ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance;
 
     /**
      * Constructor for CommentEmployeeCommandServiceImpl
      * @param commentemployeeRepository the repository for CommentEmployee persistence
      */
-    public CommentEmployeeCommandServiceImpl(CommentEmployeeRepository commentemployeeRepository) {
+    public CommentEmployeeCommandServiceImpl(CommentEmployeeRepository commentemployeeRepository,
+                                             ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance) {
         this.commentemployeeRepository = commentemployeeRepository;
+        this.externalIamServiceFromProfilePerformance = externalIamServiceFromProfilePerformance;
     }
 
     /**
@@ -32,6 +37,11 @@ public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommand
      */
     @Override
     public Long handle(CreateCommentEmployeeCommand command) {
+        if (!this.externalIamServiceFromProfilePerformance.existsRRHHProfileById(command.rrhhProfileId().rrhhProfileId())){
+            throw new NotFoundArgumentException(String.format("[CommentEmployeeCommandServiceImpl] RRHH Profile ID: %s not found in the external IAM service",
+                            command.rrhhProfileId().rrhhProfileId()));
+        }
+
         var commentemployee = new CommentEmployee(command);
         try {
             commentemployeeRepository.save(commentemployee);

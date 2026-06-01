@@ -1,12 +1,14 @@
 package pe.edu.upc.soft.work.platform.notification.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.notification.application.internal.outboundservices.acl.ExternalIamServiceFromNotification;
 import pe.edu.upc.soft.work.platform.notification.domain.model.aggregates.Notification;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.CreateNotificationCommand;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.DeleteNotificationCommand;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.UpdateNotificationCommand;
 import pe.edu.upc.soft.work.platform.notification.domain.services.NotificationCommandService;
 import pe.edu.upc.soft.work.platform.notification.infrastructure.persistence.jpa.repositories.NotificationRepository;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
 import java.util.Optional;
 
@@ -14,13 +16,22 @@ import java.util.Optional;
 public class NotificationCommandServiceImpl implements NotificationCommandService {
 
     private final NotificationRepository notificationRepository;
+    private final ExternalIamServiceFromNotification externalIamServiceFromNotification;
 
-    public NotificationCommandServiceImpl(NotificationRepository notificationRepository){
+    public NotificationCommandServiceImpl(NotificationRepository notificationRepository,
+                                          ExternalIamServiceFromNotification externalIamServiceFromNotification){
         this.notificationRepository = notificationRepository;
+        this.externalIamServiceFromNotification = externalIamServiceFromNotification;
     }
 
     @Override
     public Long handle(CreateNotificationCommand command) {
+        if (!externalIamServiceFromNotification.existsUserAccountById(command.userAccountId())){
+            throw new NotFoundArgumentException(
+                    String.format("[NotificationCommandServiceImpl] User Account ID: %s not found in the external IAM service",
+                            command.userAccountId()));
+        }
+
         var notification = new Notification(command);
         try {
             notificationRepository.save(notification);

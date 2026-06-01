@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
@@ -16,13 +18,16 @@ import java.util.Optional;
 @Service
 public class MessageCommandServiceImpl implements MessageCommandService {
     private final MessageRepository messageRepository;
-
+    private final ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService;
     /**
      * Constructor for MessageCommandServiceImpl.
      * @param messageRepository the repository for Message persistence
      */
-    public MessageCommandServiceImpl(MessageRepository messageRepository) {
+    public MessageCommandServiceImpl(MessageRepository messageRepository,
+                                     ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService) {
         this.messageRepository = messageRepository;
+        this.externalIamServiceFromPaymentService = externalIamServiceFromPaymentService;
+
     }
 
     /**
@@ -32,6 +37,12 @@ public class MessageCommandServiceImpl implements MessageCommandService {
      */
     @Override
     public Long handle(CreateMessageCommand command) {
+        if(!externalIamServiceFromPaymentService.existsUserAccountById(command.userAccountId().userAccountId())){
+            throw new NotFoundArgumentException(
+                    String.format("[MessageCommandServiceImpl] User Account ID: %s not found in the external IAM service",
+                            command.userAccountId().userAccountId())
+            );
+        }
         var message = new Message(command);
         try {
             messageRepository.save(message);

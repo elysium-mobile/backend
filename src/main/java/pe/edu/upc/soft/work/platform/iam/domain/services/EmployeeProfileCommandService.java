@@ -35,5 +35,5 @@ public interface EmployeeProfileCommandService {
 
     Optional<EmployeeProfile> handle(EmployeeSignUpCommand command);
 
-    Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
+//    Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
 }

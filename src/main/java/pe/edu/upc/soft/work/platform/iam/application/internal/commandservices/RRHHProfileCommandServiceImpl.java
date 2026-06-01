@@ -15,6 +15,7 @@ import pe.edu.upc.soft.work.platform.iam.domain.services.RRHHProfileCommandServi
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.RRHHProfileRepository;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserRepository;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
 import java.util.Optional;
 
@@ -41,6 +42,12 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
 
     @Override
     public Long handle(CreateRRHHProfileCommand command) {
+        if (!userAccountRepository.existsById(command.userAccountId())){
+            throw new NotFoundArgumentException(
+                    String.format("[SurveyResponseCommandServiceImpl] User Account ID: %s not found in the external Feedback service",
+                            command.userAccountId()));
+        }
+
         var rrhhProfile = new RRHHProfile(command);
         try {
             rrhhProfileRepository.save(rrhhProfile);
@@ -116,20 +123,20 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
     }
 
 
-    @Transactional
-    @Override
-    public Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command) {
-        var userAccount = userAccountRepository.findByEmail(command.email());
-
-        if (userAccount.isEmpty()) {
-            throw new IllegalArgumentException("User Account not found");
-        }
-
-        if (!hashingService.matches(command.password(), userAccount.get().getPassword())) {
-            throw new IllegalArgumentException("Invalid password");
-        }
-
-        var token = tokenService.generateToken(userAccount.get().getEmail());
-        return Optional.of(ImmutablePair.of(userAccount.get(), token));
-    }
+//    @Transactional
+//    @Override
+//    public Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command) {
+//        var userAccount = userAccountRepository.findByEmail(command.email());
+//
+//        if (userAccount.isEmpty()) {
+//            throw new IllegalArgumentException("User Account not found");
+//        }
+//
+//        if (!hashingService.matches(command.password(), userAccount.get().getPassword())) {
+//            throw new IllegalArgumentException("Invalid password");
+//        }
+//
+//        var token = tokenService.generateToken(userAccount.get().getEmail());
+//        return Optional.of(ImmutablePair.of(userAccount.get(), token));
+//    }
 }

@@ -79,7 +79,7 @@ public class ForumCommandServiceImpl implements ForumCommandService {
     }
 
     /**
-     * Handles the deletion of an Forum
+     * Handles the deletion of an existing Forum
      * @param command the command to delete a Forum
      */
     @Override

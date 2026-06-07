@@ -23,5 +23,6 @@ public record CreateNotificationRequest(
         @JsonProperty("user_account_id")
         Long userAccountId
 
-) {
+
+        ) {
 }

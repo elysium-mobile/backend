@@ -6,7 +6,10 @@ import lombok.Getter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Attachment;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.UserAccountId;
+
+import java.util.List;
 
 
 /**
@@ -27,6 +30,11 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
     @Column(name = "content_message", nullable = false, length = 500)
     private String contentMessage;
 
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "attachments", nullable = true)
+    private List<Attachment> attachments;
+
     /**
      * Default constructor for JPA.
      */
@@ -39,6 +47,7 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
     public Message(CreateMessageCommand command) {
         this.userAccountId = command.userAccountId();
         this.contentMessage = command.contentMessage();
+        this.attachments =command.attachments();
     }
 
     /**

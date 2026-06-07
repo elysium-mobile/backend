@@ -1,12 +1,12 @@
 package pe.edu.upc.soft.work.platform.payment.service.domain.model.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
+import java.util.List;
 
 
 /**
@@ -24,7 +24,10 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
     @Column(name = "price", nullable = false)
     private Integer price;
 
-
+    @Getter
+    @Column(name = "benefit", nullable = false)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Benefit> benefits;
     /**
      * Default constructor for JPA.
      */
@@ -37,6 +40,7 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
     public MembershipPlan(CreateMembershipPlanCommand command) {
         this.planName = command.planName();
         this.price = command.price();
+        this.benefits=command.benefits();
     }
 
     /**

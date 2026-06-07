@@ -7,6 +7,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateTh
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateThreadCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import java.util.Date;
+import java.util.List;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.AreaCompanyId;
 
@@ -31,6 +32,11 @@ public class Thread extends AuditableAbstractAggregateRoot<Thread> {
     @Column(name = "last_message", nullable = false)
     private Date lastMessage;
 
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "messages", nullable = true)
+    private List<Message> messages;
+
     /**
      * Default constructor for JPA.
      */
@@ -44,6 +50,7 @@ public class Thread extends AuditableAbstractAggregateRoot<Thread> {
         this.title = command.title();
         this.areaCompanyId = command.areaCompanyId();
         this.lastMessage = command.lastMessage();
+        this.messages=command.messages();
     }
 
     /**

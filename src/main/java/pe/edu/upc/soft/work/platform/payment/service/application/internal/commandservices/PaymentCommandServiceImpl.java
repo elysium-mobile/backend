@@ -1,11 +1,13 @@
 package pe.edu.upc.soft.work.platform.payment.service.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.aggregates.Payment;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreatePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdatePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeletePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Order;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.events.PaymentRegisteredEvent;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.PaymentCommandService;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.OrderRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.PaymentRepository;
@@ -20,15 +22,18 @@ import java.util.Optional;
 public class PaymentCommandServiceImpl implements PaymentCommandService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for PaymentCommandServiceImpl
      * @param paymentRepository the repository for Payment persistence
      */
     public PaymentCommandServiceImpl(PaymentRepository paymentRepository,
-                                     OrderRepository orderRepository) {
+                                     OrderRepository orderRepository,
+                                     ApplicationEventPublisher eventPublisher) {
         this.paymentRepository = paymentRepository;
         this.orderRepository = orderRepository;
+        this.eventPublisher=eventPublisher;
     }
 
     /**
@@ -46,6 +51,7 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
             );
         }
         var payment = new Payment(command);
+        eventPublisher.publishEvent(new PaymentRegisteredEvent(this, payment.getId(), payment.getOrderId()));
         try {
             paymentRepository.save(payment);
         } catch (Exception e) {

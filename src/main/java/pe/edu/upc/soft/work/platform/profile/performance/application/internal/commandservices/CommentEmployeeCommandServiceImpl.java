@@ -1,11 +1,13 @@
 package pe.edu.upc.soft.work.platform.profile.performance.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.profile.performance.application.internal.outboundservices.acl.ExternalIamServiceFromProfilePerformance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.CommentEmployee;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreateCommentEmployeeCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdateCommentEmployeeCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeleteCommentEmployeeCommand;
+import pe.edu.upc.soft.work.platform.profile.performance.domain.model.events.CommentEmployeeAddedEvent;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.CommentEmployeeCommandService;
 import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.CommentEmployeeRepository;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
@@ -19,15 +21,18 @@ import java.util.Optional;
 public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommandService {
     private final CommentEmployeeRepository commentemployeeRepository;
     private final ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for CommentEmployeeCommandServiceImpl
      * @param commentemployeeRepository the repository for CommentEmployee persistence
      */
     public CommentEmployeeCommandServiceImpl(CommentEmployeeRepository commentemployeeRepository,
-                                             ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance) {
+                                             ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance,
+                                             ApplicationEventPublisher eventPublisher) {
         this.commentemployeeRepository = commentemployeeRepository;
         this.externalIamServiceFromProfilePerformance = externalIamServiceFromProfilePerformance;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -43,6 +48,7 @@ public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommand
         }
 
         var commentemployee = new CommentEmployee(command);
+        eventPublisher.publishEvent(new CommentEmployeeAddedEvent(this, commentemployee.getId(),null));
         try {
             commentemployeeRepository.save(commentemployee);
         } catch (Exception e) {

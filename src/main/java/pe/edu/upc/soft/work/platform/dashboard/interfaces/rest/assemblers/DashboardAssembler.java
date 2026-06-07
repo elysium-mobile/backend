@@ -6,6 +6,10 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateDashb
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateDashboardRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateDashboardRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.DashboardResponse;
+import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.WidgetResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DashboardAssembler {
 
@@ -13,7 +17,7 @@ public class DashboardAssembler {
      * Converts a CreateDashboardRequest to a CreateDashboardCommand.
      */
     public static CreateDashboardCommand toCommandFromRequest(CreateDashboardRequest request) {
-        return new CreateDashboardCommand(request.ruc());
+        return new CreateDashboardCommand(request.ruc(), new ArrayList<>());
     }
 
     /**
@@ -27,6 +31,13 @@ public class DashboardAssembler {
      * Converts a Dashboard entity to a DashboardResponse.
      */
     public static DashboardResponse toResponseFromEntity(Dashboard dashboard) {
-        return new DashboardResponse(dashboard.getId(), dashboard.getRuc());
+        List<WidgetResponse> widgetResponses = dashboard.getWidgets().stream()
+                .map(widget -> new WidgetResponse(
+                        widget.getId(),
+                        widget.getTitle(),
+                        widget.getRefreshPeriod()
+                ))
+                .toList();
+        return new DashboardResponse(dashboard.getId(), dashboard.getRuc(),widgetResponses);
     }
 }

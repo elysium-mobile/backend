@@ -1,10 +1,12 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Company;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteCompanyCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.events.CompanyCreatedEvent;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.CompanyCommandService;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.CompanyRepository;
 
@@ -16,13 +18,16 @@ import java.util.Optional;
 @Service
 public class CompanyCommandServiceImpl implements CompanyCommandService {
     private final CompanyRepository companyRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for CompanyCommandServiceImpl.
      * @param companyRepository the repository for Company persistence
      */
-    public CompanyCommandServiceImpl(CompanyRepository companyRepository) {
+    public CompanyCommandServiceImpl(CompanyRepository companyRepository,
+                                     ApplicationEventPublisher eventPublisher) {
         this.companyRepository = companyRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -35,6 +40,7 @@ public class CompanyCommandServiceImpl implements CompanyCommandService {
         var company = new Company(command);
         try {
             companyRepository.save(company);
+            eventPublisher.publishEvent(new CompanyCreatedEvent(this, company.getId(), company.getName()));
         } catch (Exception e) {
             throw new RuntimeException("Error creating Company: " + e.getMessage(), e);
         }

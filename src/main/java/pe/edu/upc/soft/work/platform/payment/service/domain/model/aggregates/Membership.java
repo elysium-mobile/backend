@@ -6,6 +6,8 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.Creat
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateMembershipCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import java.util.Date;
+import java.util.List;
+
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.MembershipStatus;
 
 /**

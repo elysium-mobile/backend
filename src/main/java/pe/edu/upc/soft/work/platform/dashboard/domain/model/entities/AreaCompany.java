@@ -1,12 +1,12 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
+import java.util.List;
 
 
 /**
@@ -23,6 +23,11 @@ public class AreaCompany extends AuditableAbstractAggregateRoot<AreaCompany> {
     @Column(name = "annual_budget", nullable = false)
     private Integer annualBudget;
 
+    @Getter
+    @Column(name = "unit_of_work_list", nullable = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UnitOfWork> unitOfWorkList;
+
     /**
      * Default constructor for JPA.
      */
@@ -35,6 +40,7 @@ public class AreaCompany extends AuditableAbstractAggregateRoot<AreaCompany> {
     public AreaCompany(CreateAreaCompanyCommand command) {
         this.name = command.name();
         this.annualBudget = command.annualBudget();
+        this.unitOfWorkList = command.unitOfWorkList();
     }
 
     /**

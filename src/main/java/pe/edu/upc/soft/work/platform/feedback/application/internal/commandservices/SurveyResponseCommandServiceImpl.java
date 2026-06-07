@@ -1,11 +1,13 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.feedback.application.internal.outboundservices.acl.ExternalIamServiceFromFeedback;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.SurveyResponse;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.events.SurveyResponseRegisteredEvent;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyResponseCommandService;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyResponseRepository;
@@ -21,6 +23,7 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
     private final SurveyResponseRepository surveyResponseRepository;
     private final ExternalIamServiceFromFeedback externalIamServiceFromFeedback;
     private final SurveyRepository surveyRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for SurveyResponseCommandServiceImpl.
@@ -28,10 +31,12 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
      */
     public SurveyResponseCommandServiceImpl(SurveyResponseRepository surveyresponseRepository,
                                             ExternalIamServiceFromFeedback externalIamServiceFromFeedback,
-                                            SurveyRepository surveyRepository) {
+                                            SurveyRepository surveyRepository,
+                                            ApplicationEventPublisher eventPublisher) {
         this.surveyResponseRepository = surveyresponseRepository;
         this.externalIamServiceFromFeedback = externalIamServiceFromFeedback;
         this.surveyRepository = surveyRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -55,6 +60,7 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
         var surveyResponse = new SurveyResponse(command);
         try {
             surveyResponseRepository.save(surveyResponse);
+            eventPublisher.publishEvent(new SurveyResponseRegisteredEvent(this, surveyResponse.getId(), surveyResponse.getSurveyId()));
         } catch (Exception e) {
             throw new RuntimeException("Error creating SurveyResponse: " + e.getMessage(), e);
         }

@@ -1,12 +1,14 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateCompanyCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.AreaCompany;
+import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
+import java.util.List;
 
 
 /**
@@ -29,6 +31,16 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
     @Column(name = "contact_phone", nullable = false)
     private String contactPhone;
 
+    @Getter
+    @Column(name = "employees", nullable = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserAccount> employees;
+
+    @Getter
+    @Column(name = "area_company_list", nullable = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<AreaCompany> areaCompanyList;
+
     /**
      * Default constructor for JPA.
      */
@@ -43,6 +55,8 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
         this.RUC = command.RUC();
         this.contactEmail = command.contactEmail();
         this.contactPhone = command.contactPhone();
+        this.areaCompanyList = command.areaCompanyList();
+        this.employees = command.employees();
     }
 
     /**

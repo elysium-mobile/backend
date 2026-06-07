@@ -132,21 +132,4 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
         }
     }
 
-//    @Transactional
-//    @Override
-//    public Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command) {
-//        var userAccount = userAccountRepository.findByEmail(command.email());
-//
-//        if (userAccount.isEmpty()){
-//            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] User Account not found");
-//        }
-//
-//        if(!hashingService.matches(command.password(), userAccount.get().getPassword())){
-//            throw new IllegalArgumentException("[UserAccountCommandServiceImpl] Invalid password");
-//        }
-//
-//        var token = tokenService.generateToken(userAccount.get().getEmail());
-//        return Optional.of(ImmutablePair.of(userAccount.get(),token));
-//    }
-
 }

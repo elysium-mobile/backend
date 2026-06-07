@@ -1,12 +1,13 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateDashboardCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateDashboardCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.Widget;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
+import java.util.List;
 
 
 /**
@@ -20,6 +21,11 @@ public class Dashboard extends AuditableAbstractAggregateRoot<Dashboard> {
     @Column(name = "RUC", nullable = false)
     private String ruc;
 
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "widgets", nullable = true)
+    private List<Widget> widgets;
+
     /**
      * Default constructor for JPA.
      */
@@ -31,6 +37,7 @@ public class Dashboard extends AuditableAbstractAggregateRoot<Dashboard> {
      */
     public Dashboard(CreateDashboardCommand command) {
         this.ruc = command.ruc();
+        this.widgets =command.widgetList();
     }
 
     /**

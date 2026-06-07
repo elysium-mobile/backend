@@ -1,12 +1,13 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Thread;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateCategoryCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
+import java.util.List;
 
 
 /**
@@ -23,6 +24,11 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
     @Column(name = "description", nullable = false, length = 500)
     private String description;
 
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "threads", nullable = true)
+    private List<Thread> threads;
+
     /**
      * Default constructor for JPA.
      */
@@ -35,6 +41,7 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
     public Category(CreateCategoryCommand command) {
         this.title = command.title();
         this.description = command.description();
+        this.threads = command.threads();
     }
 
     /**

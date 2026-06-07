@@ -1,12 +1,16 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.commands;
 
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.UnitOfWork;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.Date;
 
 /**
  * Command to create a new AreaCompany
  */
-public record CreateAreaCompanyCommand(String name, Integer annualBudget) {
+public record CreateAreaCompanyCommand(String name, Integer annualBudget,
+                                       List<UnitOfWork> unitOfWorkList) {
 
     /**
      * Constructor with validation

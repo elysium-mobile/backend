@@ -7,6 +7,8 @@ import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.C
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import java.util.Date;
+import java.util.List;
+
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.valueobjects.EmployeeProfileId;
 
 /**
@@ -30,6 +32,11 @@ public class Performance extends AuditableAbstractAggregateRoot<Performance> {
     @Column(name = "classification", nullable = false)
     private Integer classification;
 
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "comment_employee_list", nullable = true)
+    private List<CommentEmployee> commentEmployeeList;
+
     /**
      * Default constructor for JPA.
      */
@@ -43,6 +50,7 @@ public class Performance extends AuditableAbstractAggregateRoot<Performance> {
         this.employeeProfileId = command.employeeProfileId();
         this.dateTime = command.dateTime();
         this.classification = command.classification();
+        this.commentEmployeeList = command.commentEmployeeList();
     }
 
     /**

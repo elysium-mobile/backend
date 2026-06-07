@@ -1,10 +1,12 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.WorkTeam;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateWorkTeamCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateWorkTeamCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteWorkTeamCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.events.WorkTeamCreatedEvent;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.WorkTeamCommandService;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.WorkTeamRepository;
 
@@ -16,13 +18,16 @@ import java.util.Optional;
 @Service
 public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
     private final WorkTeamRepository workteamRepository;
+    private ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for WorkTeamCommandServiceImpl.
      * @param workteamRepository the repository for WorkTeam persistence
      */
-    public WorkTeamCommandServiceImpl(WorkTeamRepository workteamRepository) {
+    public WorkTeamCommandServiceImpl(WorkTeamRepository workteamRepository,
+                                      ApplicationEventPublisher eventPublisher) {
         this.workteamRepository = workteamRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -35,6 +40,7 @@ public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
         var workteam = new WorkTeam(command);
         try {
             workteamRepository.save(workteam);
+            eventPublisher.publishEvent(new WorkTeamCreatedEvent(this, workteam.getId(), null));
         } catch (Exception e) {
             throw new RuntimeException("Error creating WorkTeam: " + e.getMessage(), e);
         }

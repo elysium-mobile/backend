@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalDashboardServiceFromWorkerForum;
@@ -7,6 +8,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Forum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteForumCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.events.ForumCreatedEvent;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ForumRepository;
 
@@ -18,15 +20,18 @@ import java.util.Optional;
 @Service
 public class ForumCommandServiceImpl implements ForumCommandService {
     private final ForumRepository forumRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum;
     /**
      * Constructor for ForumCommandServiceImpl.
      * @param forumRepository the repository for Forum persistence
      */
     public ForumCommandServiceImpl(ForumRepository forumRepository,
-                                   ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum) {
+                                   ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum,
+                                   ApplicationEventPublisher eventPublisher) {
         this.forumRepository = forumRepository;
         this.externalDashboardServiceFromWorkerForum = externalDashboardServiceFromWorkerForum;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -42,6 +47,7 @@ public class ForumCommandServiceImpl implements ForumCommandService {
         }
 
         var forum = new Forum(command);
+        eventPublisher.publishEvent(new ForumCreatedEvent(this, forum.getId(), forum.getCompanyId(), forum.getTitle()));
         try {
             forumRepository.save(forum);
         } catch (Exception e) {

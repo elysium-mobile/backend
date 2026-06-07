@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.profile.performance.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
 import pe.edu.upc.soft.work.platform.profile.performance.application.internal.outboundservices.acl.ExternalIamServiceFromProfilePerformance;
@@ -7,6 +8,7 @@ import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeletePerformanceCommand;
+import pe.edu.upc.soft.work.platform.profile.performance.domain.model.events.PerformanceRegisteredEvent;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.PerformanceCommandService;
 import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.PerformanceRepository;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
@@ -20,15 +22,18 @@ import java.util.Optional;
 public class PerformanceCommandServiceImpl implements PerformanceCommandService {
     private final PerformanceRepository performanceRepository;
     private final ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for PerformanceCommandServiceImpl
      * @param performanceRepository the repository for Performance persistence
      */
     public PerformanceCommandServiceImpl(PerformanceRepository performanceRepository,
-                                         ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance) {
+                                         ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance,
+                                         ApplicationEventPublisher eventPublisher) {
         this.performanceRepository = performanceRepository;
         this.externalIamServiceFromProfilePerformance = externalIamServiceFromProfilePerformance;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -45,6 +50,7 @@ public class PerformanceCommandServiceImpl implements PerformanceCommandService 
             );
         }
         var performance = new Performance(command);
+        eventPublisher.publishEvent(new PerformanceRegisteredEvent(this, performance.getId(), performance.getEmployeeProfileId(), performance.getClassification()));
         try {
             performanceRepository.save(performance);
         } catch (Exception e) {

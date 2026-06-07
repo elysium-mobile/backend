@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
@@ -7,6 +8,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Messag
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteMessageCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.events.MessagePostedEvent;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.MessageRepository;
 
@@ -19,14 +21,17 @@ import java.util.Optional;
 public class MessageCommandServiceImpl implements MessageCommandService {
     private final MessageRepository messageRepository;
     private final ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService;
+    private final ApplicationEventPublisher eventPublisher;
     /**
      * Constructor for MessageCommandServiceImpl.
      * @param messageRepository the repository for Message persistence
      */
     public MessageCommandServiceImpl(MessageRepository messageRepository,
-                                     ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService) {
+                                     ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService,
+                                     ApplicationEventPublisher eventPublisher) {
         this.messageRepository = messageRepository;
         this.externalIamServiceFromPaymentService = externalIamServiceFromPaymentService;
+        this.eventPublisher = eventPublisher;
 
     }
 
@@ -44,6 +49,7 @@ public class MessageCommandServiceImpl implements MessageCommandService {
             );
         }
         var message = new Message(command);
+        eventPublisher.publishEvent(new MessagePostedEvent(this, message.getId(), null, message.getUserAccountId()));
         try {
             messageRepository.save(message);
         } catch (Exception e) {

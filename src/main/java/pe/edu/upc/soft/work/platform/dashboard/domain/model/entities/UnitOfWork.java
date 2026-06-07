@@ -1,12 +1,12 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
+import java.util.List;
 
 
 /**
@@ -20,6 +20,11 @@ public class UnitOfWork extends AuditableAbstractAggregateRoot<UnitOfWork> {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Getter
+    @Column(name = "work_team_list", nullable = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkTeam> workTeamList;
+
     /**
      * Default constructor for JPA.
      */
@@ -31,6 +36,7 @@ public class UnitOfWork extends AuditableAbstractAggregateRoot<UnitOfWork> {
      */
     public UnitOfWork(CreateUnitOfWorkCommand command) {
         this.name = command.name();
+        this.workTeamList=command.workTeamList();
     }
 
     /**

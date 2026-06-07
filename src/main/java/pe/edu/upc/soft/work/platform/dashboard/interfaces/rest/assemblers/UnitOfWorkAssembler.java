@@ -3,10 +3,10 @@ package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.UnitOfWork;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateAreaCompanyRequest;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateUnitOfWorkRequest;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UnitOfWorkResponse;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateUnitOfWorkRequest;
+import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UnitOfWorkAssembler {
 
@@ -15,7 +15,7 @@ public class UnitOfWorkAssembler {
      */
     public static CreateUnitOfWorkCommand toCommandFromRequest(CreateUnitOfWorkRequest request)
     {
-        return new CreateUnitOfWorkCommand(request.name());
+        return new CreateUnitOfWorkCommand(request.name(), new ArrayList<>());
     }
 
     /**
@@ -30,6 +30,9 @@ public class UnitOfWorkAssembler {
      * Converts a UnitOfWork entity to a UnitOfWorkResponse.
      */
     public static UnitOfWorkResponse toResponseFromEntity(UnitOfWork unitOfWork){
-        return new UnitOfWorkResponse(unitOfWork.getId(), unitOfWork.getName());
+        List<WorkTeamResponse> workTeamResponses = unitOfWork.getWorkTeamList().stream()
+                .map(workTeam -> new WorkTeamResponse(workTeam.getId(), workTeam.getTeamName(),workTeam.getLeaderOfTeam())).toList();
+
+        return new UnitOfWorkResponse(unitOfWork.getId(), unitOfWork.getName(), workTeamResponses);
     }
 }

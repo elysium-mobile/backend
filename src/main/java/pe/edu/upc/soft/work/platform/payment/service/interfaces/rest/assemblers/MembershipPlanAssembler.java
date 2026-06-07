@@ -14,18 +14,18 @@ import java.util.List;
 public class MembershipPlanAssembler {
 
     public static CreateMembershipPlanCommand toCommandFromRequest(CreateMembershipPlanRequest request){
-        return new CreateMembershipPlanCommand(request.planName(),request.price(), new ArrayList<>());
+        return new CreateMembershipPlanCommand(request.planName(),request.price(), new ArrayList<>(), request.membershipId());
     }
 
     public static UpdateMembershipPlanCommand toCommandFromRequest(Long planId, UpdateMembershipPlanRequest request){
-        return new UpdateMembershipPlanCommand(planId, request.planName(), request.price());
+        return new UpdateMembershipPlanCommand(planId, request.planName(), request.price(), request.membershipId());
     }
 
     public static MembershipPlanResponse toResponseFromEntity(MembershipPlan membershipPlan){
 
         List<BenefitResponse> benefitResponseList = membershipPlan.getBenefits().stream()
-                .map(benefit -> new BenefitResponse(benefit.getId(),benefit.getTitle(), benefit.getDescription()))
+                .map(benefit -> new BenefitResponse(benefit.getId(),benefit.getTitle(), benefit.getDescription(), benefit.getMembershipPlanId()))
                 .toList();
-        return new MembershipPlanResponse(membershipPlan.getId(), membershipPlan.getPlanName(), membershipPlan.getPrice(), benefitResponseList);
+        return new MembershipPlanResponse(membershipPlan.getId(), membershipPlan.getPlanName(), membershipPlan.getPrice(),membershipPlan.getMembershipId(), benefitResponseList);
     }
 }

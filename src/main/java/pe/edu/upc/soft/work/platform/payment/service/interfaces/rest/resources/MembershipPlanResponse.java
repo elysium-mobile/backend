@@ -6,6 +6,7 @@ public record MembershipPlanResponse(
         Long planId,
         String planName,
         Integer price,
+        Long membershipId,
         List<BenefitResponse> benefitResponseList
 ) {
 }

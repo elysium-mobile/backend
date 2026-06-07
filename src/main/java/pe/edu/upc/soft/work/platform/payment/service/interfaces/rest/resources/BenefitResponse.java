@@ -4,7 +4,8 @@ public record BenefitResponse(
 
         Long benefitId,
         String title,
-        String description
+        String description,
+        Long membershipPlanId
 
 ) {
 }

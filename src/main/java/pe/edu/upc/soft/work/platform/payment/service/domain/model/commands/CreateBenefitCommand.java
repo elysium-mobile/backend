@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Command to create a new Benefit
  */
-public record CreateBenefitCommand(String title, String description) {
+public record CreateBenefitCommand(String title, String description, Long membershipPlanId) {
 
     /**
      * Constructor with validation

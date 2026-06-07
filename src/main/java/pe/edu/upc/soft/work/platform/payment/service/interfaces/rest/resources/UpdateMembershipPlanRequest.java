@@ -9,6 +9,9 @@ public record UpdateMembershipPlanRequest(
         String planName,
         @NotBlank
         @JsonProperty("price")
-        Integer price
+        Integer price,
+        @NotBlank
+        @JsonProperty("membershipId")
+        Long membershipId
 ) {
 }

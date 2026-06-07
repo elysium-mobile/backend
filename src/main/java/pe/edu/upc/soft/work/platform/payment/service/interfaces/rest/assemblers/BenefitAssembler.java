@@ -11,15 +11,15 @@ public class BenefitAssembler {
 
 
     public static CreateBenefitCommand toCommandFromRequest(CreateBenefitRequest request){
-        return new CreateBenefitCommand(request.title(),request.description());
+        return new CreateBenefitCommand(request.title(),request.description(), request.membershipPlanId());
     }
 
     public static UpdateBenefitCommand toCommandFromRequest(Long benefitId, UpdateBenefitRequest request)
     {
-        return new UpdateBenefitCommand(benefitId,request.title(),request.description());
+        return new UpdateBenefitCommand(benefitId,request.title(),request.description(), request.membershipPlanId());
     }
 
     public static BenefitResponse toResponseFromEntity(Benefit benefit){
-        return new BenefitResponse(benefit.getId(), benefit.getTitle(), benefit.getDescription());
+        return new BenefitResponse(benefit.getId(), benefit.getTitle(), benefit.getDescription(), benefit.getMembershipPlanId());
     }
 }

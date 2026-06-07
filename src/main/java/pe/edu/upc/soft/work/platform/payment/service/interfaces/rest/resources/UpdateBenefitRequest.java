@@ -9,6 +9,9 @@ public record UpdateBenefitRequest(
         @JsonProperty("title")
         String title,
         @JsonProperty("description")
-        String description
+        String description,
+        @NotBlank
+        @JsonProperty("membershipPlanId")
+        Long membershipPlanId
 ) {
 }

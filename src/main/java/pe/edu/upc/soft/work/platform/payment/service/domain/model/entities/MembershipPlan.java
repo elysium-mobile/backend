@@ -46,6 +46,7 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
         this.planName = command.planName();
         this.price = command.price();
         this.benefits=command.benefits();
+        this.membershipId = command.membershipId();
     }
 
     /**
@@ -55,5 +56,6 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
     public void updateMembershipPlan(UpdateMembershipPlanCommand command) {
         this.planName = command.planName();
         this.price = command.price();
+        this.membershipId = command.membershipId();
     }
 }

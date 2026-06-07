@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Command to create a new MembershipPlan
  */
-public record CreateMembershipPlanCommand(String planName, Integer price, List<Benefit> benefits) {
+public record CreateMembershipPlanCommand(String planName, Integer price, List<Benefit> benefits, Long membershipId) {
 
     /**
      * Constructor with validation

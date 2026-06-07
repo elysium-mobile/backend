@@ -8,8 +8,13 @@ public record CreateBenefitRequest(
         @NotBlank
         @JsonProperty("title")
         String title,
+        @NotBlank
         @JsonProperty("description")
-        String description
+        String description,
+
+        @NotBlank
+        @JsonProperty("membershipPlanId")
+        Long membershipPlanId
 
 ) {
 }

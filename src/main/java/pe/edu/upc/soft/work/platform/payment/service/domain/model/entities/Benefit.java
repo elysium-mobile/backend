@@ -39,6 +39,7 @@ public class Benefit extends AuditableAbstractAggregateRoot<Benefit> {
     public Benefit(CreateBenefitCommand command) {
         this.title = command.title();
         this.description = command.description();
+        this.membershipPlanId = command.membershipPlanId();
     }
 
     /**
@@ -48,5 +49,6 @@ public class Benefit extends AuditableAbstractAggregateRoot<Benefit> {
     public void updateBenefit(UpdateBenefitCommand command) {
         this.title = command.title();
         this.description = command.description();
+        this.membershipPlanId= command.membershipPlanId();
     }
 }

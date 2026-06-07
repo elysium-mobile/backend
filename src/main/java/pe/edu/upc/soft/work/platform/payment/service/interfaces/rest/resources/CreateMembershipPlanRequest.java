@@ -10,6 +10,10 @@ public record CreateMembershipPlanRequest(
 
         @NotBlank
         @JsonProperty("price")
-        Integer price
+        Integer price,
+
+        @NotBlank
+        @JsonProperty("membershipId")
+        Long membershipId
 ) {
 }

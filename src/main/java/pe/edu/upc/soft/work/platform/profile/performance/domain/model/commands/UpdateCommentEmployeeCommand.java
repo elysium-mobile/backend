@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Command to update an existing CommentEmployee
  */
-public record UpdateCommentEmployeeCommand(Long commentEmployeeId, String title, String content, RRHHProfileId rrhhProfileId) {
+public record UpdateCommentEmployeeCommand(Long commentEmployeeId, String title, String content, RRHHProfileId rrhhProfileId, Long performanceId) {
 
     /**
      * Constructor with validation

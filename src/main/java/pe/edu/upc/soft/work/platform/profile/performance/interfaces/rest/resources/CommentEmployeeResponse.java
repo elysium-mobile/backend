@@ -11,5 +11,6 @@ public record CommentEmployeeResponse(
         Long commentEmployeeId,
         String title,
         String content,
-        Long rrhhProfileId
+        Long rrhhProfileId,
+        Long performanceId
 ) {}

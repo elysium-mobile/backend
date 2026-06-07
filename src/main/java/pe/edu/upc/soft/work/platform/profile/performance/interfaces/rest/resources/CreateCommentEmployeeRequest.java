@@ -20,5 +20,9 @@ public record CreateCommentEmployeeRequest(
         @NotNull
         @NotBlank
         @JsonProperty("rrhhProfileId")
-        Long rrhhProfileId
+        Long rrhhProfileId,
+        @NotNull
+        @NotBlank
+        @JsonProperty("performanceId")
+        Long performanceId
 ) {}

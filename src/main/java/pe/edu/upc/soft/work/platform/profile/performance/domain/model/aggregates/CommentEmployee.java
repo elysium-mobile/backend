@@ -46,6 +46,7 @@ public class CommentEmployee extends AuditableAbstractAggregateRoot<CommentEmplo
         this.title = command.title();
         this.content = command.content();
         this.rrhhProfileId = command.rrhhProfileId();
+        this.performanceId = command.performanceId();
     }
 
     /**
@@ -56,5 +57,6 @@ public class CommentEmployee extends AuditableAbstractAggregateRoot<CommentEmplo
         this.title = command.title();
         this.content = command.content();
         this.rrhhProfileId = command.rrhhProfileId();
+        this.performanceId = command.performanceId();
     }
 }

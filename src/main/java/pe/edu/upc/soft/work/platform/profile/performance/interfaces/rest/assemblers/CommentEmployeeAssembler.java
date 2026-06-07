@@ -14,20 +14,20 @@ public class CommentEmployeeAssembler {
      * Converts a CreateCommentEmployeeRequest to a CreateCommentEmployeeCommand.
      */
     public static CreateCommentEmployeeCommand toCommandFromRequest(CreateCommentEmployeeRequest request) {
-        return new CreateCommentEmployeeCommand(request.title(), request.content(),new RRHHProfileId( request.rrhhProfileId()));
+        return new CreateCommentEmployeeCommand(request.title(), request.content(),new RRHHProfileId( request.rrhhProfileId()), request.performanceId());
     }
 
     /**
      * Converts an UpdateCommentEmployeeRequest to an UpdateCommentEmployeeCommand.
      */
     public static UpdateCommentEmployeeCommand toCommandFromRequest(Long commentemployeeId, UpdateCommentEmployeeRequest request) {
-        return new UpdateCommentEmployeeCommand(commentemployeeId, request.title(), request.content(),new RRHHProfileId( request.rrhhProfileId()));
+        return new UpdateCommentEmployeeCommand(commentemployeeId, request.title(), request.content(),new RRHHProfileId( request.rrhhProfileId()), request.performanceId());
     }
 
     /**
      * Converts a CommentEmployee entity to a CommentEmployeeResponse.
      */
     public static CommentEmployeeResponse toResponseFromEntity(CommentEmployee commentemployee) {
-        return new CommentEmployeeResponse(commentemployee.getId(), commentemployee.getTitle(), commentemployee.getContent(), commentemployee.getRrhhProfileId().rrhhProfileId());
+        return new CommentEmployeeResponse(commentemployee.getId(), commentemployee.getTitle(), commentemployee.getContent(), commentemployee.getRrhhProfileId().rrhhProfileId(), commentemployee.getPerformanceId());
     }
 }

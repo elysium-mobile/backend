@@ -11,6 +11,10 @@ public record UpdateAreaCompanyRequest(
         @NotNull
         @NotBlank
         @JsonProperty("annualBudget")
-        Integer annualBudget
+        Integer annualBudget,
+        @NotNull
+        @NotBlank
+        @JsonProperty("companyId")
+        Long companyId
 ) {
 }

@@ -14,7 +14,12 @@ public record CreateAreaCompanyRequest(
         @NotNull
         @NotBlank
         @JsonProperty("annualBudget")
-        Integer annualBudget
+        Integer annualBudget,
+
+        @NotNull
+        @NotBlank
+        @JsonProperty("companyId")
+        Long companyId
 
 ) {
 }

@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Command to create a new AreaCompany
  */
-public record CreateAreaCompanyCommand(String name, Integer annualBudget,
+public record CreateAreaCompanyCommand(String name, Integer annualBudget,Long companyId,
                                        List<UnitOfWork> unitOfWorkList) {
 
     /**

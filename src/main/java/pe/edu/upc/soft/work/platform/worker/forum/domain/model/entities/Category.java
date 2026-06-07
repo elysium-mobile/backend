@@ -29,6 +29,10 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
     @Column(name = "threads", nullable = true)
     private List<Thread> threads;
 
+    @Getter
+    @Column(name = "forum_id", nullable = false)
+    private Long forumId;
+
     /**
      * Default constructor for JPA.
      */

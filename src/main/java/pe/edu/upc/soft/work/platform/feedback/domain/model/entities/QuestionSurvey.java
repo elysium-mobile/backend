@@ -24,6 +24,10 @@ public class QuestionSurvey extends AuditableAbstractAggregateRoot<QuestionSurve
     @Column(name = "question_type", nullable = false)
     private QuestionType questionType;
 
+    @Getter
+    @Column(name = "survey_id", nullable = false)
+    private Long surveyId;
+
     /**
      * Default constructor for JPA.
      */

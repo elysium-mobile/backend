@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Command to update an existing Widget
  */
-public record UpdateWidgetCommand(Long widgetId, String title, Integer refreshPeriod) {
+public record UpdateWidgetCommand(Long widgetId, String title, Integer refreshPeriod, Long dashboardId) {
 
     /**
      * Constructor with validation

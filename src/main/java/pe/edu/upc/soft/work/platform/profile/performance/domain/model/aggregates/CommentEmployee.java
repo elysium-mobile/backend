@@ -29,6 +29,10 @@ public class CommentEmployee extends AuditableAbstractAggregateRoot<CommentEmplo
     @JsonProperty("id_rrhh_profile")
     private RRHHProfileId rrhhProfileId;
 
+    @Getter
+    @Column(name = "performance_id", nullable = false)
+    private Long performanceId;
+
     /**
      * Default constructor for JPA.
      */

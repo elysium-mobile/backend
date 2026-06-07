@@ -13,6 +13,11 @@ public record UpdateWorkTeamRequest(
         @NotNull
         @NotBlank
         @JsonProperty("leaderOfTeam")
-        String leaderOfTeam
+        String leaderOfTeam,
+        @NotNull
+        @NotBlank
+        @JsonProperty("unitOfWorkId")
+        Long unitOfWorkId
+
 ) {
 }

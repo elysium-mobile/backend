@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.payment.service.domain.model.entities;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -16,9 +17,15 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
 public class Benefit extends AuditableAbstractAggregateRoot<Benefit> {
 
     @Getter
+    @Column(name = "title", nullable = false)
     private String title;
     @Getter
+    @Column(name = "description", nullable = false)
     private String description;
+
+    @Getter
+    @Column(name = "membership_plan_id", nullable = false)
+    private Long membershipPlanId;
 
     /**
      * Default constructor for JPA.

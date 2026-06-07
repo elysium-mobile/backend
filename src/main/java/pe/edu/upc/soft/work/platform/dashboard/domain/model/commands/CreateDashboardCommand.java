@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Command to create a new Dashboard
  */
-public record CreateDashboardCommand(String ruc, List<Widget> widgetList) {
+public record CreateDashboardCommand(String ruc,String title, String description,Long companyId, List<Widget> widgetList) {
 
     /**
      * Constructor with validation

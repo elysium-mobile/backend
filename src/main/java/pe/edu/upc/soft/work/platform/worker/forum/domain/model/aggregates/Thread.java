@@ -37,6 +37,10 @@ public class Thread extends AuditableAbstractAggregateRoot<Thread> {
     @Column(name = "messages", nullable = true)
     private List<Message> messages;
 
+    @Getter
+    @Column(name = "category_id", nullable = false)
+    private Long categoryId;
+
     /**
      * Default constructor for JPA.
      */

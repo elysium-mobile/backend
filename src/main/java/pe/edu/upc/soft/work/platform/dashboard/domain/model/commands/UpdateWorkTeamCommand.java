@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Command to update an existing WorkTeam
  */
-public record UpdateWorkTeamCommand(Long workteamId, String teamName, String leaderOfTeam) {
+public record UpdateWorkTeamCommand(Long workteamId, String teamName, String leaderOfTeam, Long unitOfWorkId) {
 
     /**
      * Constructor with validation

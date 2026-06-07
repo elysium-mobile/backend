@@ -28,6 +28,11 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
     @Column(name = "benefit", nullable = false)
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Benefit> benefits;
+
+    @Getter
+    @Column(name = "membership_id", nullable = false)
+    private Long membershipId;
+
     /**
      * Default constructor for JPA.
      */

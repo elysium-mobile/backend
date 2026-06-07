@@ -21,6 +21,10 @@ public class NotificationDetail extends AuditableAbstractAggregateRoot<Notificat
     @Column(name = "content", nullable = false)
     private String content;
 
+    @Getter
+    @Column(name = "notification_id", nullable = false)
+    private Long notificationId;
+
     /**
      * Default constructor for JPA
      */

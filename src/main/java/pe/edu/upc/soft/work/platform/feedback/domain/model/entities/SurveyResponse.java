@@ -18,6 +18,7 @@ import java.util.Date;
 public class SurveyResponse extends AuditableAbstractAggregateRoot<SurveyResponse> {
 
     @Getter
+    @Column(name = "survey_id", nullable = false)
     private Long surveyId;
 
     @Getter
@@ -29,6 +30,14 @@ public class SurveyResponse extends AuditableAbstractAggregateRoot<SurveyRespons
     @Getter
     @Column(name = "submitted_at")
     private Date submittedAt;
+
+    @Getter
+    @Column(name = "comentary", nullable = false)
+    private String comentary;
+
+    @Getter
+    @Column(name = "cause", nullable = false)
+    private String cause;
 
     /**
      * Default constructor for JPA.

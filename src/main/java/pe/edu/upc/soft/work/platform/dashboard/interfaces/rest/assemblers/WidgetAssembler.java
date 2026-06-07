@@ -13,20 +13,20 @@ public class WidgetAssembler {
      *  Converts a CreateWidgetRequest to a CreateWidgetCommand.
      */
     public static CreateWidgetCommand toCommandFromRequest(CreateWidgetRequest request){
-        return new CreateWidgetCommand(request.title(), request.refreshPeriod());
+        return new CreateWidgetCommand(request.title(), request.refreshPeriod(), request.dashboardId());
     }
 
     /**
      *  Converts an UpdateWidgetRequest to an UpdateWidgetCommand.
      */
     public static UpdateWidgetCommand toCommandFromRequest(Long widgetId, UpdateWidgetRequest request){
-        return new UpdateWidgetCommand(widgetId, request.title(), request.refreshPeriod());
+        return new UpdateWidgetCommand(widgetId, request.title(), request.refreshPeriod(), request.dashboardId());
     }
 
     /**
      *  Converts a Widget entity to a WidgetResponse.
      */
     public static WidgetResponse toResponseFromEntity(Widget widget){
-        return new WidgetResponse(widget.getId(), widget.getTitle(), widget.getRefreshPeriod());
+        return new WidgetResponse(widget.getId(), widget.getTitle(), widget.getRefreshPeriod(), widget.getDashboardId());
     }
 }

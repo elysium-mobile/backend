@@ -12,6 +12,11 @@ public record CreateWidgetRequest(
         @NotNull
         @NotBlank
         @JsonProperty("refreshPeriod")
-        Integer refreshPeriod
+        Integer refreshPeriod,
+
+        @NotNull
+        @NotBlank
+        @JsonProperty("dashboardId")
+        Long dashboardId
 ) {
 }

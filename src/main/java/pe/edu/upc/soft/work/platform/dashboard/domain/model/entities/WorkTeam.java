@@ -23,6 +23,10 @@ public class WorkTeam extends AuditableAbstractAggregateRoot<WorkTeam> {
     @Column(name = "leader_of_team", nullable = false)
     private String leaderOfTeam;
 
+    @Getter
+    @Column(name = "unit_of_work_id", nullable = false)
+    private Long unitOfWorkId;
+
     /**
      * Default constructor for JPA.
      */
@@ -35,6 +39,7 @@ public class WorkTeam extends AuditableAbstractAggregateRoot<WorkTeam> {
     public WorkTeam(CreateWorkTeamCommand command) {
         this.teamName = command.teamName();
         this.leaderOfTeam = command.leaderOfTeam();
+        this.unitOfWorkId = command.unitOfWorkId();
     }
 
     /**
@@ -44,5 +49,6 @@ public class WorkTeam extends AuditableAbstractAggregateRoot<WorkTeam> {
     public void updateWorkTeam(UpdateWorkTeamCommand command) {
         this.teamName = command.teamName();
         this.leaderOfTeam = command.leaderOfTeam();
+        this.unitOfWorkId = command.unitOfWorkId();
     }
 }

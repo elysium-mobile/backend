@@ -8,6 +8,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateWorkT
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteWorkTeamCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.events.WorkTeamCreatedEvent;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.WorkTeamCommandService;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.UnitOfWorkRepository;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.WorkTeamRepository;
 
 import java.util.Optional;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @Service
 public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
     private final WorkTeamRepository workteamRepository;
+    private final UnitOfWorkRepository unitOfWorkRepository;
     private ApplicationEventPublisher eventPublisher;
 
     /**
@@ -25,9 +27,11 @@ public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
      * @param workteamRepository the repository for WorkTeam persistence
      */
     public WorkTeamCommandServiceImpl(WorkTeamRepository workteamRepository,
-                                      ApplicationEventPublisher eventPublisher) {
+                                      ApplicationEventPublisher eventPublisher,
+                                      UnitOfWorkRepository unitOfWorkRepository) {
         this.workteamRepository = workteamRepository;
         this.eventPublisher = eventPublisher;
+        this.unitOfWorkRepository = unitOfWorkRepository;
     }
 
     /**
@@ -37,6 +41,9 @@ public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
      */
     @Override
     public Long handle(CreateWorkTeamCommand command) {
+        if (!unitOfWorkRepository.existsById(command.unitOfWorkId())) {
+            throw new RuntimeException("UnitOfWork with ID " + command.unitOfWorkId() + " does not exist.");
+        }
         var workteam = new WorkTeam(command);
         try {
             workteamRepository.save(workteam);
@@ -54,6 +61,9 @@ public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
      */
     @Override
     public Optional<WorkTeam> handle(UpdateWorkTeamCommand command) {
+        if (!unitOfWorkRepository.existsById(command.unitOfWorkId())) {
+            throw new RuntimeException("UnitOfWork with ID " + command.unitOfWorkId() + " does not exist.");
+        }
         var workteamId = command.workteamId();
         if (!this.workteamRepository.existsById(workteamId)) {
             throw new RuntimeException("WorkTeam with ID " + workteamId + " does not exist.");

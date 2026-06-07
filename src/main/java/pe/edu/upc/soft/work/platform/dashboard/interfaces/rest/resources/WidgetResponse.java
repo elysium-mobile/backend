@@ -4,6 +4,7 @@ public record WidgetResponse(
 
         Long widgetId,
         String title,
-        Integer refreshPeriod
+        Integer refreshPeriod,
+        Long dashboardId
 ) {
 }

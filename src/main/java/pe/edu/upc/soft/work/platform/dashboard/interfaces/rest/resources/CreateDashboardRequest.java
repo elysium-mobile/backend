@@ -8,6 +8,15 @@ import java.util.Date;
  * Request object for creating a new Dashboard.
  */
 public record CreateDashboardRequest(
+
+        @NotNull
+        @NotBlank
+        String title,
+
+        @NotNull
+        @NotBlank
+        String description,
+
         @NotNull
         @NotBlank
         String ruc

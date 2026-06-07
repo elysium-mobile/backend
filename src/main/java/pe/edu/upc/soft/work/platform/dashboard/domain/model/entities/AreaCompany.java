@@ -28,6 +28,10 @@ public class AreaCompany extends AuditableAbstractAggregateRoot<AreaCompany> {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UnitOfWork> unitOfWorkList;
 
+    @Getter
+    @Column(name = "company_id", nullable = false)
+    private Long companyId;
+
     /**
      * Default constructor for JPA.
      */
@@ -35,20 +39,22 @@ public class AreaCompany extends AuditableAbstractAggregateRoot<AreaCompany> {
 
     /**
      * Constructor to create a AreaCompany from a CreateAreaCompanyCommand.
-     * @param command the command containing areacompany details
+     * @param command the command containing areCompany details
      */
     public AreaCompany(CreateAreaCompanyCommand command) {
         this.name = command.name();
         this.annualBudget = command.annualBudget();
+        this.companyId = command.companyId();
         this.unitOfWorkList = command.unitOfWorkList();
     }
 
     /**
      * Updates the AreaCompany with details from an UpdateAreaCompanyCommand.
-     * @param command the command containing updated areacompany details
+     * @param command the command containing updated areaCompany details
      */
     public void updateAreaCompany(UpdateAreaCompanyCommand command) {
         this.name = command.name();
         this.annualBudget = command.annualBudget();
+        this.companyId = command.companyId();
     }
 }

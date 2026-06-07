@@ -8,6 +8,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateAreaC
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.AreaCompanyCommandService;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.AreaCompanyRepository;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.CompanyRepository;
 
 import java.util.Optional;
 
@@ -17,6 +18,7 @@ import java.util.Optional;
 @Service
 public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService {
     private final AreaCompanyRepository areacompanyRepository;
+    private final CompanyRepository companyRepository;
 
     private final ExternalIamServiceFromDashboard externalIamServiceFromDashboard;
 
@@ -25,9 +27,11 @@ public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService 
      * @param areacompanyRepository the repository for AreaCompany persistence
      */
     public AreaCompanyCommandServiceImpl(AreaCompanyRepository areacompanyRepository,
-                                         ExternalIamServiceFromDashboard externalIamServiceFromDashboard) {
+                                         ExternalIamServiceFromDashboard externalIamServiceFromDashboard,
+                                         CompanyRepository companyRepository) {
         this.areacompanyRepository = areacompanyRepository;
         this.externalIamServiceFromDashboard = externalIamServiceFromDashboard;
+        this.companyRepository = companyRepository;
     }
 
     /**
@@ -37,6 +41,9 @@ public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService 
      */
     @Override
     public Long handle(CreateAreaCompanyCommand command) {
+        if (!companyRepository.existsById(command.companyId())) {
+            throw new RuntimeException("Company with ID " + command.companyId() + " does not exist.");
+        }
         var areacompany = new AreaCompany(command);
         try {
             areacompanyRepository.save(areacompany);
@@ -53,11 +60,13 @@ public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService 
      */
     @Override
     public Optional<AreaCompany> handle(UpdateAreaCompanyCommand command) {
-        var areacompanyId = command.areacompanyId();
+        var areacompanyId = command.areaCompanyId();
         if (!this.areacompanyRepository.existsById(areacompanyId)) {
             throw new RuntimeException("AreaCompany with ID " + areacompanyId + " does not exist.");
         }
-
+        if (!companyRepository.existsById(command.companyId())) {
+            throw new RuntimeException("Company with ID " + command.companyId() + " does not exist.");
+        }
         var areacompanyToUpdate = this.areacompanyRepository.findById(areacompanyId).get();
         areacompanyToUpdate.updateAreaCompany(command);
         try {

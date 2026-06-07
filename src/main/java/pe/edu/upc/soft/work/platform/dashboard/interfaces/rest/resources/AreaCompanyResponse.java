@@ -12,6 +12,7 @@ public record AreaCompanyResponse(
     Long areaCompanyId,
     String name,
     Integer annualBudget,
+    Long companyId,
     List<UnitOfWorkResponse> unitOfWorkList
 
 ) {

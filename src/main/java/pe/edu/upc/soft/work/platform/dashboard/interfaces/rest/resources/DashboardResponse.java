@@ -8,6 +8,9 @@ import java.util.List;
  */
 public record DashboardResponse(
         Long dashboardId,
+        String title,
+        String description,
         String ruc,
+        Long companyId,
         List<WidgetResponse> widgets
 ) {}

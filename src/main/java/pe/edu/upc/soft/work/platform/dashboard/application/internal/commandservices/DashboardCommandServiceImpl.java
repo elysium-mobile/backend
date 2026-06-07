@@ -6,6 +6,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateDashb
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateDashboardCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteDashboardCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.DashboardCommandService;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.CompanyRepository;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.DashboardRepository;
 
 import java.util.Optional;
@@ -16,13 +17,16 @@ import java.util.Optional;
 @Service
 public class DashboardCommandServiceImpl implements DashboardCommandService {
     private final DashboardRepository dashboardRepository;
+    private final CompanyRepository companyRepository;
 
     /**
      * Constructor for DashboardCommandServiceImpl.
      * @param dashboardRepository the repository for Dashboard persistence
      */
-    public DashboardCommandServiceImpl(DashboardRepository dashboardRepository) {
+    public DashboardCommandServiceImpl(DashboardRepository dashboardRepository,
+                                       CompanyRepository companyRepository) {
         this.dashboardRepository = dashboardRepository;
+        this.companyRepository = companyRepository;
     }
 
     /**
@@ -32,6 +36,10 @@ public class DashboardCommandServiceImpl implements DashboardCommandService {
      */
     @Override
     public Long handle(CreateDashboardCommand command) {
+
+        if (!companyRepository.existsById(command.companyId())) {
+            throw new RuntimeException("Company with ID " + command.companyId() + " does not exist.");
+        }
         var dashboard = new Dashboard(command);
         try {
             dashboardRepository.save(dashboard);
@@ -52,7 +60,9 @@ public class DashboardCommandServiceImpl implements DashboardCommandService {
         if (!this.dashboardRepository.existsById(dashboardId)) {
             throw new RuntimeException("Dashboard with ID " + dashboardId + " does not exist.");
         }
-
+        if (!this.companyRepository.existsById(command.companyId())) {
+            throw new RuntimeException("Company with ID " + command.companyId() + " does not exist.");
+        }
         var dashboardToUpdate = this.dashboardRepository.findById(dashboardId).get();
         dashboardToUpdate.updateDashboard(command);
         try {

@@ -13,14 +13,14 @@ public class WorkTeamAssembler {
      *  Converts a CreateWorkTeamRequest to a CreateWorkTeamCommand.
      */
     public static CreateWorkTeamCommand toCommandFromRequest(CreateWorkTeamRequest request) {
-        return new CreateWorkTeamCommand(request.teamName(), request.leaderOfTeam());
+        return new CreateWorkTeamCommand(request.teamName(), request.leaderOfTeam(), request.unitOfWorkId());
     }
 
     /**
      *  Converts an UpdateWorkTeamRequest to an UpdateWorkTeamCommand.
      */
     public static UpdateWorkTeamCommand toCommandFromRequest(Long workTeamId, UpdateWorkTeamRequest request) {
-        return new UpdateWorkTeamCommand(workTeamId, request.teamName(), request.leaderOfTeam());
+        return new UpdateWorkTeamCommand(workTeamId, request.teamName(), request.leaderOfTeam(), request.unitOfWorkId());
     }
 
     /**
@@ -28,6 +28,6 @@ public class WorkTeamAssembler {
      */
     public static WorkTeamResponse toResponseFromEntity(WorkTeam workTeam)
     {
-        return new WorkTeamResponse(workTeam.getId(), workTeam.getTeamName(), workTeam.getLeaderOfTeam());
+        return new WorkTeamResponse(workTeam.getId(), workTeam.getTeamName(), workTeam.getLeaderOfTeam(),workTeam.getUnitOfWorkId());
     }
 }

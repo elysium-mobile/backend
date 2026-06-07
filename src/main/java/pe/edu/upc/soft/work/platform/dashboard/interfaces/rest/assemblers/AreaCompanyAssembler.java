@@ -18,7 +18,7 @@ public class AreaCompanyAssembler {
      *  Converts a CreateAreaCompanyRequest to a CreateAreaCompanyCommand.
      */
     public static CreateAreaCompanyCommand toCommandFromRequest(CreateAreaCompanyRequest request){
-        return new CreateAreaCompanyCommand(request.name(),request.annualBudget(), new ArrayList<>());
+        return new CreateAreaCompanyCommand(request.name(),request.annualBudget(),0L, new ArrayList<>());
     }
 
     /**
@@ -26,7 +26,7 @@ public class AreaCompanyAssembler {
      */
     public static UpdateAreaCompanyCommand toCommandFromRequest(Long areaCompanyId, UpdateAreaCompanyRequest request)
     {
-        return new UpdateAreaCompanyCommand(areaCompanyId, request.name(),request.annualBudget());
+        return new UpdateAreaCompanyCommand(areaCompanyId, request.name(),request.annualBudget(), request.companyId());
     }
 
     /**
@@ -47,6 +47,6 @@ public class AreaCompanyAssembler {
                                 .toList())
                 )
                 .toList();
-        return new AreaCompanyResponse(areaCompany.getId(), areaCompany.getName(), areaCompany.getAnnualBudget(), unitOfWorkResponses);
+        return new AreaCompanyResponse(areaCompany.getId(), areaCompany.getName(), areaCompany.getAnnualBudget(),areaCompany.getCompanyId(), unitOfWorkResponses);
     }
 }

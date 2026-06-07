@@ -26,6 +26,18 @@ public class Dashboard extends AuditableAbstractAggregateRoot<Dashboard> {
     @Column(name = "widgets", nullable = true)
     private List<Widget> widgets;
 
+    @Getter
+    @Column(name = "companyId", nullable = false)
+    private Long companyId;
+
+    @Getter
+    @Column(name = "title", nullable = false)
+    private String title;
+
+    @Getter
+    @Column(name = "description", nullable = false)
+    private String description;
+
     /**
      * Default constructor for JPA.
      */
@@ -36,8 +48,11 @@ public class Dashboard extends AuditableAbstractAggregateRoot<Dashboard> {
      * @param command the command containing dashboard details
      */
     public Dashboard(CreateDashboardCommand command) {
+        this.title=command.title();
+        this.description= command.description();
         this.ruc = command.ruc();
         this.widgets =command.widgetList();
+        this.companyId = command.companyId();
     }
 
     /**
@@ -45,6 +60,9 @@ public class Dashboard extends AuditableAbstractAggregateRoot<Dashboard> {
      * @param command the command containing updated dashboard details
      */
     public void updateDashboard(UpdateDashboardCommand command) {
+        this.title = command.title();
+        this.description = command.description();
         this.ruc = command.ruc();
+        this.companyId = command.companyId();
     }
 }

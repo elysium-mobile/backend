@@ -17,14 +17,14 @@ public class DashboardAssembler {
      * Converts a CreateDashboardRequest to a CreateDashboardCommand.
      */
     public static CreateDashboardCommand toCommandFromRequest(CreateDashboardRequest request) {
-        return new CreateDashboardCommand(request.ruc(), new ArrayList<>());
+        return new CreateDashboardCommand(request.ruc(), request.title(), request.description(), 0L,new ArrayList<>());
     }
 
     /**
      * Converts an UpdateDashboardRequest to an UpdateDashboardCommand.
      */
     public static UpdateDashboardCommand toCommandFromRequest(Long dashboardId, UpdateDashboardRequest request) {
-        return new UpdateDashboardCommand(dashboardId, request.ruc());
+        return new UpdateDashboardCommand(dashboardId,request.title(),request.description(), request.ruc(), request.companyId());
     }
 
     /**
@@ -38,6 +38,6 @@ public class DashboardAssembler {
                         widget.getRefreshPeriod()
                 ))
                 .toList();
-        return new DashboardResponse(dashboard.getId(), dashboard.getRuc(),widgetResponses);
+        return new DashboardResponse(dashboard.getId(),dashboard.getTitle(), dashboard.getDescription(), dashboard.getRuc(),dashboard.getCompanyId(),widgetResponses);
     }
 }

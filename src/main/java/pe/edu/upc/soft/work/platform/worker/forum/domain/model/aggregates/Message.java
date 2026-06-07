@@ -35,6 +35,10 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
     @Column(name = "attachments", nullable = true)
     private List<Attachment> attachments;
 
+    @Getter
+    @Column(name = "thread_id", nullable = false)
+    private Long threadId;
+
     /**
      * Default constructor for JPA.
      */

@@ -14,20 +14,20 @@ public class SurveyResponseAssembler {
      *  Converts a CreateSurveyResponseRequest to a CreateSurveyResponseCommand.
      * */
     public static CreateSurveyResponseCommand toCommandFromRequest(CreateSurveyResponseRequest request){
-        return new CreateSurveyResponseCommand(request.surveyId(),new EmployeeProfileId(request.employeeProfileId()), request.submittedAt());
+        return new CreateSurveyResponseCommand(request.surveyId(),new EmployeeProfileId(request.employeeProfileId()), request.submittedAt(), request.commentary(),request.cause());
     }
 
     /**
      *  Converts an UpdateSurveyResponseRequest to an UpdateSurveyResponseCommand.
      */
     public static UpdateSurveyResponseCommand toCommandFromRequest(Long surveyResponseId, UpdateSurveyResponseRequest request){
-        return new UpdateSurveyResponseCommand(surveyResponseId, request.surveyId(), new EmployeeProfileId(request.employeeProfileId()), request.submittedAt());
+        return new UpdateSurveyResponseCommand(surveyResponseId, request.surveyId(), new EmployeeProfileId(request.employeeProfileId()), request.submittedAt(), request.commentary(), request.cause());
     }
 
     /**
      *  Converts a SurveyResponse entity to a SurveyResponseResponse.
      */
     public static SurveyResponseResponse toResponseFromEntity(SurveyResponse response){
-        return new SurveyResponseResponse(response.getId(), response.getSurveyId(), response.getEmployeeProfileId().employeeProfileId(), response.getSubmittedAt());
+        return new SurveyResponseResponse(response.getId(), response.getSurveyId(), response.getEmployeeProfileId().employeeProfileId(), response.getSubmittedAt(), response.getCommentary(), response.getCause());
     }
 }

@@ -15,6 +15,10 @@ public record CreateQuestionSurveyRequest(
         @NotNull
         @NotBlank
         @JsonProperty("questionType")
-        String questionType
+        String questionType,
+        @NotNull
+        @NotBlank
+        @JsonProperty("surveyId")
+        Long surveyId
 ) {
 }

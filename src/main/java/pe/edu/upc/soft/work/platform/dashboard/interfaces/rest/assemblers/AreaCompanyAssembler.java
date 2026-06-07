@@ -42,7 +42,8 @@ public class AreaCompanyAssembler {
                                 .map(workTeam -> new pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.WorkTeamResponse(
                                         workTeam.getId(),
                                         workTeam.getTeamName(),
-                                        workTeam.getLeaderOfTeam()
+                                        workTeam.getLeaderOfTeam(),
+                                        workTeam.getUnitOfWorkId()
                                 ))
                                 .toList())
                 )

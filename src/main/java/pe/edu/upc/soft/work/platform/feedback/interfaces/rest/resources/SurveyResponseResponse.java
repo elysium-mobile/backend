@@ -7,6 +7,8 @@ public record SurveyResponseResponse(
         Long surveyResponseId,
         Long surveyId,
         Long employeeProfileId,
-        Date SubmittedAt
+        Date SubmittedAt,
+        String commentary,
+        String cause
 ) {
 }

@@ -17,6 +17,12 @@ public record UpdateSurveyResponseRequest(
         @NotNull
         @NotBlank
         @JsonProperty("submittedAt")
-        Date submittedAt
+        Date submittedAt,
+        @NotNull
+        @NotBlank
+        String commentary,
+        @NotNull
+        @NotBlank
+        String cause
 ) {
 }

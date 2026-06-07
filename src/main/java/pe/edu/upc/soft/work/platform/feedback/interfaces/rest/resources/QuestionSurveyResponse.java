@@ -4,6 +4,7 @@ public record QuestionSurveyResponse(
 
         Long questionSurveyId,
         String textQuestion,
-        String questionType
+        String questionType,
+        Long surveyId
 ) {
 }

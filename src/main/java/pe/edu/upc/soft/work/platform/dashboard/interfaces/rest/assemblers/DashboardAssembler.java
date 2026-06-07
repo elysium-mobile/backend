@@ -35,7 +35,8 @@ public class DashboardAssembler {
                 .map(widget -> new WidgetResponse(
                         widget.getId(),
                         widget.getTitle(),
-                        widget.getRefreshPeriod()
+                        widget.getRefreshPeriod(),
+                        widget.getDashboardId()
                 ))
                 .toList();
         return new DashboardResponse(dashboard.getId(),dashboard.getTitle(), dashboard.getDescription(), dashboard.getRuc(),dashboard.getCompanyId(),widgetResponses);

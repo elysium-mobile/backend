@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Command to create a new QuestionSurvey
  */
-public record CreateQuestionSurveyCommand(String textQuestion, QuestionType questionType) {
+public record CreateQuestionSurveyCommand(String textQuestion, QuestionType questionType, Long surveyId) {
 
     /**
      * Constructor with validation

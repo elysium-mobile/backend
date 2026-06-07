@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Command to update an existing SurveyResponse
  */
-public record UpdateSurveyResponseCommand(Long surveyresponseId, Long surveyId, EmployeeProfileId employeeProfileId, Date submittedAt) {
+public record UpdateSurveyResponseCommand(Long surveyresponseId, Long surveyId, EmployeeProfileId employeeProfileId, Date submittedAt, String commentary, String cause) {
 
     /**
      * Constructor with validation

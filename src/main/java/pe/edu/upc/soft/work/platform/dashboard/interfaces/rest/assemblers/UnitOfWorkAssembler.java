@@ -31,7 +31,7 @@ public class UnitOfWorkAssembler {
      */
     public static UnitOfWorkResponse toResponseFromEntity(UnitOfWork unitOfWork){
         List<WorkTeamResponse> workTeamResponses = unitOfWork.getWorkTeamList().stream()
-                .map(workTeam -> new WorkTeamResponse(workTeam.getId(), workTeam.getTeamName(),workTeam.getLeaderOfTeam())).toList();
+                .map(workTeam -> new WorkTeamResponse(workTeam.getId(), workTeam.getTeamName(),workTeam.getLeaderOfTeam(), workTeam.getUnitOfWorkId())).toList();
 
         return new UnitOfWorkResponse(unitOfWork.getId(), unitOfWork.getName(), workTeamResponses);
     }

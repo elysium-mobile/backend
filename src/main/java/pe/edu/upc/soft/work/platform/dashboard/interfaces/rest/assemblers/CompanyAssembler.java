@@ -50,7 +50,8 @@ public class CompanyAssembler {
                                         .map(workTeam -> new WorkTeamResponse(
                                                 workTeam.getId(),
                                                 workTeam.getTeamName(),
-                                                workTeam.getLeaderOfTeam()
+                                                workTeam.getLeaderOfTeam(),
+                                                workTeam.getUnitOfWorkId()
                                         ))
                                         .toList();
                                 return new UnitOfWorkResponse(
@@ -64,6 +65,7 @@ public class CompanyAssembler {
                             areaCompany.getId(),
                             areaCompany.getName(),
                             areaCompany.getAnnualBudget(),
+                            areaCompany.getCompanyId(),
                             unitOfWorkResponses
                     );
                 })

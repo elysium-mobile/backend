@@ -32,8 +32,8 @@ public class SurveyResponse extends AuditableAbstractAggregateRoot<SurveyRespons
     private Date submittedAt;
 
     @Getter
-    @Column(name = "comentary", nullable = false)
-    private String comentary;
+    @Column(name = "commentary", nullable = false)
+    private String commentary;
 
     @Getter
     @Column(name = "cause", nullable = false)
@@ -52,6 +52,8 @@ public class SurveyResponse extends AuditableAbstractAggregateRoot<SurveyRespons
         this.surveyId = command.surveyId();
         this.employeeProfileId = command.employeeProfileId();
         this.submittedAt = command.submittedAt();
+        this.commentary = command.commentary();
+        this.cause = command.cause();
     }
 
     /**
@@ -62,5 +64,7 @@ public class SurveyResponse extends AuditableAbstractAggregateRoot<SurveyRespons
         this.surveyId = command.surveyId();
         this.employeeProfileId = command.employeeProfileId();
         this.submittedAt = command.submittedAt();
+        this.commentary = command.commentary();
+        this.cause = command.cause();
     }
 }

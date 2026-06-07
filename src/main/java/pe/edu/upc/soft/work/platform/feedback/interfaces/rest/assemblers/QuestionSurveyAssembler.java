@@ -14,20 +14,20 @@ public class QuestionSurveyAssembler {
      * Converts a CreateQuestionSurveyRequest to a CreateQuestionSurveyCommand.
      */
     public static CreateQuestionSurveyCommand toCommandFromRequest(CreateQuestionSurveyRequest request){
-        return new CreateQuestionSurveyCommand(request.textQuestion(), QuestionType.valueOf( request.questionType()));
+        return new CreateQuestionSurveyCommand(request.textQuestion(), QuestionType.valueOf( request.questionType()), request.surveyId());
     }
 
     /**
      *  Converts an UpdateQuestionSurveyRequest to an UpdateQuestionSurveyCommand.
      */
     public static UpdateQuestionSurveyCommand toCommandFromRequest(Long questionSurveyId, UpdateQuestionSurveyRequest request){
-        return new UpdateQuestionSurveyCommand(questionSurveyId, request.textQuestion(), QuestionType.valueOf(request.questionType()));
+        return new UpdateQuestionSurveyCommand(questionSurveyId, request.textQuestion(), QuestionType.valueOf(request.questionType()), request.surveyId());
     }
 
     /**
      *  Converts a QuestionSurvey entity to a QuestionSurveyResponse.
      */
     public static QuestionSurveyResponse toResponseFromEntity(QuestionSurvey questionSurvey){
-        return new QuestionSurveyResponse(questionSurvey.getId(), questionSurvey.getTextQuestion(), questionSurvey.getQuestionType().name());
+        return new QuestionSurveyResponse(questionSurvey.getId(), questionSurvey.getTextQuestion(), questionSurvey.getQuestionType().name(), questionSurvey.getSurveyId());
     }
 }

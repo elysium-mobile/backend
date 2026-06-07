@@ -8,7 +8,7 @@ import java.util.Objects;
 /**
  * Command to create a new SurveyResponse
  */
-public record CreateSurveyResponseCommand(Long surveyId, EmployeeProfileId employeeProfileId, Date submittedAt) {
+public record CreateSurveyResponseCommand(Long surveyId, EmployeeProfileId employeeProfileId, Date submittedAt, String commentary, String cause) {
 
     /**
      * Constructor with validation

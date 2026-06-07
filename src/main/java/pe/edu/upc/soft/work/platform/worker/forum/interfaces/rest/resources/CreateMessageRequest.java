@@ -15,5 +15,9 @@ public record CreateMessageRequest(
         @NotNull
         @NotBlank
         @JsonProperty("contentMessage")
-        String contentMessage
+        String contentMessage,
+        @NotNull
+        @NotBlank
+        @JsonProperty("threadId")
+        Long threadId
 ) {}

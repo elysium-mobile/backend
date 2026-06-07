@@ -13,5 +13,6 @@ public record ThreadResponse(
         String title,
         Long areaCompanyId,
         Date lastMessage,
+        Long categoryId,
         List<MessageResponse> messageResponses
 ) {}

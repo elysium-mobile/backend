@@ -52,6 +52,7 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
         this.userAccountId = command.userAccountId();
         this.contentMessage = command.contentMessage();
         this.attachments =command.attachments();
+        this.threadId = command.threadId();
     }
 
     /**
@@ -61,5 +62,6 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
     public void updateMessage(UpdateMessageCommand command) {
         this.userAccountId = command.userAccountId();
         this.contentMessage = command.contentMessage();
+        this.threadId = command.threadId();
     }
 }

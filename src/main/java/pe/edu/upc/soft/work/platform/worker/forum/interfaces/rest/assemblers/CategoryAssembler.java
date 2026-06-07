@@ -14,14 +14,14 @@ public class CategoryAssembler {
      * Converts a CreateCategoryRequest to a CreateCategoryCommand.
      */
     public static CreateCategoryCommand toCommandFromRequest(CreateCategoryRequest request) {
-        return new CreateCategoryCommand(request.title(), request.description(), new ArrayList<>());
+        return new CreateCategoryCommand(request.title(), request.description(), request.forumId(), new ArrayList<>());
     }
 
     /**
      * Converts an UpdateCategoryRequest to an UpdateCategoryCommand.
      */
     public static UpdateCategoryCommand toCommandFromRequest(Long categoryId, UpdateCategoryRequest request) {
-        return new UpdateCategoryCommand(categoryId, request.title(), request.description());
+        return new UpdateCategoryCommand(categoryId, request.title(), request.description(),request.forumId());
     }
 
     /**
@@ -46,6 +46,7 @@ public class CategoryAssembler {
                                         message.getId(),
                                         message.getUserAccountId().userAccountId(),
                                         message.getContentMessage(),
+                                        message.getThreadId(),
                                         attachmentResponses
                                 );
                             })
@@ -55,11 +56,12 @@ public class CategoryAssembler {
                             thread.getTitle(),
                             thread.getAreaCompanyId().areaCompanyId(),
                             thread.getLastMessage(),
+                            thread.getCategoryId(),
                             messageResponses
                     );
                 })
                 .toList();
 
-        return new CategoryResponse(category.getId(), category.getTitle(), category.getDescription(), threadResponses);
+        return new CategoryResponse(category.getId(), category.getTitle(), category.getDescription(), category.getForumId(), threadResponses);
     }
 }

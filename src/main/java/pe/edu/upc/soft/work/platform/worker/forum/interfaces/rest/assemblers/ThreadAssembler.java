@@ -15,14 +15,14 @@ public class ThreadAssembler {
      * Converts a CreateThreadRequest to a CreateThreadCommand.
      */
     public static CreateThreadCommand toCommandFromRequest(CreateThreadRequest request) {
-        return new CreateThreadCommand(request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage(), new ArrayList<>());
+        return new CreateThreadCommand(request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage(),request.categoryId(), new ArrayList<>());
     }
 
     /**
      * Converts an UpdateThreadRequest to an UpdateThreadCommand.
      */
     public static UpdateThreadCommand toCommandFromRequest(Long threadId, UpdateThreadRequest request) {
-        return new UpdateThreadCommand(threadId, request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage());
+        return new UpdateThreadCommand(threadId, request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage(), request.categoryId());
     }
 
     /**
@@ -45,11 +45,12 @@ public class ThreadAssembler {
                             message.getId(),
                             message.getUserAccountId().userAccountId(),
                             message.getContentMessage(),
+                            message.getThreadId(),
                             attachmentResponses
                     );
                 })
                 .toList();
 
-        return new ThreadResponse(thread.getId(), thread.getTitle(), thread.getAreaCompanyId().areaCompanyId(), thread.getLastMessage(), messageResponses);
+        return new ThreadResponse(thread.getId(), thread.getTitle(), thread.getAreaCompanyId().areaCompanyId(), thread.getLastMessage(), thread.getCategoryId(), messageResponses);
     }
 }

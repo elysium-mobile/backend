@@ -18,14 +18,14 @@ public class MessageAssembler {
      * Converts a CreateMessageRequest to a CreateMessageCommand.
      */
     public static CreateMessageCommand toCommandFromRequest(CreateMessageRequest request) {
-        return new CreateMessageCommand(new UserAccountId(request.userAccountId()), request.contentMessage(), new ArrayList<>());
+        return new CreateMessageCommand(new UserAccountId(request.userAccountId()), request.contentMessage(), request.threadId(),new ArrayList<>());
     }
 
     /**
      * Converts an UpdateMessageRequest to an UpdateMessageCommand.
      */
     public static UpdateMessageCommand toCommandFromRequest(Long messageId, UpdateMessageRequest request) {
-        return new UpdateMessageCommand(messageId, new UserAccountId(request.userAccountId()), request.contentMessage());
+        return new UpdateMessageCommand(messageId, new UserAccountId(request.userAccountId()), request.contentMessage(), request.threadId());
     }
 
     /**
@@ -43,6 +43,6 @@ public class MessageAssembler {
                 ))
                 .toList();
 
-        return new MessageResponse(message.getId(), message.getUserAccountId().userAccountId(), message.getContentMessage(), attachmentResponses);
+        return new MessageResponse(message.getId(), message.getUserAccountId().userAccountId(), message.getContentMessage(),message.getThreadId(), attachmentResponses);
     }
 }

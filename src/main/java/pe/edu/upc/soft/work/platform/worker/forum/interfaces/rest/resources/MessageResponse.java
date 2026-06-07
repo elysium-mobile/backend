@@ -9,5 +9,6 @@ public record MessageResponse(
         Long messageId,
         Long userAccountId,
         String contentMessage,
+        Long threadId,
         List<AttachmentResponse> attachments
 ) {}

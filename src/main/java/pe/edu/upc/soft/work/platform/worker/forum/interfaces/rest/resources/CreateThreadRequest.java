@@ -15,10 +15,14 @@ public record CreateThreadRequest(
         String title,
         @NotNull
         @NotBlank
-        @JsonProperty("areaCompnayId")
+        @JsonProperty("areaCompanyId")
         Long areaCompanyId,
         @NotNull
         @NotBlank
         @JsonProperty("lastMessage")
-        Date lastMessage
+        Date lastMessage,
+        @NotNull
+        @NotBlank
+        @JsonProperty("categoryId")
+        Long categoryId
 ) {}

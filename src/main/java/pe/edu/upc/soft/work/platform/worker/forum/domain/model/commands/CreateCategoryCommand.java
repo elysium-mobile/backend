@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Command to create a new Category
  */
-public record CreateCategoryCommand(String title, String description,
+public record CreateCategoryCommand(String title, String description,Long forumId,
                                     List<Thread> threads) {
 
     /**

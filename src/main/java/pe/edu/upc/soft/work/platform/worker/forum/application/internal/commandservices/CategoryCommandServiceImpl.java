@@ -7,6 +7,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateCa
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.CategoryCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.CategoryRepository;
+import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ForumRepository;
 
 import java.util.Optional;
 
@@ -16,13 +17,16 @@ import java.util.Optional;
 @Service
 public class CategoryCommandServiceImpl implements CategoryCommandService {
     private final CategoryRepository categoryRepository;
+    private final ForumRepository forumRepository;
 
     /**
      * Constructor for CategoryCommandServiceImpl.
      * @param categoryRepository the repository for Category persistence
      */
-    public CategoryCommandServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryCommandServiceImpl(CategoryRepository categoryRepository,
+                                      ForumRepository forumRepository) {
         this.categoryRepository = categoryRepository;
+        this.forumRepository = forumRepository;
     }
 
     /**
@@ -32,6 +36,9 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
      */
     @Override
     public Long handle(CreateCategoryCommand command) {
+        if (!forumRepository.existsById(command.forumId())) {
+            throw new RuntimeException("Forum with ID " + command.forumId() + " does not exist.");
+        }
         var category = new Category(command);
         try {
             categoryRepository.save(category);
@@ -48,6 +55,10 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
      */
     @Override
     public Optional<Category> handle(UpdateCategoryCommand command) {
+
+        if (!forumRepository.existsById(command.forumId())) {
+            throw new RuntimeException("Forum with ID " + command.forumId() + " does not exist.");
+        }
         var categoryId = command.categoryId();
         if (!this.categoryRepository.existsById(categoryId)) {
             throw new RuntimeException("Category with ID " + categoryId + " does not exist.");

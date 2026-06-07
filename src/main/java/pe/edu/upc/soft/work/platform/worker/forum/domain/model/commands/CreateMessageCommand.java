@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Command to create a new Message
  */
-public record CreateMessageCommand(UserAccountId userAccountId, String contentMessage,
+public record CreateMessageCommand(UserAccountId userAccountId, String contentMessage,Long threadId,
                                    List<Attachment> attachments) {
 
     /**

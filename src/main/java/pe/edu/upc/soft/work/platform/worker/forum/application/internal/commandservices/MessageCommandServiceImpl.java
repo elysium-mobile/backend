@@ -11,6 +11,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteMe
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.events.MessagePostedEvent;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.MessageRepository;
+import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ThreadRepository;
 
 import java.util.Optional;
 
@@ -22,16 +23,19 @@ public class MessageCommandServiceImpl implements MessageCommandService {
     private final MessageRepository messageRepository;
     private final ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService;
     private final ApplicationEventPublisher eventPublisher;
+    private final ThreadRepository threadRepository;
     /**
      * Constructor for MessageCommandServiceImpl.
      * @param messageRepository the repository for Message persistence
      */
     public MessageCommandServiceImpl(MessageRepository messageRepository,
                                      ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService,
-                                     ApplicationEventPublisher eventPublisher) {
+                                     ApplicationEventPublisher eventPublisher,
+                                     ThreadRepository threadRepository) {
         this.messageRepository = messageRepository;
         this.externalIamServiceFromPaymentService = externalIamServiceFromPaymentService;
         this.eventPublisher = eventPublisher;
+        this.threadRepository = threadRepository;
 
     }
 
@@ -46,6 +50,12 @@ public class MessageCommandServiceImpl implements MessageCommandService {
             throw new NotFoundArgumentException(
                     String.format("[MessageCommandServiceImpl] User Account ID: %s not found in the external IAM service",
                             command.userAccountId().userAccountId())
+            );
+        }
+        if (!threadRepository.existsById(command.threadId())) {
+            throw new NotFoundArgumentException(
+                    String.format("[MessageCommandServiceImpl] Thread ID: %s not found in the Thread repository",
+                            command.threadId())
             );
         }
         var message = new Message(command);
@@ -65,6 +75,12 @@ public class MessageCommandServiceImpl implements MessageCommandService {
      */
     @Override
     public Optional<Message> handle(UpdateMessageCommand command) {
+        if (!threadRepository.existsById(command.threadId())) {
+            throw new NotFoundArgumentException(
+                    String.format("[MessageCommandServiceImpl] Thread ID: %s not found in the Thread repository",
+                            command.threadId())
+            );
+        }
         var messageId = command.messageId();
         if (!this.messageRepository.existsById(messageId)) {
             throw new RuntimeException("Message with ID " + messageId + " does not exist.");

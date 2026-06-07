@@ -55,6 +55,7 @@ public class Thread extends AuditableAbstractAggregateRoot<Thread> {
         this.areaCompanyId = command.areaCompanyId();
         this.lastMessage = command.lastMessage();
         this.messages=command.messages();
+        this.categoryId=command.categoryId();
     }
 
     /**
@@ -65,5 +66,6 @@ public class Thread extends AuditableAbstractAggregateRoot<Thread> {
         this.title = command.title();
         this.areaCompanyId = command.areaCompanyId();
         this.lastMessage = command.lastMessage();
+        this.categoryId=command.categoryId();
     }
 }

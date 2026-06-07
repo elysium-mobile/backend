@@ -46,6 +46,7 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
         this.title = command.title();
         this.description = command.description();
         this.threads = command.threads();
+        this.forumId = command.forumId();
     }
 
     /**
@@ -55,5 +56,6 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
     public void updateCategory(UpdateCategoryCommand command) {
         this.title = command.title();
         this.description = command.description();
+        this.forumId = command.forumId();
     }
 }

@@ -8,6 +8,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateTh
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ThreadCommandService;
+import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.CategoryRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ThreadRepository;
 
 import java.util.Optional;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @Service
 public class ThreadCommandServiceImpl implements ThreadCommandService {
     private final ThreadRepository threadRepository;
+    private final CategoryRepository categoryRepository;
 
     private final ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum;
 
@@ -26,9 +28,11 @@ public class ThreadCommandServiceImpl implements ThreadCommandService {
      * @param threadRepository the repository for Thread persistence
      */
     public ThreadCommandServiceImpl(ThreadRepository threadRepository,
-                                    ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum) {
+                                    ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum,
+                                    CategoryRepository categoryRepository) {
         this.threadRepository = threadRepository;
         this.externalDashboardServiceFromWorkerForum = externalDashboardServiceFromWorkerForum;
+        this.categoryRepository = categoryRepository;
     }
 
     /**
@@ -43,6 +47,12 @@ public class ThreadCommandServiceImpl implements ThreadCommandService {
             throw new NotFoundArgumentException(
                     String.format("[ThreadCommandServiceImpl] Company ID: %s not found in the external Dashboard Context",
                             command.areaCompanyId().areaCompanyId())
+            );
+        }
+        if (!categoryRepository.existsById(command.categoryId())){
+            throw new NotFoundArgumentException(
+                    String.format("[ThreadCommandServiceImpl] Category ID: %s not found in the database",
+                            command.categoryId())
             );
         }
         var thread = new Thread(command);
@@ -61,6 +71,12 @@ public class ThreadCommandServiceImpl implements ThreadCommandService {
      */
     @Override
     public Optional<Thread> handle(UpdateThreadCommand command) {
+        if (!categoryRepository.existsById(command.categoryId())){
+            throw new NotFoundArgumentException(
+                    String.format("[ThreadCommandServiceImpl] Category ID: %s not found in the database",
+                            command.categoryId())
+            );
+        }
         var threadId = command.threadId();
         if (!this.threadRepository.existsById(threadId)) {
             throw new RuntimeException("Thread with ID " + threadId + " does not exist.");

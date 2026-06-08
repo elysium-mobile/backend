@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.services;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Forum;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddCategoryToForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteForumCommand;
@@ -26,4 +27,7 @@ public interface ForumCommandService {
      * Handles the deletion of an existing Forum.
      */
     void handle(DeleteForumCommand command);
+
+
+    void handle(AddCategoryToForumCommand command);
 }

@@ -16,6 +16,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetCatego
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.CategoryCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.CategoryQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.CategoryAssembler;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AddThreadToCategoryRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CategoryResponse;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateCategoryRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateCategoryRequest;
@@ -132,5 +133,25 @@ public class CategoryController {
         var deleteCategoryCommand = new DeleteCategoryCommand(id);
         this.categoryCommandService.handle(deleteCategoryCommand);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Add Thread to Category", description = "Add a Thread to a Category by their unique identifiers")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Thread added to Category successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CategoryResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Category or Thread not found", content = @Content)
+    })
+    @PostMapping("/{id}/threads")
+    public ResponseEntity<CategoryResponse> addThreadToCategory(@PathVariable Long id, @RequestBody AddThreadToCategoryRequest request){
+        var command = CategoryAssembler.toCommandFromRequest(id, request);
+        this.categoryCommandService.handle(command);
+        var category = this.categoryQueryService.handle(new GetCategoryByIdQuery(id));
+        if (category.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var categoryResponse = CategoryAssembler.toResponseFromEntity(category.get());
+        return ResponseEntity.ok(categoryResponse);
     }
 }

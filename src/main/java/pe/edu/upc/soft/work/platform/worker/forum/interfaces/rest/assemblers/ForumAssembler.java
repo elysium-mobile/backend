@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Forum;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddCategoryToForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.CompanyId;
@@ -23,6 +24,10 @@ public class ForumAssembler {
      */
     public static UpdateForumCommand toCommandFromRequest(Long forumId, UpdateForumRequest request) {
         return new UpdateForumCommand(forumId, request.title(), request.description(), new CompanyId(request.companyId()));
+    }
+
+    public static AddCategoryToForumCommand toCommandFromRequest(Long forumId, AddCategoryToForumRequest request) {
+        return new AddCategoryToForumCommand(request.categoryId(), forumId);
     }
 
     /**
@@ -49,6 +54,7 @@ public class ForumAssembler {
                                                     message.getId(),
                                                     message.getUserAccountId().userAccountId(),
                                                     message.getContentMessage(),
+                                                    message.getThreadId(),
                                                     attachmentResponses
                                             );
                                         })
@@ -58,6 +64,8 @@ public class ForumAssembler {
                                         thread.getTitle(),
                                         thread.getAreaCompanyId().areaCompanyId(),
                                         thread.getLastMessage(),
+                                        thread.getCategoryId(),
+                                        thread.getMessageCount(),
                                         messageResponses
                                 );
                             })
@@ -66,6 +74,7 @@ public class ForumAssembler {
                             category.getId(),
                             category.getTitle(),
                             category.getDescription(),
+                            category.getForumId(),
                             threadResponses
                     );
                 })

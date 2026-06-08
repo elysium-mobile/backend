@@ -6,6 +6,8 @@ import lombok.Getter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateThreadCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -41,6 +43,10 @@ public class Thread extends AuditableAbstractAggregateRoot<Thread> {
     @Column(name = "category_id", nullable = false)
     private Long categoryId;
 
+    @Getter
+    @Column(name = "message_count", nullable = false)
+    private Integer messageCount;
+
     /**
      * Default constructor for JPA.
      */
@@ -56,6 +62,7 @@ public class Thread extends AuditableAbstractAggregateRoot<Thread> {
         this.lastMessage = command.lastMessage();
         this.messages=command.messages();
         this.categoryId=command.categoryId();
+        this.messageCount = command.messageCount();
     }
 
     /**
@@ -67,5 +74,27 @@ public class Thread extends AuditableAbstractAggregateRoot<Thread> {
         this.areaCompanyId = command.areaCompanyId();
         this.lastMessage = command.lastMessage();
         this.categoryId=command.categoryId();
+        this.messageCount=command.messageCount();
+    }
+
+    public void incrementMessageCount(){
+        this.messageCount+=1;
+    }
+
+    public void decrementMessageCount(){
+        if (this.messageCount>0){
+            this.messageCount -=1;
+        }
+    }
+
+    public void addMessage(Message message){
+        if (this.messages == null){
+            this.messages = new ArrayList<>();
+        }
+        boolean alreadyExists = this.messages.stream()
+                .anyMatch(m -> m.getId().equals(message.getId()));
+        if (!alreadyExists) {
+            this.messages.add(message);
+        }
     }
 }

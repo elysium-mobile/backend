@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddThreadToCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Category;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateCategoryCommand;
@@ -8,6 +9,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteCa
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.CategoryCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.CategoryRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ForumRepository;
+import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ThreadRepository;
 
 import java.util.Optional;
 
@@ -18,15 +20,18 @@ import java.util.Optional;
 public class CategoryCommandServiceImpl implements CategoryCommandService {
     private final CategoryRepository categoryRepository;
     private final ForumRepository forumRepository;
+    private final ThreadRepository threadRepository;
 
     /**
      * Constructor for CategoryCommandServiceImpl.
      * @param categoryRepository the repository for Category persistence
      */
     public CategoryCommandServiceImpl(CategoryRepository categoryRepository,
-                                      ForumRepository forumRepository) {
+                                      ForumRepository forumRepository,
+                                      ThreadRepository threadRepository) {
         this.categoryRepository = categoryRepository;
         this.forumRepository = forumRepository;
+        this.threadRepository= threadRepository;
     }
 
     /**
@@ -87,6 +92,20 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
             categoryRepository.deleteById(command.categoryId());
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Category: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void handle(AddThreadToCategoryCommand command) {
+        var thread = threadRepository.findById(command.threadId()).orElseThrow(() -> new RuntimeException(
+                String.format("Thread with ID %s does not exist.", command.threadId())));
+        var category = categoryRepository.findById(command.categoryId()).orElseThrow(() -> new RuntimeException(
+                String.format("Category with ID %s does not exist.", command.categoryId())));
+        try {
+            category.addThread(thread);
+            categoryRepository.save(category);
+        } catch (Exception e) {
+            throw new RuntimeException("Error adding Thread to Category: " + e.getMessage(), e);
         }
     }
 }

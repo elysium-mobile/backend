@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * Command to create a new Thread
  */
-public record CreateThreadCommand(String title, AreaCompanyId areaCompanyId, Date lastMessage,Long categoryId,
+public record CreateThreadCommand(String title, AreaCompanyId areaCompanyId, Date lastMessage,Long categoryId,Integer messageCount,
                                   List<Message> messages) {
 
     /**

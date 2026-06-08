@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Thread;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddMessageToThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.AreaCompanyId;
@@ -15,14 +16,19 @@ public class ThreadAssembler {
      * Converts a CreateThreadRequest to a CreateThreadCommand.
      */
     public static CreateThreadCommand toCommandFromRequest(CreateThreadRequest request) {
-        return new CreateThreadCommand(request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage(),request.categoryId(), new ArrayList<>());
+        return new CreateThreadCommand(request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage(),request.categoryId(),request.messageCount(), new ArrayList<>());
     }
 
     /**
      * Converts an UpdateThreadRequest to an UpdateThreadCommand.
      */
     public static UpdateThreadCommand toCommandFromRequest(Long threadId, UpdateThreadRequest request) {
-        return new UpdateThreadCommand(threadId, request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage(), request.categoryId());
+        return new UpdateThreadCommand(threadId, request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage(), request.categoryId(), request.messageCount());
+    }
+
+    public static AddMessageToThreadCommand toCommandFromRequest(Long threadId, AddMessageToThreadRequest request)
+    {
+        return new AddMessageToThreadCommand(request.messageId(),threadId);
     }
 
     /**
@@ -51,6 +57,6 @@ public class ThreadAssembler {
                 })
                 .toList();
 
-        return new ThreadResponse(thread.getId(), thread.getTitle(), thread.getAreaCompanyId().areaCompanyId(), thread.getLastMessage(), thread.getCategoryId(), messageResponses);
+        return new ThreadResponse(thread.getId(), thread.getTitle(), thread.getAreaCompanyId().areaCompanyId(), thread.getLastMessage(), thread.getCategoryId(), thread.getMessageCount(), messageResponses);
     }
 }

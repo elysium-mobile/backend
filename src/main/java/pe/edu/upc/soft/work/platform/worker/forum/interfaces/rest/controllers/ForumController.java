@@ -16,6 +16,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumB
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.ForumAssembler;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AddCategoryToForumRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateForumRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.ForumResponse;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateForumRequest;
@@ -132,5 +133,25 @@ public class ForumController {
         var deleteForumCommand = new DeleteForumCommand(id);
         this.forumCommandService.handle(deleteForumCommand);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Add Category to Forum", description = "Add a Category to an existing Forum")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category added to Forum successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ForumResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Forum or Category not found", content = @Content)
+    })
+    @PostMapping("/{id}/categories")
+    public ResponseEntity<ForumResponse> addCategoryToForum(@PathVariable Long id, @RequestBody AddCategoryToForumRequest request){
+        var command = ForumAssembler.toCommandFromRequest(id, request);
+        this.forumCommandService.handle(command);
+        var forum = this.forumQueryService.handle(new GetForumByIdQuery(id));
+        if (forum.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var forumResponse = ForumAssembler.toResponseFromEntity(forum.get());
+        return ResponseEntity.ok(forumResponse);
     }
 }

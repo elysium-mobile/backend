@@ -58,4 +58,15 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
         this.description = command.description();
         this.forumId = command.forumId();
     }
+
+    public void addThread(Thread thread){
+        if (threads == null) {
+            threads = new java.util.ArrayList<>();
+        }
+        boolean alreadyExists = this.threads.stream()
+                .anyMatch(t -> t.getId().equals(thread.getId()));
+        if (!alreadyExists) {
+            this.threads.add(thread);
+        }
+    }
 }

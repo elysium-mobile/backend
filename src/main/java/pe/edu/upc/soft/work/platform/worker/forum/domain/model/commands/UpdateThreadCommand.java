@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Command to update an existing Thread
  */
-public record UpdateThreadCommand(Long threadId, String title, AreaCompanyId areaCompanyId, Date lastMessage, Long categoryId) {
+public record UpdateThreadCommand(Long threadId, String title, AreaCompanyId areaCompanyId, Date lastMessage, Long categoryId, Integer messageCount) {
 
     /**
      * Constructor with validation

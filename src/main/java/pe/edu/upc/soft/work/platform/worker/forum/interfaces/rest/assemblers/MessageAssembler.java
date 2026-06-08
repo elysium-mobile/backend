@@ -1,13 +1,11 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddAttachmentsToMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.UserAccountId;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AttachmentResponse;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateMessageRequest;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.MessageResponse;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateMessageRequest;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +24,10 @@ public class MessageAssembler {
      */
     public static UpdateMessageCommand toCommandFromRequest(Long messageId, UpdateMessageRequest request) {
         return new UpdateMessageCommand(messageId, new UserAccountId(request.userAccountId()), request.contentMessage(), request.threadId());
+    }
+
+    public static AddAttachmentsToMessageCommand toCommandFromRequest(Long messageId, AddAttachmentToMessageRequest request){
+        return new AddAttachmentsToMessageCommand(request.attachmentId(), messageId);
     }
 
     /**

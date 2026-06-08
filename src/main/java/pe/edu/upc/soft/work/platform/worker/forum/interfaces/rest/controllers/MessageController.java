@@ -16,6 +16,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessag
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.MessageAssembler;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AddAttachmentToMessageRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateMessageRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.MessageResponse;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateMessageRequest;
@@ -132,5 +133,26 @@ public class MessageController {
         var deleteMessageCommand = new DeleteMessageCommand(id);
         this.messageCommandService.handle(deleteMessageCommand);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Add Attachment to Message", description = "Add an attachment to an existing Message")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Attachment added successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Message not found", content = @Content)
+    })
+    @PostMapping("/{id}/attachments")
+    public ResponseEntity<MessageResponse> addAttachmentToMessage(@PathVariable Long id, @RequestBody AddAttachmentToMessageRequest request){
+        var command = MessageAssembler.toCommandFromRequest(id, request);
+        this.messageCommandService.handle(command);
+
+        var message = this.messageQueryService.handle(new GetMessageByIdQuery(id));
+        if (message.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var messageResponse = MessageAssembler.toResponseFromEntity(message.get());
+        return ResponseEntity.ok(messageResponse);
     }
 }

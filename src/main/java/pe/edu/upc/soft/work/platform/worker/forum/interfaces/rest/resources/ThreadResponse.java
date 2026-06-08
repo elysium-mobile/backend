@@ -14,5 +14,6 @@ public record ThreadResponse(
         Long areaCompanyId,
         Date lastMessage,
         Long categoryId,
+        Integer messageCount,
         List<MessageResponse> messageResponses
 ) {}

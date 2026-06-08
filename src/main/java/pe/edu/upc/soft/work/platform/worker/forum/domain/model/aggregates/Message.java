@@ -64,4 +64,15 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
         this.contentMessage = command.contentMessage();
         this.threadId = command.threadId();
     }
+
+    public void addAttachment(Attachment attachment){
+        if (this.attachments == null){
+            this.attachments = new java.util.ArrayList<>();
+        }
+        boolean alreadyExists = this.attachments.stream()
+                .anyMatch(existingAttachment -> existingAttachment.getId().equals(attachment.getId()));
+        if (!alreadyExists) {
+            this.attachments.add(attachment);
+        }
+    }
 }

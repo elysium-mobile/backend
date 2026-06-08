@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.services;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddAttachmentsToMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteMessageCommand;
@@ -26,4 +27,6 @@ public interface MessageCommandService {
      * Handles the deletion of an existing Message.
      */
     void handle(DeleteMessageCommand command);
+
+    void handle(AddAttachmentsToMessageCommand command);
 }

@@ -24,5 +24,9 @@ public record CreateThreadRequest(
         @NotNull
         @NotBlank
         @JsonProperty("categoryId")
-        Long categoryId
+        Long categoryId,
+        @NotNull
+        @NotBlank
+        @JsonProperty("messageCount")
+        Integer messageCount
 ) {}

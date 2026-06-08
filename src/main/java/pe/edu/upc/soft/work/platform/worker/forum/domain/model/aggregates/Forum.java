@@ -9,6 +9,7 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Category;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.CompanyId;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -61,5 +62,16 @@ public class Forum extends AuditableAbstractAggregateRoot<Forum> {
         this.title = command.title();
         this.description = command.description();
         this.companyId = command.companyId();
+    }
+
+    public void addCategory(Category category){
+        if (this.categories == null){
+            this.categories = new ArrayList<>();
+        }
+        boolean alreadyExists = this.categories.stream()
+                .anyMatch(a->a.getId().equals(category.getId()));
+        if (!alreadyExists) {
+            this.categories.add(category);
+        }
     }
 }

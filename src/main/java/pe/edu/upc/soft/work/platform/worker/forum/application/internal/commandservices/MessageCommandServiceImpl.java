@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddAttachmentsToMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.events.MessagePostedEvent;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageCommandService;
+import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.AttachmentRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.MessageRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ThreadRepository;
 
@@ -24,6 +26,8 @@ public class MessageCommandServiceImpl implements MessageCommandService {
     private final ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService;
     private final ApplicationEventPublisher eventPublisher;
     private final ThreadRepository threadRepository;
+    private final AttachmentRepository attachmentRepository;
+
     /**
      * Constructor for MessageCommandServiceImpl.
      * @param messageRepository the repository for Message persistence
@@ -31,11 +35,13 @@ public class MessageCommandServiceImpl implements MessageCommandService {
     public MessageCommandServiceImpl(MessageRepository messageRepository,
                                      ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService,
                                      ApplicationEventPublisher eventPublisher,
-                                     ThreadRepository threadRepository) {
+                                     ThreadRepository threadRepository,
+                                     AttachmentRepository attachmentRepository) {
         this.messageRepository = messageRepository;
         this.externalIamServiceFromPaymentService = externalIamServiceFromPaymentService;
         this.eventPublisher = eventPublisher;
         this.threadRepository = threadRepository;
+        this.attachmentRepository = attachmentRepository;
 
     }
 
@@ -109,6 +115,22 @@ public class MessageCommandServiceImpl implements MessageCommandService {
             messageRepository.deleteById(command.messageId());
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Message: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void handle(AddAttachmentsToMessageCommand command) {
+        var attachment = attachmentRepository.findById(command.attachmentId()).orElseThrow(() -> new NotFoundArgumentException(
+                String.format("[MessageCommandServiceImpl] Attachment ID: %s not found in the database",
+                        command.attachmentId())));
+        var message = messageRepository.findById(command.messageId()).orElseThrow(() -> new NotFoundArgumentException(
+                String.format("[MessageCommandServiceImpl] Message ID: %s not found in the database",
+                        command.messageId())));
+        try {
+            message.addAttachment(attachment);
+            messageRepository.save(message);
+        } catch (Exception e) {
+            throw new RuntimeException("Error adding Attachment to Message: " + e.getMessage(), e);
         }
     }
 }

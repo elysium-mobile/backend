@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers;
 
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddThreadToCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Category;
@@ -22,6 +23,10 @@ public class CategoryAssembler {
      */
     public static UpdateCategoryCommand toCommandFromRequest(Long categoryId, UpdateCategoryRequest request) {
         return new UpdateCategoryCommand(categoryId, request.title(), request.description(),request.forumId());
+    }
+
+    public static AddThreadToCategoryCommand toCommandFromRequest(Long categoryId, AddThreadToCategoryRequest request) {
+        return new AddThreadToCategoryCommand(request.threadId(), categoryId);
     }
 
     /**
@@ -57,6 +62,7 @@ public class CategoryAssembler {
                             thread.getAreaCompanyId().areaCompanyId(),
                             thread.getLastMessage(),
                             thread.getCategoryId(),
+                            thread.getMessageCount(),
                             messageResponses
                     );
                 })

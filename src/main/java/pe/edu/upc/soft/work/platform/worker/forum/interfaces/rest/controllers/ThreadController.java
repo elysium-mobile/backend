@@ -16,6 +16,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThread
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ThreadCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ThreadQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.ThreadAssembler;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AddMessageToThreadRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateThreadRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.ThreadResponse;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateThreadRequest;
@@ -132,5 +133,26 @@ public class ThreadController {
         var deleteThreadCommand = new DeleteThreadCommand(id);
         this.threadCommandService.handle(deleteThreadCommand);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @Operation(summary = "Add a message to a Thread", description = "Add a new message to an existing Thread")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Message added to Thread successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ThreadResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Thread not found", content = @Content)
+    })
+    @PostMapping("/{id}/messages")
+    public ResponseEntity<ThreadResponse> addMessageToThread(@PathVariable Long id, @RequestBody AddMessageToThreadRequest request){
+        var command = ThreadAssembler.toCommandFromRequest(id,request);
+        this.threadCommandService.handle(command);
+
+        var thread = this.threadQueryService.handle(new GetThreadByIdQuery(id));
+        if(thread.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ThreadAssembler.toResponseFromEntity(thread.get()));
     }
 }

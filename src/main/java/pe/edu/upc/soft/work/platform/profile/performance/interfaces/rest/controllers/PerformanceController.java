@@ -154,4 +154,24 @@ public class PerformanceController {
         }
         return ResponseEntity.ok(PerformanceAssembler.toResponseFromEntity(performance.get()));
     }
+
+    @Operation(summary = "Get Performance by Employee ID", description = "Retrieve a Performance by the unique identifier of the associated Employee")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Performance retrieved successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PerformanceResponse.class))),
+            @ApiResponse(responseCode = "404", description = "Performance not found for the given Employee ID", content = @Content)
+    })
+    @GetMapping("/employee/{employeeId}")
+    public ResponseEntity<PerformanceResponse> getPerformanceByEmployeeId(@PathVariable Long employeeId){
+        var getPerformanceByEmployeeIdQuery = new GetPerformanceByIdQuery(employeeId);
+        var performance = performanceQueryService.handle(getPerformanceByEmployeeIdQuery);
+
+        if (performance.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var performanceResponse = PerformanceAssembler.toResponseFromEntity(performance.get());
+        return ResponseEntity.ok(performanceResponse);
+    }
 }

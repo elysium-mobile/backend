@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.SurveyResponse;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetAllSurveyResponseQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetSurveyResponseByIdQuery;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetSurveyResponsesBySurveyIdQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyResponseQueryService;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyResponseRepository;
 
@@ -38,5 +39,10 @@ public class SurveyResponseQueryServiceImpl implements SurveyResponseQueryServic
     @Override
     public Optional<SurveyResponse> handle(GetSurveyResponseByIdQuery query) {
         return surveyresponseRepository.findById(query.surveyresponseId());
+    }
+
+    @Override
+    public List<SurveyResponse> handle(GetSurveyResponsesBySurveyIdQuery query) {
+        return this.surveyresponseRepository.findBySurveyId(query.surveyId());
     }
 }

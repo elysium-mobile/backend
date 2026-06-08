@@ -73,4 +73,21 @@ public class SurveyResponseController {
         return ResponseEntity.ok(surveyResponseResponses);
     }
 
+    @Operation(summary = "Get Survey-Responses by Survey ID", description = "Retrieve a list of Survey-Responses associated with a specific Survey ID")
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "Survey-Responses retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Survey not found")
+    }
+    )
+    @GetMapping("/survey/{surveyId}")
+    public ResponseEntity<List<SurveyResponseResponse>> getSurveyResponsesBySurveyId(@PathVariable Long surveyId) {
+        var getAllSurveyResponseQuery = new GetAllSurveyResponseQuery();
+        var surveyResponses = this.surveyResponseQueryService.handle(getAllSurveyResponseQuery);
+        var surveyResponseResponses = surveyResponses.stream()
+                .filter(surveyResponse -> surveyResponse.getSurveyId().equals(surveyId))
+                .map(SurveyResponseAssembler::toResponseFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(surveyResponseResponses);
+    }
+
 }

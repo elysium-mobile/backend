@@ -140,4 +140,25 @@ public class MembershipPlanController {
         return ResponseEntity.noContent().build();
     }
 
+    @Operation(summary = "Add a Benefit to a Membership Plan", description = "Add a new Benefit to an existing Membership Plan")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Benefit added to Membership Plan successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MembershipPlanResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Membership Plan or Benefit not found", content = @Content)
+    })
+    @PostMapping("/{id}/benefits")
+    public ResponseEntity<MembershipPlanResponse> addBenefitToMembershipPlan(@PathVariable Long id, @RequestBody AddBenefitToMembershipPlanRequest request){
+
+        var command= MembershipPlanAssembler.toCommandFromRequest(id, request);
+        this.membershipPlanCommandService.handle(command);
+        var membershipPlan = this.membershipPlanQueryService.handle(new GetMembershipPlanByIdQuery(id));
+        if (membershipPlan.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var membershipPlanResponse = MembershipPlanAssembler.toResponseFromEntity(membershipPlan.get());
+        return ResponseEntity.ok(membershipPlanResponse);
+    }
+
 }

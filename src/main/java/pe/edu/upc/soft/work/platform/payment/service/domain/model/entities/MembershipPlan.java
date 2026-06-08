@@ -6,6 +6,7 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.Creat
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -57,5 +58,17 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
         this.planName = command.planName();
         this.price = command.price();
         this.membershipId = command.membershipId();
+    }
+
+    public void addBenefit(Benefit benefit){
+        if (this.benefits == null){
+            this.benefits = new ArrayList<>();
+        }
+        boolean alreadyExists = this.benefits.stream()
+                .anyMatch(b -> b.getDescription().equals(benefit.getDescription()));
+        if (alreadyExists) {
+            throw new IllegalStateException("Benefit with the same description already exists in the membership plan.");
+        }
+        this.benefits.add(benefit);
     }
 }

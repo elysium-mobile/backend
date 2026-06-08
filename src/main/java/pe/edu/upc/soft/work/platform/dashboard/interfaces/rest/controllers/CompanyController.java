@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteCompanyCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetCompaniesByNameQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetCompanyByIdQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAllCompanyQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.CompanyCommandService;
@@ -176,6 +177,28 @@ public class CompanyController {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(CompanyAssembler.toResponseFromEntity(company.get()));
+    }
+
+    @Operation(summary = "Get Companies by Name", description = "Retrieve a list of Companies that match the given name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Companies retrieved successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CompanyResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No Companies found with the given name", content = @Content)
+    })
+    @GetMapping("/search")
+    public ResponseEntity<List<CompanyResponse>> getCompaniesByName(@RequestParam String name) {
+        var query = new GetCompaniesByNameQuery(name);
+        var companies = this.companyQueryService.handle(query);
+
+        if (companies.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var companyResponses = companies.stream()
+                .map(CompanyAssembler::toResponseFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(companyResponses);
     }
 
 

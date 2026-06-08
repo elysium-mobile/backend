@@ -16,6 +16,7 @@ import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.Ge
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.PerformanceCommandService;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.PerformanceQueryService;
 import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.assemblers.PerformanceAssembler;
+import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resources.AddCommentEmployeeToPerformanceRequest;
 import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resources.CreatePerformanceRequest;
 import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resources.UpdatePerformanceRequest;
 import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resources.PerformanceResponse;
@@ -132,5 +133,25 @@ public class PerformanceController {
         var deletePerformanceCommand = new DeletePerformanceCommand(id);
         this.performanceCommandService.handle(deletePerformanceCommand);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Add CommentEmployee to Performance", description = "Add a CommentEmployee to an existing Performance")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "CommentEmployee added to Performance successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = PerformanceResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Performance or CommentEmployee not found", content = @Content)
+    })
+    @PostMapping("/{id}/comment-employee")
+    public ResponseEntity<PerformanceResponse> addCommentEmployeeToPerformance(@PathVariable Long id, @RequestBody AddCommentEmployeeToPerformanceRequest request){
+        var command = PerformanceAssembler.toCommandFromRequest(id, request);
+        this.performanceCommandService.handle(command);
+
+        var performance = this.performanceQueryService.handle(new GetPerformanceByIdQuery(id));
+        if (performance.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(PerformanceAssembler.toResponseFromEntity(performance.get()));
     }
 }

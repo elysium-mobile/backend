@@ -1,13 +1,11 @@
 package pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.assemblers;
 
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.Performance;
+import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.AddCommentEmployeeToPerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.valueobjects.EmployeeProfileId;
-import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resources.CommentEmployeeResponse;
-import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resources.CreatePerformanceRequest;
-import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resources.UpdatePerformanceRequest;
-import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resources.PerformanceResponse;
+import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resources.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +28,9 @@ public class PerformanceAssembler {
         return new UpdatePerformanceCommand(performanceId, new EmployeeProfileId(request.employeeProfileId()), request.dateTime(), request.classification());
     }
 
+    public static AddCommentEmployeeToPerformanceCommand toCommandFromRequest(Long performanceId, AddCommentEmployeeToPerformanceRequest request){
+        return new AddCommentEmployeeToPerformanceCommand(request.commentId(), performanceId);
+    }
     /**
      * Converts a Performance entity to a PerformanceResponse.
      */
@@ -39,7 +40,8 @@ public class PerformanceAssembler {
                         commentEmployee.getId(),
                         commentEmployee.getTitle(),
                         commentEmployee.getContent(),
-                        commentEmployee.getRrhhProfileId().rrhhProfileId()
+                        commentEmployee.getRrhhProfileId().rrhhProfileId(),
+                        commentEmployee.getPerformanceId()
                 ))
                 .toList();
 

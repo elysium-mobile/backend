@@ -5,11 +5,13 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
 import pe.edu.upc.soft.work.platform.profile.performance.application.internal.outboundservices.acl.ExternalIamServiceFromProfilePerformance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.Performance;
+import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.AddCommentEmployeeToPerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeletePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.events.PerformanceRegisteredEvent;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.PerformanceCommandService;
+import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.CommentEmployeeRepository;
 import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.PerformanceRepository;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
@@ -23,6 +25,7 @@ public class PerformanceCommandServiceImpl implements PerformanceCommandService 
     private final PerformanceRepository performanceRepository;
     private final ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance;
     private final ApplicationEventPublisher eventPublisher;
+    private final CommentEmployeeRepository commentEmployeeRepository;
 
     /**
      * Constructor for PerformanceCommandServiceImpl
@@ -30,10 +33,12 @@ public class PerformanceCommandServiceImpl implements PerformanceCommandService 
      */
     public PerformanceCommandServiceImpl(PerformanceRepository performanceRepository,
                                          ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance,
-                                         ApplicationEventPublisher eventPublisher) {
+                                         ApplicationEventPublisher eventPublisher,
+                                         CommentEmployeeRepository commentEmployeeRepository) {
         this.performanceRepository = performanceRepository;
         this.externalIamServiceFromProfilePerformance = externalIamServiceFromProfilePerformance;
         this.eventPublisher = eventPublisher;
+        this.commentEmployeeRepository = commentEmployeeRepository;
     }
 
     /**
@@ -94,6 +99,27 @@ public class PerformanceCommandServiceImpl implements PerformanceCommandService 
             performanceRepository.deleteById(command.performanceId());
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Performance: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void handle(AddCommentEmployeeToPerformanceCommand command) {
+        var commentEmployee = commentEmployeeRepository.findById(command.commentId())
+                .orElseThrow(() -> new NotFoundArgumentException(
+                        String.format("[PerformanceCommandServiceImpl] CommentEmployee with ID: %s not found", command.commentId())
+                ));
+        var performance = performanceRepository.findById(command.performanceId())
+                .orElseThrow(() -> new NotFoundArgumentException(
+                        String.format("[PerformanceCommandServiceImpl] Performance with ID: %s not found", command.performanceId())
+                ));
+
+        try{
+            performance.addCommentEmployee(commentEmployee);
+            performanceRepository.save(performance);
+        }catch (IllegalStateException ex){
+            throw new IllegalArgumentException("Domain error while adding CommentEmployee to Performance: " + ex.getMessage());
+        }catch (Exception ex){
+            throw new IllegalArgumentException("Error adding CommentEmployee to Performance: " + ex.getMessage());
         }
     }
 }

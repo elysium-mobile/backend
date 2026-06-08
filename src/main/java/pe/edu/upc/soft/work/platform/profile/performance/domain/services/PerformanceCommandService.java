@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.profile.performance.domain.services;
 
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.Performance;
+import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.AddCommentEmployeeToPerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeletePerformanceCommand;
@@ -26,4 +27,6 @@ public interface PerformanceCommandService {
      * Handles the deletion of an existing Performance.
      */
     void handle(DeletePerformanceCommand command);
+
+    void handle(AddCommentEmployeeToPerformanceCommand command);
 }

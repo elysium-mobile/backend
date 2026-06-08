@@ -2,10 +2,13 @@ package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.controllers;
 
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteUnitOfWorkCommand;
@@ -15,6 +18,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetUnitOfWor
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.UnitOfWorkCommandService;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.UnitOfWorkQueryService;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers.UnitOfWorkAssembler;
+import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.AddWorkTeamToUnitOFWorkRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateUnitOfWorkRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UnitOfWorkResponse;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateUnitOfWorkRequest;
@@ -132,5 +136,30 @@ public class UnitOfWorkController {
         var deleteUnitOfWorkCommand= new DeleteUnitOfWorkCommand(id);
         this.unitOfWorkCommandService.handle(deleteUnitOfWorkCommand);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "Add a WorkTeam to a Unit of Work",
+            description = "Links an existing WorkTeam to the given Unit of Work.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "WorkTeam added successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = UnitOfWorkResponse.class))),
+            @ApiResponse(responseCode = "400", description = "WorkTeam already belongs to this unit or invalid data", content = @Content),
+            @ApiResponse(responseCode = "404", description = "UnitOfWork or WorkTeam not found", content = @Content)
+    })
+    @PostMapping("/{id}/work-teams")
+    public ResponseEntity<UnitOfWorkResponse> addWorkTeamToUnitOfWork(
+            @PathVariable Long id,
+            @RequestBody AddWorkTeamToUnitOFWorkRequest request) {
+
+        var command = UnitOfWorkAssembler.toCommandFromRequest(id, request);
+        this.unitOfWorkCommandService.handle(command);
+
+        var unitOfWork = this.unitOfWorkQueryService.handle(new GetUnitOfWorkByIdQuery(id));
+        if (unitOfWork.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(UnitOfWorkAssembler.toResponseFromEntity(unitOfWork.get()));
     }
 }

@@ -6,6 +6,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateUnitO
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -45,5 +46,18 @@ public class UnitOfWork extends AuditableAbstractAggregateRoot<UnitOfWork> {
      */
     public void updateUnitOfWork(UpdateUnitOfWorkCommand command) {
         this.name = command.name();
+    }
+
+    public void addWorkTeam(WorkTeam workTeam) {
+        if (this.workTeamList == null) {
+            this.workTeamList = new ArrayList<>();
+        }
+        boolean alreadyExists = this.workTeamList.stream()
+                .anyMatch(w -> w.getId().equals(workTeam.getId()));
+        if (alreadyExists) {
+            throw new IllegalStateException(
+                    "WorkTeam with ID " + workTeam.getId() + " is already assigned to this unit of work.");
+        }
+        this.workTeamList.add(workTeam);
     }
 }

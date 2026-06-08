@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.services;
 
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddWorkTeamToUnitOfWork;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.UnitOfWork;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateUnitOfWorkCommand;
@@ -26,4 +27,6 @@ public interface UnitOfWorkCommandService {
      * Handles the deletion of an existing UnitOfWork.
      */
     void handle(DeleteUnitOfWorkCommand command);
+
+    void handle(AddWorkTeamToUnitOfWork command);
 }

@@ -13,6 +13,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAreaCompa
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.AreaCompanyCommandService;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.AreaCompanyQueryService;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers.AreaCompanyAssembler;
+import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.AddUnitOfWorkToAreaCompanyRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.AreaCompanyResponse;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateAreaCompanyRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateAreaCompanyRequest;
@@ -124,6 +125,32 @@ public class AreaCompanyController {
         var deleteAreaCompanyCommand= new DeleteAreaCompanyCommand(id);
         this.areaCompanyCommandService.handle(deleteAreaCompanyCommand);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "Add Unit of Work to Area Company",
+            description = "Add a Unit of Work to an existing Area Company by its ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Unit of Work added to Area Company successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request"),
+            @ApiResponse(responseCode = "404", description = "Area Company or Unit of Work not found")
+    })
+    @PostMapping("/{id}/unitsOfWork")
+    public ResponseEntity<AreaCompanyResponse> addUnitOfWorkToAreaCompany(
+            @PathVariable Long id,
+            @RequestBody AddUnitOfWorkToAreaCompanyRequest request
+            )
+    {
+        var command = AreaCompanyAssembler.toCommandFromRequest(id, request);
+        this.areaCompanyCommandService.handle(command);
+
+        var areaCompany = this.areaCompanyQueryService.handle(new GetAreaCompanyByIdQuery(id));
+        if (areaCompany.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var areaCompanyResponse = AreaCompanyAssembler.toResponseFromEntity(areaCompany.get());
+        return ResponseEntity.ok(areaCompanyResponse);
     }
 
 }

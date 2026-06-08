@@ -7,6 +7,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateDashb
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.Widget;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -64,5 +65,18 @@ public class Dashboard extends AuditableAbstractAggregateRoot<Dashboard> {
         this.description = command.description();
         this.ruc = command.ruc();
         this.companyId = command.companyId();
+    }
+
+    public void addWidget(Widget widget){
+        if (this.widgets == null) {
+            this.widgets = new ArrayList<>();
+        }
+        boolean alreadyExists = this.widgets.stream()
+                .anyMatch(w -> w.getId().equals(widget.getId()));
+        if (alreadyExists) {
+            throw new IllegalStateException(
+                    "Widget with ID " + widget.getId() + " is already assigned to this dashboard.");
+        }
+        this.widgets.add(widget);
     }
 }

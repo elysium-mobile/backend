@@ -2,13 +2,14 @@ package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandserv
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Company;
-import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateCompanyCommand;
-import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateCompanyCommand;
-import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteCompanyCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.*;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.events.CompanyCreatedEvent;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.CompanyCommandService;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.AreaCompanyRepository;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.CompanyRepository;
+import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
 
 import java.util.Optional;
 
@@ -19,15 +20,24 @@ import java.util.Optional;
 public class CompanyCommandServiceImpl implements CompanyCommandService {
     private final CompanyRepository companyRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final AreaCompanyRepository areaCompanyRepository;
+    private final ExternalIamServiceFromDashboard externalIamServiceFromDashboard;
+    private final UserAccountRepository userAccountRepository;
 
     /**
      * Constructor for CompanyCommandServiceImpl.
      * @param companyRepository the repository for Company persistence
      */
     public CompanyCommandServiceImpl(CompanyRepository companyRepository,
-                                     ApplicationEventPublisher eventPublisher) {
+                                     ApplicationEventPublisher eventPublisher,
+                                     AreaCompanyRepository areaCompanyRepository,
+                                     ExternalIamServiceFromDashboard externalIamServiceFromDashboard,
+                                     UserAccountRepository userAccountRepository) {
         this.companyRepository = companyRepository;
         this.eventPublisher = eventPublisher;
+        this.areaCompanyRepository = areaCompanyRepository;
+        this.externalIamServiceFromDashboard = externalIamServiceFromDashboard;
+        this.userAccountRepository = userAccountRepository;
     }
 
     /**
@@ -83,5 +93,41 @@ public class CompanyCommandServiceImpl implements CompanyCommandService {
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Company: " + e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void handle(AddAreaCompanyToCompanyCommand command) {
+        var areaCompany = areaCompanyRepository.findById(command.areaCompanyId())
+                .orElseThrow(() -> new RuntimeException("AreaCompany with ID " + command.areaCompanyId() + " does not exist."));
+        var company = companyRepository.findById(command.companyId())
+                .orElseThrow(() -> new RuntimeException("Company with ID " + command.companyId() + " does not exist."));
+        try{
+            company.addAreaCompany(areaCompany);
+            companyRepository.save(company);
+        }catch (IllegalStateException ex){
+            throw new IllegalArgumentException("Domain error while adding Area Company: " + ex.getMessage());
+        }catch (Exception ex){
+            throw new IllegalArgumentException("Error adding AreaCompany to Company: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public void handle(AddEmployeesToCompanyCommand command) {
+        if (!externalIamServiceFromDashboard.existsUserAccountById(command.employeeId())) {
+            throw new RuntimeException("UserAccount with ID " + command.employeeId() + " does not exist.");
+        }
+        var employee = userAccountRepository.findById(command.employeeId())
+                .orElseThrow(() -> new RuntimeException("UserAccount with ID " + command.employeeId() + " does not exist."));
+        var company = companyRepository.findById(command.companyId())
+                .orElseThrow(() -> new RuntimeException("Company with ID " + command.companyId() + " does not exist."));
+        try {
+            company.addEmployee(employee);
+            companyRepository.save(company);
+        } catch (IllegalStateException ex){
+            throw new IllegalArgumentException("Domain error while adding Employee to Company: " + ex.getMessage());
+        }catch (Exception e){
+            throw new RuntimeException("Error adding Employee to Company: " + e.getMessage(), e);
+        }
+
     }
 }

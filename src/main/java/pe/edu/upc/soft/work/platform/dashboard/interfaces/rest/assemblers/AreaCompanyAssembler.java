@@ -1,13 +1,11 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers;
 
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddUnitOfWorkToAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.AreaCompany;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.UnitOfWork;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.AreaCompanyResponse;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateAreaCompanyRequest;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UnitOfWorkResponse;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateAreaCompanyRequest;
+import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +25,11 @@ public class AreaCompanyAssembler {
     public static UpdateAreaCompanyCommand toCommandFromRequest(Long areaCompanyId, UpdateAreaCompanyRequest request)
     {
         return new UpdateAreaCompanyCommand(areaCompanyId, request.name(),request.annualBudget(), request.companyId());
+    }
+
+
+    public static AddUnitOfWorkToAreaCompanyCommand toCommandFromRequest(Long areaCompanyId, AddUnitOfWorkToAreaCompanyRequest request) {
+        return new AddUnitOfWorkToAreaCompanyCommand(request.unitOfWorkId(), areaCompanyId);
     }
 
     /**

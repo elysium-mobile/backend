@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers;
 
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddWorkTeamToUnitOfWork;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.UnitOfWork;
@@ -24,6 +25,11 @@ public class UnitOfWorkAssembler {
     public static UpdateUnitOfWorkCommand toCommandFromRequest(Long unitOfWorkId, UpdateUnitOfWorkRequest request)
     {
         return new UpdateUnitOfWorkCommand(unitOfWorkId, request.name());
+    }
+
+    public static AddWorkTeamToUnitOfWork toCommandFromRequest(Long unitOfWorkId, AddWorkTeamToUnitOFWorkRequest request)
+    {
+        return new AddWorkTeamToUnitOfWork(request.workTeamId(), unitOfWorkId);
     }
 
     /**

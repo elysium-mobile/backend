@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers;
 
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Company;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddAreaCompanyToCompanyCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddEmployeesToCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.*;
@@ -23,6 +25,14 @@ public class CompanyAssembler {
      */
     public static UpdateCompanyCommand toCommandFromRequest(Long companyId, UpdateCompanyRequest request) {
         return new UpdateCompanyCommand(companyId, request.name(), request.RUC(), request.contactEmail(), request.contactPhone());
+    }
+
+    public static AddEmployeesToCompanyCommand toCommandFromRequest(Long companyId, AddEmployeeToCompanyRequest request){
+        return new AddEmployeesToCompanyCommand(request.employeeId(), companyId);
+    }
+
+    public static AddAreaCompanyToCompanyCommand toCommandFromRequest(Long companyId, AddAreaCompanyToCompanyRequest request) {
+        return new AddAreaCompanyToCompanyCommand(request.areaCompanyId(), companyId);
     }
 
     /**

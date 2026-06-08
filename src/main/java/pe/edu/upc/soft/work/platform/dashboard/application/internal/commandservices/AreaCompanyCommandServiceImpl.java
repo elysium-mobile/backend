@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandserv
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddUnitOfWorkToAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.AreaCompany;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateAreaCompanyCommand;
@@ -9,6 +10,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteAreaC
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.AreaCompanyCommandService;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.AreaCompanyRepository;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.CompanyRepository;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.UnitOfWorkRepository;
 
 import java.util.Optional;
 
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService {
     private final AreaCompanyRepository areacompanyRepository;
     private final CompanyRepository companyRepository;
+    private final UnitOfWorkRepository unitOfWorkRepository;
 
     private final ExternalIamServiceFromDashboard externalIamServiceFromDashboard;
 
@@ -28,10 +31,12 @@ public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService 
      */
     public AreaCompanyCommandServiceImpl(AreaCompanyRepository areacompanyRepository,
                                          ExternalIamServiceFromDashboard externalIamServiceFromDashboard,
-                                         CompanyRepository companyRepository) {
+                                         CompanyRepository companyRepository,
+                                         UnitOfWorkRepository unitOfWorkRepository) {
         this.areacompanyRepository = areacompanyRepository;
         this.externalIamServiceFromDashboard = externalIamServiceFromDashboard;
         this.companyRepository = companyRepository;
+        this.unitOfWorkRepository = unitOfWorkRepository;
     }
 
     /**
@@ -90,6 +95,22 @@ public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService 
             areacompanyRepository.deleteById(command.areacompanyId());
         } catch (Exception e) {
             throw new RuntimeException("Error deleting AreaCompany: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void handle(AddUnitOfWorkToAreaCompanyCommand command) {
+        var unitOfWork = unitOfWorkRepository.findById(command.unitOfWork())
+                .orElseThrow(()-> new RuntimeException("UnitOfWork with ID " + command.unitOfWork() + " does not exist."));
+        var areaCompany = areacompanyRepository.findById(command.areaCompanyId())
+                .orElseThrow(()-> new RuntimeException("AreaCompany with ID " + command.areaCompanyId() + " does not exist."));
+        try {
+            areaCompany.addUnitOfWork(unitOfWork);
+            areacompanyRepository.save(areaCompany);
+        }catch (IllegalStateException ex){
+
+        }catch (Exception ex){
+            throw new RuntimeException("Error adding UnitOfWork to AreaCompany: " + ex.getMessage(), ex);
         }
     }
 }

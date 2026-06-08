@@ -6,6 +6,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateAreaC
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -56,5 +57,18 @@ public class AreaCompany extends AuditableAbstractAggregateRoot<AreaCompany> {
         this.name = command.name();
         this.annualBudget = command.annualBudget();
         this.companyId = command.companyId();
+    }
+
+    public void addUnitOfWork(UnitOfWork unitOfWork){
+        if (this.unitOfWorkList == null) {
+            this.unitOfWorkList = new ArrayList<>();
+        }
+        boolean alreadyExists = this.unitOfWorkList.stream()
+                .anyMatch(u -> u.getId().equals(unitOfWork.getId()));
+        if (alreadyExists) {
+            throw new IllegalStateException(
+                    "UnitOfWork with ID " + unitOfWork.getId() + " is already assigned to this area.");
+        }
+        this.unitOfWorkList.add(unitOfWork);
     }
 }

@@ -16,9 +16,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAllCompan
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.CompanyCommandService;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.CompanyQueryService;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers.CompanyAssembler;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateCompanyRequest;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateCompanyRequest;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CompanyResponse;
+import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.*;
 
 import java.util.List;
 import java.util.Objects;
@@ -133,4 +131,52 @@ public class CompanyController {
         this.companyCommandService.handle(deleteCompanyCommand);
         return ResponseEntity.noContent().build();
     }
+
+    @Operation(
+            summary = "Add an employee to a Company",
+            description = "Links an existing UserAccount (employee) to the given Company. " +
+                    "The employee must already exist in the IAM context.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Employee added successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CompanyResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Employee already belongs to this company or invalid data", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Company or Employee not found", content = @Content)
+    })
+    @PostMapping("/{id}/employees")
+    public ResponseEntity<CompanyResponse> addEmployeeToCompany(@PathVariable Long id, @RequestBody AddEmployeeToCompanyRequest request){
+        var command = CompanyAssembler.toCommandFromRequest(id, request);
+        this.companyCommandService.handle(command);
+
+        var company = this.companyQueryService.handle(new GetCompanyByIdQuery(id));
+        if (company.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(CompanyAssembler.toResponseFromEntity(company.get()));
+    }
+
+    @Operation(
+            summary = "Add an AreaCompany to a Company",
+            description = "Links an existing AreaCompany to the given Company.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "AreaCompany added successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = CompanyResponse.class))),
+            @ApiResponse(responseCode = "400", description = "AreaCompany already belongs to this company or invalid data", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Company or AreaCompany not found", content = @Content)
+    })
+    @PostMapping("/{id}/area-companies")
+    public ResponseEntity<CompanyResponse> addAreaCompanyToCompany(@PathVariable Long id, @RequestBody AddAreaCompanyToCompanyRequest request) {
+
+        var command = CompanyAssembler.toCommandFromRequest(id, request);
+        this.companyCommandService.handle(command);
+
+        var company = this.companyQueryService.handle(new GetCompanyByIdQuery(id));
+        if (company.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(CompanyAssembler.toResponseFromEntity(company.get()));
+    }
+
+
 }

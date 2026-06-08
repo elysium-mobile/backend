@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.services;
 
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Dashboard;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddWidgetToDashboardCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateDashboardCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateDashboardCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteDashboardCommand;
@@ -26,4 +27,6 @@ public interface DashboardCommandService {
      * Handles the deletion of an existing Dashboard.
      */
     void handle(DeleteDashboardCommand command);
+
+    void handle(AddWidgetToDashboardCommand command);
 }

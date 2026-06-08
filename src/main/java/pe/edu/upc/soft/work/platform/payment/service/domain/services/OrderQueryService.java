@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.payment.service.domain.services;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Order;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetOrderByIdQuery;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetAllOrderQuery;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetOrderByUserAccountIdQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +22,6 @@ public interface OrderQueryService {
      * Retrieves a Order by their unique identifier.
      */
     Optional<Order> handle(GetOrderByIdQuery query);
+
+    List<Order> handle(GetOrderByUserAccountIdQuery query);
 }

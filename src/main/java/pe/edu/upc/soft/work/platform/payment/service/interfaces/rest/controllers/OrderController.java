@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetAllOrderQuery;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetOrderByIdQuery;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetOrderByUserAccountIdQuery;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.OrderCommandService;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.OrderQueryService;
 import pe.edu.upc.soft.work.platform.payment.service.interfaces.rest.assemblers.OrderAssembler;
@@ -137,5 +138,27 @@ public class OrderController {
         var deleteOrderCommand = new DeleteOrderCommand(id);
         this.orderCommandService.handle(deleteOrderCommand);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Get Orders by User Account ID", description = "Retrieve a list of Orders associated with a specific User Account ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Orders retrieved successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = OrderResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No Orders found for the given User Account ID", content = @Content)
+    })
+    @GetMapping("/userAccount/{userAccountId}")
+    public ResponseEntity<List<OrderResponse>> getOrdersByUserAccountId(@PathVariable Long userAccountId){
+        var getOrderByUserAccountIdQuery = new GetOrderByUserAccountIdQuery(userAccountId);
+        var orders = this.orderQueryService.handle(getOrderByUserAccountIdQuery);
+
+        if (orders.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        var orderResponses = orders.stream()
+                .map(OrderAssembler::toResponseFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(orderResponses);
     }
 }

@@ -22,7 +22,9 @@ class SurveyResponseAssemblerTest {
         var request = new CreateSurveyResponseRequest(
                 FeedbackCommandFixtures.VALID_SURVEY_ID,
                 FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID,
-                FeedbackCommandFixtures.VALID_SUBMITTED_AT);
+                FeedbackCommandFixtures.VALID_SUBMITTED_AT,
+            FeedbackCommandFixtures.VALID_COMMENTARY,
+            FeedbackCommandFixtures.VALID_CAUSE);
 
         // Act
         CreateSurveyResponseCommand command = SurveyResponseAssembler.toCommandFromRequest(request);
@@ -32,6 +34,8 @@ class SurveyResponseAssemblerTest {
         assertThat(command.employeeProfileId().employeeProfileId())
                 .isEqualTo(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
         assertThat(command.submittedAt()).isEqualTo(FeedbackCommandFixtures.VALID_SUBMITTED_AT);
+        assertThat(command.commentary()).isEqualTo(FeedbackCommandFixtures.VALID_COMMENTARY);
+        assertThat(command.cause()).isEqualTo(FeedbackCommandFixtures.VALID_CAUSE);
     }
 
     @Test
@@ -41,7 +45,8 @@ class SurveyResponseAssemblerTest {
         var request = new UpdateSurveyResponseRequest(
                 FeedbackCommandFixtures.VALID_SURVEY_ID,
                 FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID,
-                FeedbackCommandFixtures.VALID_SUBMITTED_AT);
+                FeedbackCommandFixtures.VALID_SUBMITTED_AT, FeedbackCommandFixtures.VALID_COMMENTARY,
+            FeedbackCommandFixtures.VALID_CAUSE);
 
         // Act
         UpdateSurveyResponseCommand command = SurveyResponseAssembler.toCommandFromRequest(31L, request);
@@ -52,6 +57,8 @@ class SurveyResponseAssemblerTest {
         assertThat(command.employeeProfileId().employeeProfileId())
                 .isEqualTo(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
         assertThat(command.submittedAt()).isEqualTo(FeedbackCommandFixtures.VALID_SUBMITTED_AT);
+        assertThat(command.commentary()).isEqualTo(FeedbackCommandFixtures.VALID_COMMENTARY);
+        assertThat(command.cause()).isEqualTo(FeedbackCommandFixtures.VALID_CAUSE);
     }
 
     @Test
@@ -69,5 +76,7 @@ class SurveyResponseAssemblerTest {
         assertThat(response.surveyId()).isEqualTo(FeedbackCommandFixtures.VALID_SURVEY_ID);
         assertThat(response.employeeProfileId()).isEqualTo(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
         assertThat(response.SubmittedAt()).isEqualTo(FeedbackCommandFixtures.VALID_SUBMITTED_AT);
+        assertThat(response.commentary()).isEqualTo(FeedbackCommandFixtures.VALID_COMMENTARY);
+        assertThat(response.cause()).isEqualTo(FeedbackCommandFixtures.VALID_CAUSE);
     }
 }

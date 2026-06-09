@@ -77,7 +77,7 @@ class WorkerForumContextFacadeTest {
         Long result = facade.createForum(
                 WorkerForumCommandFixtures.VALID_FORUM_TITLE,
                 WorkerForumCommandFixtures.VALID_FORUM_DESCRIPTION,
-                WorkerForumCommandFixtures.VALID_COMPANY_ID);
+                WorkerForumCommandFixtures.VALID_COMPANY_ID,null);
 
         // Assert
         assertThat(result).isEqualTo(99L);
@@ -96,7 +96,7 @@ class WorkerForumContextFacadeTest {
         Long result = facade.createForum(
                 WorkerForumCommandFixtures.VALID_FORUM_TITLE,
                 WorkerForumCommandFixtures.VALID_FORUM_DESCRIPTION,
-                WorkerForumCommandFixtures.VALID_COMPANY_ID);
+                WorkerForumCommandFixtures.VALID_COMPANY_ID,null);
 
         // Assert
         assertThat(result).isEqualTo(0L);

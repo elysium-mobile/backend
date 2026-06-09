@@ -21,7 +21,8 @@ class WidgetAssemblerTest {
         // Arrange
         var request = new CreateWidgetRequest(
                 DashboardCommandFixtures.VALID_WIDGET_TITLE,
-                DashboardCommandFixtures.VALID_REFRESH_PERIOD);
+                DashboardCommandFixtures.VALID_REFRESH_PERIOD,
+            DashboardCommandFixtures.VALID_DASHBOARD_ID);
 
         // Act
         CreateWidgetCommand command = WidgetAssembler.toCommandFromRequest(request);
@@ -29,6 +30,7 @@ class WidgetAssemblerTest {
         // Assert
         assertThat(command.title()).isEqualTo(DashboardCommandFixtures.VALID_WIDGET_TITLE);
         assertThat(command.refreshPeriod()).isEqualTo(DashboardCommandFixtures.VALID_REFRESH_PERIOD);
+        assertThat(command.dashboardId()).isEqualTo(DashboardCommandFixtures.VALID_DASHBOARD_ID);
     }
 
     @Test
@@ -37,7 +39,8 @@ class WidgetAssemblerTest {
         // Arrange
         var request = new UpdateWidgetRequest(
                 DashboardCommandFixtures.VALID_WIDGET_TITLE,
-                DashboardCommandFixtures.VALID_REFRESH_PERIOD);
+                DashboardCommandFixtures.VALID_REFRESH_PERIOD,
+            DashboardCommandFixtures.VALID_DASHBOARD_ID);
 
         // Act
         UpdateWidgetCommand command = WidgetAssembler.toCommandFromRequest(44L, request);
@@ -46,6 +49,7 @@ class WidgetAssemblerTest {
         assertThat(command.widgetId()).isEqualTo(44L);
         assertThat(command.title()).isEqualTo(DashboardCommandFixtures.VALID_WIDGET_TITLE);
         assertThat(command.refreshPeriod()).isEqualTo(DashboardCommandFixtures.VALID_REFRESH_PERIOD);
+        assertThat(command.dashboardId()).isEqualTo(DashboardCommandFixtures.VALID_DASHBOARD_ID);
     }
 
     @Test
@@ -62,5 +66,6 @@ class WidgetAssemblerTest {
         assertThat(response.widgetId()).isEqualTo(44L);
         assertThat(response.title()).isEqualTo(DashboardCommandFixtures.VALID_WIDGET_TITLE);
         assertThat(response.refreshPeriod()).isEqualTo(DashboardCommandFixtures.VALID_REFRESH_PERIOD);
+        assertThat(response.dashboardId()).isEqualTo(DashboardCommandFixtures.VALID_DASHBOARD_ID);
     }
 }

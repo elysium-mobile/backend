@@ -20,7 +20,8 @@ class NotificationDetailAssemblerTest {
         // Arrange
         var request = new CreateNotificationDetailRequest(
                 NotificationCommandFixtures.VALID_DETAIL_TITLE,
-                NotificationCommandFixtures.VALID_DETAIL_CONTENT);
+                NotificationCommandFixtures.VALID_DETAIL_CONTENT,
+            NotificationCommandFixtures.VALID_NOTIFICATION_ID);
 
         // Act
         CreateNotificationDetailCommand command = NotificationDetailAssembler.toCommandFromRequest(request);
@@ -28,6 +29,7 @@ class NotificationDetailAssemblerTest {
         // Assert
         assertThat(command.title()).isEqualTo(NotificationCommandFixtures.VALID_DETAIL_TITLE);
         assertThat(command.content()).isEqualTo(NotificationCommandFixtures.VALID_DETAIL_CONTENT);
+        assertThat(command.notificationId()).isEqualTo(NotificationCommandFixtures.VALID_NOTIFICATION_ID);
     }
 
     /**
@@ -42,7 +44,8 @@ class NotificationDetailAssemblerTest {
         // Arrange
         var request = new CreateNotificationDetailRequest(
                 NotificationCommandFixtures.VALID_DETAIL_TITLE,
-                NotificationCommandFixtures.VALID_DETAIL_CONTENT);
+                NotificationCommandFixtures.VALID_DETAIL_CONTENT,
+            NotificationCommandFixtures.VALID_NOTIFICATION_ID);
 
         // Act
         UpdateNotificationDetailCommand command = NotificationDetailAssembler.toCommandFromRequest(21L, request);
@@ -51,6 +54,7 @@ class NotificationDetailAssemblerTest {
         assertThat(command.notificationDetailId()).isEqualTo(21L);
         assertThat(command.title()).isEqualTo(NotificationCommandFixtures.VALID_DETAIL_TITLE);
         assertThat(command.content()).isEqualTo(NotificationCommandFixtures.VALID_DETAIL_CONTENT);
+        assertThat(command.notificationId()).isEqualTo(NotificationCommandFixtures.VALID_NOTIFICATION_ID);
     }
 
     @Test
@@ -67,5 +71,6 @@ class NotificationDetailAssemblerTest {
         assertThat(response.notificationDetailId()).isEqualTo(21L);
         assertThat(response.title()).isEqualTo(NotificationCommandFixtures.VALID_DETAIL_TITLE);
         assertThat(response.content()).isEqualTo(NotificationCommandFixtures.VALID_DETAIL_CONTENT);
+        assertThat(response.notificationId()).isEqualTo(NotificationCommandFixtures.VALID_NOTIFICATION_ID);
     }
 }

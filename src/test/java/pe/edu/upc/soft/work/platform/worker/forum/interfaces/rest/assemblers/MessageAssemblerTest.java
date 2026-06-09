@@ -21,7 +21,8 @@ class MessageAssemblerTest {
         // Arrange
         var request = new CreateMessageRequest(
                 WorkerForumCommandFixtures.VALID_USER_ACCOUNT_ID,
-                WorkerForumCommandFixtures.VALID_MESSAGE_CONTENT);
+                WorkerForumCommandFixtures.VALID_MESSAGE_CONTENT,
+                WorkerForumCommandFixtures.VALID_THREAD_ID);
 
         // Act
         CreateMessageCommand command = MessageAssembler.toCommandFromRequest(request);
@@ -30,6 +31,7 @@ class MessageAssemblerTest {
         assertThat(command.userAccountId().userAccountId())
                 .isEqualTo(WorkerForumCommandFixtures.VALID_USER_ACCOUNT_ID);
         assertThat(command.contentMessage()).isEqualTo(WorkerForumCommandFixtures.VALID_MESSAGE_CONTENT);
+        assertThat(command.threadId()).isEqualTo(WorkerForumCommandFixtures.VALID_THREAD_ID);
     }
 
     @Test
@@ -38,7 +40,8 @@ class MessageAssemblerTest {
         // Arrange
         var request = new UpdateMessageRequest(
                 WorkerForumCommandFixtures.VALID_USER_ACCOUNT_ID,
-                WorkerForumCommandFixtures.VALID_MESSAGE_CONTENT);
+                WorkerForumCommandFixtures.VALID_MESSAGE_CONTENT,
+                    WorkerForumCommandFixtures.VALID_THREAD_ID);
 
         // Act
         UpdateMessageCommand command = MessageAssembler.toCommandFromRequest(61L, request);
@@ -48,6 +51,7 @@ class MessageAssemblerTest {
         assertThat(command.userAccountId().userAccountId())
                 .isEqualTo(WorkerForumCommandFixtures.VALID_USER_ACCOUNT_ID);
         assertThat(command.contentMessage()).isEqualTo(WorkerForumCommandFixtures.VALID_MESSAGE_CONTENT);
+        assertThat(command.threadId()).isEqualTo(WorkerForumCommandFixtures.VALID_THREAD_ID);
     }
 
     @Test
@@ -64,5 +68,6 @@ class MessageAssemblerTest {
         assertThat(response.messageId()).isEqualTo(61L);
         assertThat(response.userAccountId()).isEqualTo(WorkerForumCommandFixtures.VALID_USER_ACCOUNT_ID);
         assertThat(response.contentMessage()).isEqualTo(WorkerForumCommandFixtures.VALID_MESSAGE_CONTENT);
+        assertThat(response.threadId()).isEqualTo(WorkerForumCommandFixtures.VALID_THREAD_ID);
     }
 }

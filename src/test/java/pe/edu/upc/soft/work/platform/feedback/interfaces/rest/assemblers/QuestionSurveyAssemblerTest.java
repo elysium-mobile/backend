@@ -21,7 +21,8 @@ class QuestionSurveyAssemblerTest {
         // Arrange
         var request = new CreateQuestionSurveyRequest(
                 FeedbackCommandFixtures.VALID_QUESTION_TEXT,
-                FeedbackCommandFixtures.VALID_QUESTION_TYPE.name());
+                FeedbackCommandFixtures.VALID_QUESTION_TYPE.name(),
+            FeedbackCommandFixtures.VALID_SURVEY_ID);
 
         // Act
         CreateQuestionSurveyCommand command = QuestionSurveyAssembler.toCommandFromRequest(request);
@@ -29,6 +30,7 @@ class QuestionSurveyAssemblerTest {
         // Assert
         assertThat(command.textQuestion()).isEqualTo(FeedbackCommandFixtures.VALID_QUESTION_TEXT);
         assertThat(command.questionType()).isEqualTo(FeedbackCommandFixtures.VALID_QUESTION_TYPE);
+        assertThat(command.surveyId()).isEqualTo(FeedbackCommandFixtures.VALID_SURVEY_ID);
     }
 
     @Test
@@ -37,7 +39,8 @@ class QuestionSurveyAssemblerTest {
         // Arrange
         var request = new UpdateQuestionSurveyRequest(
                 FeedbackCommandFixtures.VALID_QUESTION_TEXT,
-                FeedbackCommandFixtures.VALID_QUESTION_TYPE.name());
+                FeedbackCommandFixtures.VALID_QUESTION_TYPE.name(),
+            FeedbackCommandFixtures.VALID_SURVEY_ID);
 
         // Act
         UpdateQuestionSurveyCommand command = QuestionSurveyAssembler.toCommandFromRequest(14L, request);
@@ -46,6 +49,7 @@ class QuestionSurveyAssemblerTest {
         assertThat(command.questionSurveyId()).isEqualTo(14L);
         assertThat(command.textQuestion()).isEqualTo(FeedbackCommandFixtures.VALID_QUESTION_TEXT);
         assertThat(command.questionType()).isEqualTo(FeedbackCommandFixtures.VALID_QUESTION_TYPE);
+        assertThat(command.surveyId()).isEqualTo(FeedbackCommandFixtures.VALID_SURVEY_ID);
     }
 
     @Test
@@ -62,5 +66,6 @@ class QuestionSurveyAssemblerTest {
         assertThat(response.questionSurveyId()).isEqualTo(14L);
         assertThat(response.textQuestion()).isEqualTo(FeedbackCommandFixtures.VALID_QUESTION_TEXT);
         assertThat(response.questionType()).isEqualTo(FeedbackCommandFixtures.VALID_QUESTION_TYPE.name());
+        assertThat(response.surveyId()).isEqualTo(FeedbackCommandFixtures.VALID_SURVEY_ID);
     }
 }

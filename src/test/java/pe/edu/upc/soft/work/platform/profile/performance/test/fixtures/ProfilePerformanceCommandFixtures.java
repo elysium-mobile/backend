@@ -24,6 +24,9 @@ public final class ProfilePerformanceCommandFixtures {
     public static final Date VALID_PERFORMANCE_DATE = new Date(1_700_000_000_000L);
     public static final Integer VALID_CLASSIFICATION = 5;
 
+    public static final Long VALID_PERFORMANCE_ID = 67L;
+
+
     private ProfilePerformanceCommandFixtures() {
         throw new AssertionError("ProfilePerformanceCommandFixtures is a utility class and must not be instantiated.");
     }
@@ -31,18 +34,19 @@ public final class ProfilePerformanceCommandFixtures {
     // ---------- CommentEmployee ----------
     public static CreateCommentEmployeeCommand validCreateCommentEmployeeCommand() {
         return new CreateCommentEmployeeCommand(
-                VALID_COMMENT_TITLE, VALID_COMMENT_CONTENT, new RRHHProfileId(VALID_RRHH_PROFILE_ID));
+                VALID_COMMENT_TITLE, VALID_COMMENT_CONTENT, new RRHHProfileId(VALID_RRHH_PROFILE_ID),
+            VALID_PERFORMANCE_ID);
     }
 
     public static UpdateCommentEmployeeCommand updateCommentEmployeeCommand(Long commentEmployeeId) {
         return new UpdateCommentEmployeeCommand(
-                commentEmployeeId, VALID_COMMENT_TITLE, VALID_COMMENT_CONTENT, new RRHHProfileId(VALID_RRHH_PROFILE_ID));
+                commentEmployeeId, VALID_COMMENT_TITLE, VALID_COMMENT_CONTENT, new RRHHProfileId(VALID_RRHH_PROFILE_ID),VALID_PERFORMANCE_ID);
     }
 
     // ---------- Performance ----------
     public static CreatePerformanceCommand validCreatePerformanceCommand() {
         return new CreatePerformanceCommand(
-                new EmployeeProfileId(VALID_EMPLOYEE_PROFILE_ID), VALID_PERFORMANCE_DATE, VALID_CLASSIFICATION);
+                new EmployeeProfileId(VALID_EMPLOYEE_PROFILE_ID), VALID_PERFORMANCE_DATE, VALID_CLASSIFICATION,null);
     }
 
     public static UpdatePerformanceCommand updatePerformanceCommand(Long performanceId) {

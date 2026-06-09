@@ -21,7 +21,8 @@ class BenefitAssemblerTest {
         // Arrange
         var request = new CreateBenefitRequest(
                 PaymentCommandFixtures.VALID_BENEFIT_TITLE,
-                PaymentCommandFixtures.VALID_BENEFIT_DESCRIPTION);
+                PaymentCommandFixtures.VALID_BENEFIT_DESCRIPTION,
+            PaymentCommandFixtures.VALID_MEMBERSHIP_PLAN_ID);
 
         // Act
         CreateBenefitCommand command = BenefitAssembler.toCommandFromRequest(request);
@@ -29,6 +30,7 @@ class BenefitAssemblerTest {
         // Assert
         assertThat(command.title()).isEqualTo(PaymentCommandFixtures.VALID_BENEFIT_TITLE);
         assertThat(command.description()).isEqualTo(PaymentCommandFixtures.VALID_BENEFIT_DESCRIPTION);
+        assertThat(command.membershipPlanId()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_PLAN_ID);
     }
 
     @Test
@@ -37,7 +39,8 @@ class BenefitAssemblerTest {
         // Arrange
         var request = new UpdateBenefitRequest(
                 PaymentCommandFixtures.VALID_BENEFIT_TITLE,
-                PaymentCommandFixtures.VALID_BENEFIT_DESCRIPTION);
+                PaymentCommandFixtures.VALID_BENEFIT_DESCRIPTION,
+            PaymentCommandFixtures.VALID_MEMBERSHIP_PLAN_ID);
 
         // Act
         UpdateBenefitCommand command = BenefitAssembler.toCommandFromRequest(11L, request);
@@ -46,6 +49,7 @@ class BenefitAssemblerTest {
         assertThat(command.benefitId()).isEqualTo(11L);
         assertThat(command.title()).isEqualTo(PaymentCommandFixtures.VALID_BENEFIT_TITLE);
         assertThat(command.description()).isEqualTo(PaymentCommandFixtures.VALID_BENEFIT_DESCRIPTION);
+        assertThat(command.membershipPlanId()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_PLAN_ID);
     }
 
     @Test
@@ -62,5 +66,6 @@ class BenefitAssemblerTest {
         assertThat(response.benefitId()).isEqualTo(11L);
         assertThat(response.title()).isEqualTo(PaymentCommandFixtures.VALID_BENEFIT_TITLE);
         assertThat(response.description()).isEqualTo(PaymentCommandFixtures.VALID_BENEFIT_DESCRIPTION);
+        assertThat(response.membershipPlanId()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_PLAN_ID);
     }
 }

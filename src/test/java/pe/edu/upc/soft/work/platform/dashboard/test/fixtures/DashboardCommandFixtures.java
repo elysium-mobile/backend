@@ -36,6 +36,12 @@ public final class DashboardCommandFixtures {
 
     public static final String VALID_TEAM_NAME = "Avengers";
     public static final String VALID_TEAM_LEADER = "Steve Rogers";
+    public static final Long VALID_COMPANY_ID = 0L;
+    public static final String VALID_TITLE = "Title";
+    public static final String VALID_DESCRIPTION = "Description";
+    public static final Long VALID_DASHBOARD_ID = 1L;
+    public static final Long VALID_UNIT_OF_WORK_ID = 2L;
+
 
     private DashboardCommandFixtures() {
         throw new AssertionError("DashboardCommandFixtures is a utility class and must not be instantiated.");
@@ -44,7 +50,7 @@ public final class DashboardCommandFixtures {
     // ---------- Company ----------
     public static CreateCompanyCommand validCreateCompanyCommand() {
         return new CreateCompanyCommand(
-                VALID_COMPANY_NAME, VALID_RUC, VALID_CONTACT_EMAIL, VALID_CONTACT_PHONE);
+                VALID_COMPANY_NAME, VALID_RUC, VALID_CONTACT_EMAIL, VALID_CONTACT_PHONE,null,null);
     }
 
     public static UpdateCompanyCommand updateCompanyCommand(Long companyId) {
@@ -54,25 +60,25 @@ public final class DashboardCommandFixtures {
 
     // ---------- Dashboard ----------
     public static CreateDashboardCommand validCreateDashboardCommand() {
-        return new CreateDashboardCommand(VALID_RUC);
+        return new CreateDashboardCommand(VALID_RUC, null, null, null, null);
     }
 
     public static UpdateDashboardCommand updateDashboardCommand(Long dashboardId) {
-        return new UpdateDashboardCommand(dashboardId, VALID_RUC);
+        return new UpdateDashboardCommand(dashboardId,null, null,VALID_RUC,null);
     }
 
     // ---------- AreaCompany ----------
     public static CreateAreaCompanyCommand validCreateAreaCompanyCommand() {
-        return new CreateAreaCompanyCommand(VALID_AREA_NAME, VALID_ANNUAL_BUDGET);
+        return new CreateAreaCompanyCommand(VALID_AREA_NAME, VALID_ANNUAL_BUDGET, null, null);
     }
 
     public static UpdateAreaCompanyCommand updateAreaCompanyCommand(Long areaCompanyId) {
-        return new UpdateAreaCompanyCommand(areaCompanyId, VALID_AREA_NAME, VALID_ANNUAL_BUDGET);
+        return new UpdateAreaCompanyCommand(areaCompanyId, VALID_AREA_NAME, VALID_ANNUAL_BUDGET,null);
     }
 
     // ---------- UnitOfWork ----------
     public static CreateUnitOfWorkCommand validCreateUnitOfWorkCommand() {
-        return new CreateUnitOfWorkCommand(VALID_UNIT_OF_WORK_NAME);
+        return new CreateUnitOfWorkCommand(VALID_UNIT_OF_WORK_NAME, null);
     }
 
     public static UpdateUnitOfWorkCommand updateUnitOfWorkCommand(Long unitOfWorkId) {
@@ -81,19 +87,19 @@ public final class DashboardCommandFixtures {
 
     // ---------- Widget ----------
     public static CreateWidgetCommand validCreateWidgetCommand() {
-        return new CreateWidgetCommand(VALID_WIDGET_TITLE, VALID_REFRESH_PERIOD);
+        return new CreateWidgetCommand(VALID_WIDGET_TITLE, VALID_REFRESH_PERIOD,null);
     }
 
     public static UpdateWidgetCommand updateWidgetCommand(Long widgetId) {
-        return new UpdateWidgetCommand(widgetId, VALID_WIDGET_TITLE, VALID_REFRESH_PERIOD);
+        return new UpdateWidgetCommand(widgetId, VALID_WIDGET_TITLE, VALID_REFRESH_PERIOD,null);
     }
 
     // ---------- WorkTeam ----------
     public static CreateWorkTeamCommand validCreateWorkTeamCommand() {
-        return new CreateWorkTeamCommand(VALID_TEAM_NAME, VALID_TEAM_LEADER);
+        return new CreateWorkTeamCommand(VALID_TEAM_NAME, VALID_TEAM_LEADER,null);
     }
 
     public static UpdateWorkTeamCommand updateWorkTeamCommand(Long workTeamId) {
-        return new UpdateWorkTeamCommand(workTeamId, VALID_TEAM_NAME, VALID_TEAM_LEADER);
+        return new UpdateWorkTeamCommand(workTeamId, VALID_TEAM_NAME, VALID_TEAM_LEADER,null);
     }
 }

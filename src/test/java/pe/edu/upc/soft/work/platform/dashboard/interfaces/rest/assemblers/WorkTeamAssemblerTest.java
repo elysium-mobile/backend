@@ -21,7 +21,8 @@ class WorkTeamAssemblerTest {
         // Arrange
         var request = new CreateWorkTeamRequest(
                 DashboardCommandFixtures.VALID_TEAM_NAME,
-                DashboardCommandFixtures.VALID_TEAM_LEADER);
+                DashboardCommandFixtures.VALID_TEAM_LEADER,
+            DashboardCommandFixtures.VALID_UNIT_OF_WORK_ID);
 
         // Act
         CreateWorkTeamCommand command = WorkTeamAssembler.toCommandFromRequest(request);
@@ -29,6 +30,7 @@ class WorkTeamAssemblerTest {
         // Assert
         assertThat(command.teamName()).isEqualTo(DashboardCommandFixtures.VALID_TEAM_NAME);
         assertThat(command.leaderOfTeam()).isEqualTo(DashboardCommandFixtures.VALID_TEAM_LEADER);
+        assertThat(command.unitOfWorkId()).isEqualTo(DashboardCommandFixtures.VALID_UNIT_OF_WORK_ID);
     }
 
     @Test
@@ -37,7 +39,8 @@ class WorkTeamAssemblerTest {
         // Arrange
         var request = new UpdateWorkTeamRequest(
                 DashboardCommandFixtures.VALID_TEAM_NAME,
-                DashboardCommandFixtures.VALID_TEAM_LEADER);
+                DashboardCommandFixtures.VALID_TEAM_LEADER,
+            DashboardCommandFixtures.VALID_UNIT_OF_WORK_ID);
 
         // Act
         UpdateWorkTeamCommand command = WorkTeamAssembler.toCommandFromRequest(55L, request);
@@ -46,6 +49,7 @@ class WorkTeamAssemblerTest {
         assertThat(command.workteamId()).isEqualTo(55L);
         assertThat(command.teamName()).isEqualTo(DashboardCommandFixtures.VALID_TEAM_NAME);
         assertThat(command.leaderOfTeam()).isEqualTo(DashboardCommandFixtures.VALID_TEAM_LEADER);
+        assertThat(command.unitOfWorkId()).isEqualTo(DashboardCommandFixtures.VALID_UNIT_OF_WORK_ID);
     }
 
     @Test
@@ -62,5 +66,6 @@ class WorkTeamAssemblerTest {
         assertThat(response.workTeamId()).isEqualTo(55L);
         assertThat(response.teamName()).isEqualTo(DashboardCommandFixtures.VALID_TEAM_NAME);
         assertThat(response.leaderOfTeam()).isEqualTo(DashboardCommandFixtures.VALID_TEAM_LEADER);
+        assertThat(response.unitOfWorkId()).isEqualTo(DashboardCommandFixtures.VALID_UNIT_OF_WORK_ID);
     }
 }

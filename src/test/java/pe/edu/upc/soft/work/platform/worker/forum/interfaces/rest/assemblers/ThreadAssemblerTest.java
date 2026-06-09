@@ -22,7 +22,9 @@ class ThreadAssemblerTest {
         var request = new CreateThreadRequest(
                 WorkerForumCommandFixtures.VALID_THREAD_TITLE,
                 WorkerForumCommandFixtures.VALID_AREA_COMPANY_ID,
-                WorkerForumCommandFixtures.VALID_LAST_MESSAGE);
+                WorkerForumCommandFixtures.VALID_LAST_MESSAGE,
+            WorkerForumCommandFixtures.VALID_CATEGORY_ID,
+            WorkerForumCommandFixtures.VALID_COUNT_MESSAGES);
 
         // Act
         CreateThreadCommand command = ThreadAssembler.toCommandFromRequest(request);
@@ -32,6 +34,8 @@ class ThreadAssemblerTest {
         assertThat(command.areaCompanyId().areaCompanyId())
                 .isEqualTo(WorkerForumCommandFixtures.VALID_AREA_COMPANY_ID);
         assertThat(command.lastMessage()).isEqualTo(WorkerForumCommandFixtures.VALID_LAST_MESSAGE);
+        assertThat(command.categoryId()).isEqualTo(WorkerForumCommandFixtures.VALID_CATEGORY_ID);
+        assertThat(command.messageCount()).isEqualTo(WorkerForumCommandFixtures.VALID_COUNT_MESSAGES);
     }
 
     @Test
@@ -41,7 +45,8 @@ class ThreadAssemblerTest {
         var request = new UpdateThreadRequest(
                 WorkerForumCommandFixtures.VALID_THREAD_TITLE,
                 WorkerForumCommandFixtures.VALID_AREA_COMPANY_ID,
-                WorkerForumCommandFixtures.VALID_LAST_MESSAGE);
+                WorkerForumCommandFixtures.VALID_LAST_MESSAGE,WorkerForumCommandFixtures.VALID_CATEGORY_ID,
+            WorkerForumCommandFixtures.VALID_COUNT_MESSAGES);
 
         // Act
         UpdateThreadCommand command = ThreadAssembler.toCommandFromRequest(71L, request);
@@ -52,6 +57,8 @@ class ThreadAssemblerTest {
         assertThat(command.areaCompanyId().areaCompanyId())
                 .isEqualTo(WorkerForumCommandFixtures.VALID_AREA_COMPANY_ID);
         assertThat(command.lastMessage()).isEqualTo(WorkerForumCommandFixtures.VALID_LAST_MESSAGE);
+        assertThat(command.categoryId()).isEqualTo(WorkerForumCommandFixtures.VALID_CATEGORY_ID);
+        assertThat(command.messageCount()).isEqualTo(WorkerForumCommandFixtures.VALID_COUNT_MESSAGES);
     }
 
     @Test
@@ -69,5 +76,7 @@ class ThreadAssemblerTest {
         assertThat(response.title()).isEqualTo(WorkerForumCommandFixtures.VALID_THREAD_TITLE);
         assertThat(response.areaCompanyId()).isEqualTo(WorkerForumCommandFixtures.VALID_AREA_COMPANY_ID);
         assertThat(response.lastMessage()).isEqualTo(WorkerForumCommandFixtures.VALID_LAST_MESSAGE);
+        assertThat(response.categoryId()).isEqualTo(WorkerForumCommandFixtures.VALID_CATEGORY_ID);
+        assertThat(response.messageCount()).isEqualTo(WorkerForumCommandFixtures.VALID_COUNT_MESSAGES);
     }
 }

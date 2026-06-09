@@ -22,7 +22,8 @@ class CommentEmployeeAssemblerTest {
         var request = new CreateCommentEmployeeRequest(
                 ProfilePerformanceCommandFixtures.VALID_COMMENT_TITLE,
                 ProfilePerformanceCommandFixtures.VALID_COMMENT_CONTENT,
-                ProfilePerformanceCommandFixtures.VALID_RRHH_PROFILE_ID);
+                ProfilePerformanceCommandFixtures.VALID_RRHH_PROFILE_ID,
+            ProfilePerformanceCommandFixtures.VALID_PERFORMANCE_ID);
 
         // Act
         CreateCommentEmployeeCommand command = CommentEmployeeAssembler.toCommandFromRequest(request);
@@ -32,6 +33,7 @@ class CommentEmployeeAssemblerTest {
         assertThat(command.content()).isEqualTo(ProfilePerformanceCommandFixtures.VALID_COMMENT_CONTENT);
         assertThat(command.rrhhProfileId().rrhhProfileId())
                 .isEqualTo(ProfilePerformanceCommandFixtures.VALID_RRHH_PROFILE_ID);
+        assertThat(command.performanceId()).isEqualTo(ProfilePerformanceCommandFixtures.VALID_PERFORMANCE_ID);
     }
 
     @Test
@@ -41,7 +43,8 @@ class CommentEmployeeAssemblerTest {
         var request = new UpdateCommentEmployeeRequest(
                 ProfilePerformanceCommandFixtures.VALID_COMMENT_TITLE,
                 ProfilePerformanceCommandFixtures.VALID_COMMENT_CONTENT,
-                ProfilePerformanceCommandFixtures.VALID_RRHH_PROFILE_ID);
+                ProfilePerformanceCommandFixtures.VALID_RRHH_PROFILE_ID,
+            ProfilePerformanceCommandFixtures.VALID_PERFORMANCE_ID);
 
         // Act
         UpdateCommentEmployeeCommand command = CommentEmployeeAssembler.toCommandFromRequest(13L, request);
@@ -52,6 +55,7 @@ class CommentEmployeeAssemblerTest {
         assertThat(command.content()).isEqualTo(ProfilePerformanceCommandFixtures.VALID_COMMENT_CONTENT);
         assertThat(command.rrhhProfileId().rrhhProfileId())
                 .isEqualTo(ProfilePerformanceCommandFixtures.VALID_RRHH_PROFILE_ID);
+        assertThat(command.performanceId()).isEqualTo(ProfilePerformanceCommandFixtures.VALID_PERFORMANCE_ID);
     }
 
     @Test
@@ -69,5 +73,6 @@ class CommentEmployeeAssemblerTest {
         assertThat(response.title()).isEqualTo(ProfilePerformanceCommandFixtures.VALID_COMMENT_TITLE);
         assertThat(response.content()).isEqualTo(ProfilePerformanceCommandFixtures.VALID_COMMENT_CONTENT);
         assertThat(response.rrhhProfileId()).isEqualTo(ProfilePerformanceCommandFixtures.VALID_RRHH_PROFILE_ID);
+        assertThat(response.performanceId()).isEqualTo(ProfilePerformanceCommandFixtures.VALID_PERFORMANCE_ID);
     }
 }

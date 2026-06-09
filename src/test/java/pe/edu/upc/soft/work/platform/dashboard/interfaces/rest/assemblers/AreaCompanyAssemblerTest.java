@@ -21,7 +21,8 @@ class AreaCompanyAssemblerTest {
         // Arrange
         var request = new CreateAreaCompanyRequest(
                 DashboardCommandFixtures.VALID_AREA_NAME,
-                DashboardCommandFixtures.VALID_ANNUAL_BUDGET);
+                DashboardCommandFixtures.VALID_ANNUAL_BUDGET,
+            DashboardCommandFixtures.VALID_COMPANY_ID);
 
         // Act
         CreateAreaCompanyCommand command = AreaCompanyAssembler.toCommandFromRequest(request);
@@ -37,15 +38,17 @@ class AreaCompanyAssemblerTest {
         // Arrange
         var request = new UpdateAreaCompanyRequest(
                 DashboardCommandFixtures.VALID_AREA_NAME,
-                DashboardCommandFixtures.VALID_ANNUAL_BUDGET);
+                DashboardCommandFixtures.VALID_ANNUAL_BUDGET,
+            DashboardCommandFixtures.VALID_COMPANY_ID);
 
         // Act
         UpdateAreaCompanyCommand command = AreaCompanyAssembler.toCommandFromRequest(22L, request);
 
         // Assert
-        assertThat(command.areacompanyId()).isEqualTo(22L);
+        assertThat(command.areaCompanyId()).isEqualTo(22L);
         assertThat(command.name()).isEqualTo(DashboardCommandFixtures.VALID_AREA_NAME);
         assertThat(command.annualBudget()).isEqualTo(DashboardCommandFixtures.VALID_ANNUAL_BUDGET);
+        assertThat(command.companyId()).isEqualTo(DashboardCommandFixtures.VALID_COMPANY_ID);
     }
 
     @Test
@@ -62,5 +65,6 @@ class AreaCompanyAssemblerTest {
         assertThat(response.areaCompanyId()).isEqualTo(22L);
         assertThat(response.name()).isEqualTo(DashboardCommandFixtures.VALID_AREA_NAME);
         assertThat(response.annualBudget()).isEqualTo(DashboardCommandFixtures.VALID_ANNUAL_BUDGET);
+        assertThat(response.companyId()).isEqualTo(DashboardCommandFixtures.VALID_COMPANY_ID);
     }
 }

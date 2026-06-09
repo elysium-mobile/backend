@@ -2,11 +2,13 @@ package pe.edu.upc.soft.work.platform.worker.forum.interfaces.acl;
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateForumCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Category;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.CompanyId;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumQueryService;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -57,8 +59,8 @@ public class WorkerForumContextFacade {
      * @param companyId   the ID of the company owning the forum
      * @return the ID of the created forum, or 0L if creation failed
      */
-    public Long createForum(String title, String description, Long companyId) {
-        var command = new CreateForumCommand(title, description, new CompanyId(companyId));
+    public Long createForum(String title, String description, Long companyId, List<Category> categories) {
+        var command = new CreateForumCommand(title, description, new CompanyId(companyId), categories);
         var forumId = this.forumCommandService.handle(command);
         if (Objects.isNull(forumId)) {
             return 0L;

@@ -37,6 +37,10 @@ public final class FeedbackCommandFixtures {
     public static final Long VALID_EMPLOYEE_PROFILE_ID = 10L;
     public static final Date VALID_SUBMITTED_AT = new Date(1_700_500_000_000L);
 
+    public static final String VALID_COMMENTARY ="Generic commentary";
+    public static final String VALID_CAUSE ="Generic cause";
+
+
     private FeedbackCommandFixtures() {
         throw new AssertionError("FeedbackCommandFixtures is a utility class and must not be instantiated.");
     }
@@ -54,11 +58,11 @@ public final class FeedbackCommandFixtures {
 
     // ---------- QuestionSurvey ----------
     public static CreateQuestionSurveyCommand validCreateQuestionSurveyCommand() {
-        return new CreateQuestionSurveyCommand(VALID_QUESTION_TEXT, VALID_QUESTION_TYPE);
+        return new CreateQuestionSurveyCommand(VALID_QUESTION_TEXT, VALID_QUESTION_TYPE,VALID_SURVEY_ID);
     }
 
     public static UpdateQuestionSurveyCommand updateQuestionSurveyCommand(Long questionSurveyId) {
-        return new UpdateQuestionSurveyCommand(questionSurveyId, VALID_QUESTION_TEXT, VALID_QUESTION_TYPE);
+        return new UpdateQuestionSurveyCommand(questionSurveyId, VALID_QUESTION_TEXT, VALID_QUESTION_TYPE,VALID_SURVEY_ID);
     }
 
     // ---------- Answer ----------
@@ -75,7 +79,7 @@ public final class FeedbackCommandFixtures {
         return new CreateSurveyResponseCommand(
                 VALID_SURVEY_ID,
                 new EmployeeProfileId(VALID_EMPLOYEE_PROFILE_ID),
-                VALID_SUBMITTED_AT);
+                VALID_SUBMITTED_AT,null,null);
     }
 
     public static UpdateSurveyResponseCommand updateSurveyResponseCommand(Long surveyResponseId) {
@@ -83,6 +87,7 @@ public final class FeedbackCommandFixtures {
                 surveyResponseId,
                 VALID_SURVEY_ID,
                 new EmployeeProfileId(VALID_EMPLOYEE_PROFILE_ID),
-                VALID_SUBMITTED_AT);
+                VALID_SUBMITTED_AT,
+            null,null);
     }
 }

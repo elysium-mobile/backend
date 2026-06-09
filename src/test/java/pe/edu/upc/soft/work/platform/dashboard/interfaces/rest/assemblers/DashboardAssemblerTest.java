@@ -19,7 +19,8 @@ class DashboardAssemblerTest {
     @DisplayName("toCommandFromRequest(CreateDashboardRequest) -> maps ruc to CreateDashboardCommand (AAA)")
     void toCommandFromCreateRequestMapsRuc() {
         // Arrange
-        var request = new CreateDashboardRequest(DashboardCommandFixtures.VALID_RUC);
+        var request = new CreateDashboardRequest(DashboardCommandFixtures.VALID_TITLE,
+            DashboardCommandFixtures.VALID_DESCRIPTION,DashboardCommandFixtures.VALID_RUC);
 
         // Act
         CreateDashboardCommand command = DashboardAssembler.toCommandFromRequest(request);
@@ -32,13 +33,19 @@ class DashboardAssemblerTest {
     @DisplayName("toCommandFromRequest(Long, UpdateDashboardRequest) -> maps id and ruc to UpdateDashboardCommand (AAA)")
     void toCommandFromUpdateRequestMapsAllFields() {
         // Arrange
-        var request = new UpdateDashboardRequest(DashboardCommandFixtures.VALID_RUC);
+        var request = new UpdateDashboardRequest(DashboardCommandFixtures.VALID_TITLE,
+            DashboardCommandFixtures.VALID_DESCRIPTION, DashboardCommandFixtures.VALID_RUC,
+            DashboardCommandFixtures.VALID_COMPANY_ID
+            );
 
         // Act
         UpdateDashboardCommand command = DashboardAssembler.toCommandFromRequest(5L, request);
 
         // Assert
         assertThat(command.dashboardId()).isEqualTo(5L);
+        assertThat(command.companyId()).isEqualTo(DashboardCommandFixtures.VALID_COMPANY_ID);
+        assertThat(command.title()).isEqualTo(DashboardCommandFixtures.VALID_TITLE);
+        assertThat(command.description()).isEqualTo(DashboardCommandFixtures.VALID_DESCRIPTION);
         assertThat(command.ruc()).isEqualTo(DashboardCommandFixtures.VALID_RUC);
     }
 
@@ -55,5 +62,7 @@ class DashboardAssemblerTest {
         // Assert
         assertThat(response.dashboardId()).isEqualTo(5L);
         assertThat(response.ruc()).isEqualTo(DashboardCommandFixtures.VALID_RUC);
+        assertThat(response.title()).isEqualTo(DashboardCommandFixtures.VALID_TITLE);
+        assertThat(response.description()).isEqualTo(DashboardCommandFixtures.VALID_DESCRIPTION);
     }
 }

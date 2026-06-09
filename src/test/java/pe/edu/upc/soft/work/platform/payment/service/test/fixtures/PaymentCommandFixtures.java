@@ -40,17 +40,19 @@ public final class PaymentCommandFixtures {
     public static final String VALID_TRANSACTION_ID = "TXN-2024-001";
     public static final Date VALID_PAYMENT_DATE = new Date(1_750_000_000_000L);
 
+    public static final Long VALID_MEMBERSHIP_PLAN_ID =6L;
+
     private PaymentCommandFixtures() {
         throw new AssertionError("PaymentCommandFixtures is a utility class and must not be instantiated.");
     }
 
     // ---------- Benefit ----------
     public static CreateBenefitCommand validCreateBenefitCommand() {
-        return new CreateBenefitCommand(VALID_BENEFIT_TITLE, VALID_BENEFIT_DESCRIPTION);
+        return new CreateBenefitCommand(VALID_BENEFIT_TITLE, VALID_BENEFIT_DESCRIPTION,VALID_MEMBERSHIP_PLAN_ID);
     }
 
     public static UpdateBenefitCommand updateBenefitCommand(Long benefitId) {
-        return new UpdateBenefitCommand(benefitId, VALID_BENEFIT_TITLE, VALID_BENEFIT_DESCRIPTION);
+        return new UpdateBenefitCommand(benefitId, VALID_BENEFIT_TITLE, VALID_BENEFIT_DESCRIPTION,VALID_MEMBERSHIP_PLAN_ID);
     }
 
     // ---------- Membership ----------
@@ -64,11 +66,11 @@ public final class PaymentCommandFixtures {
 
     // ---------- MembershipPlan ----------
     public static CreateMembershipPlanCommand validCreateMembershipPlanCommand() {
-        return new CreateMembershipPlanCommand(VALID_PLAN_NAME, VALID_PLAN_PRICE);
+        return new CreateMembershipPlanCommand(VALID_PLAN_NAME, VALID_PLAN_PRICE,null, VALID_MEMBERSHIP_ID);
     }
 
     public static UpdateMembershipPlanCommand updateMembershipPlanCommand(Long planId) {
-        return new UpdateMembershipPlanCommand(planId, VALID_PLAN_NAME, VALID_PLAN_PRICE);
+        return new UpdateMembershipPlanCommand(planId, VALID_PLAN_NAME, VALID_PLAN_PRICE, VALID_MEMBERSHIP_ID);
     }
 
     // ---------- Order ----------

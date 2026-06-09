@@ -17,6 +17,7 @@ public final class NotificationCommandFixtures {
     public static final boolean VALID_SEEN = false;
     public static final NotificationType VALID_NOTIFICATION_TYPE = NotificationType.MESSAGE;
     public static final Long VALID_USER_ACCOUNT_ID = 10L;
+    public static final Long VALID_NOTIFICATION_ID = 1L;
 
     public static final String VALID_DETAIL_TITLE = "Welcome";
     public static final String VALID_DETAIL_CONTENT = "Welcome to the platform.";
@@ -36,10 +37,10 @@ public final class NotificationCommandFixtures {
 
     // ---------- NotificationDetail ----------
     public static CreateNotificationDetailCommand validCreateNotificationDetailCommand() {
-        return new CreateNotificationDetailCommand(VALID_DETAIL_TITLE, VALID_DETAIL_CONTENT);
+        return new CreateNotificationDetailCommand(VALID_DETAIL_TITLE, VALID_DETAIL_CONTENT,VALID_NOTIFICATION_ID);
     }
 
     public static UpdateNotificationDetailCommand updateNotificationDetailCommand(Long notificationDetailId) {
-        return new UpdateNotificationDetailCommand(notificationDetailId, VALID_DETAIL_TITLE, VALID_DETAIL_CONTENT);
+        return new UpdateNotificationDetailCommand(notificationDetailId, VALID_DETAIL_TITLE, VALID_DETAIL_CONTENT, VALID_NOTIFICATION_ID);
     }
 }

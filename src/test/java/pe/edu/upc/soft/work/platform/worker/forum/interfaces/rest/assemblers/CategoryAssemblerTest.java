@@ -21,7 +21,7 @@ class CategoryAssemblerTest {
         // Arrange
         var request = new CreateCategoryRequest(
                 WorkerForumCommandFixtures.VALID_CATEGORY_TITLE,
-                WorkerForumCommandFixtures.VALID_CATEGORY_DESCRIPTION);
+                WorkerForumCommandFixtures.VALID_CATEGORY_DESCRIPTION,WorkerForumCommandFixtures.VALID_FORUM_ID);
 
         // Act
         CreateCategoryCommand command = CategoryAssembler.toCommandFromRequest(request);
@@ -29,6 +29,7 @@ class CategoryAssemblerTest {
         // Assert
         assertThat(command.title()).isEqualTo(WorkerForumCommandFixtures.VALID_CATEGORY_TITLE);
         assertThat(command.description()).isEqualTo(WorkerForumCommandFixtures.VALID_CATEGORY_DESCRIPTION);
+        assertThat(command.forumId()).isEqualTo(WorkerForumCommandFixtures.VALID_FORUM_ID);
     }
 
     @Test
@@ -37,7 +38,8 @@ class CategoryAssemblerTest {
         // Arrange
         var request = new UpdateCategoryRequest(
                 WorkerForumCommandFixtures.VALID_CATEGORY_TITLE,
-                WorkerForumCommandFixtures.VALID_CATEGORY_DESCRIPTION);
+                WorkerForumCommandFixtures.VALID_CATEGORY_DESCRIPTION,
+            WorkerForumCommandFixtures.VALID_FORUM_ID);
 
         // Act
         UpdateCategoryCommand command = CategoryAssembler.toCommandFromRequest(41L, request);
@@ -46,6 +48,7 @@ class CategoryAssemblerTest {
         assertThat(command.categoryId()).isEqualTo(41L);
         assertThat(command.title()).isEqualTo(WorkerForumCommandFixtures.VALID_CATEGORY_TITLE);
         assertThat(command.description()).isEqualTo(WorkerForumCommandFixtures.VALID_CATEGORY_DESCRIPTION);
+        assertThat(command.forumId()).isEqualTo(WorkerForumCommandFixtures.VALID_FORUM_ID);
     }
 
     @Test
@@ -62,5 +65,6 @@ class CategoryAssemblerTest {
         assertThat(response.categoryId()).isEqualTo(41L);
         assertThat(response.title()).isEqualTo(WorkerForumCommandFixtures.VALID_CATEGORY_TITLE);
         assertThat(response.description()).isEqualTo(WorkerForumCommandFixtures.VALID_CATEGORY_DESCRIPTION);
+        assertThat(response.forumId()).isEqualTo(WorkerForumCommandFixtures.VALID_FORUM_ID);
     }
 }

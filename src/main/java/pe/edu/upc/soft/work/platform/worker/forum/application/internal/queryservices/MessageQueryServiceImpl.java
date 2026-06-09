@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessageByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllMessageQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessageByUserAccountIdQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessagesByThreadIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.MessageRepository;
 
@@ -38,5 +40,15 @@ public class MessageQueryServiceImpl implements MessageQueryService {
     @Override
     public Optional<Message> handle(GetMessageByIdQuery query) {
         return messageRepository.findById(query.messageId());
+    }
+
+    @Override
+    public List<Message> handle(GetMessageByUserAccountIdQuery query) {
+        return messageRepository.findByUserAccountId(query.userAccountId());
+    }
+
+    @Override
+    public List<Message> handle(GetMessagesByThreadIdQuery query) {
+        return messageRepository.findByThreadId(query.threadId());
     }
 }

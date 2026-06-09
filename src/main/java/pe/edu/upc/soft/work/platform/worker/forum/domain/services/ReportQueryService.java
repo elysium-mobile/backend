@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.worker.forum.domain.services;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Report;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllReportsQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetReportByIdQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetReportsByUserAccountIdQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +22,6 @@ public interface ReportQueryService {
      * Retrieves a Report by its unique identifier.
      */
     Optional<Report> handle(GetReportByIdQuery query);
+
+    List<Report> handle(GetReportsByUserAccountIdQuery query);
 }

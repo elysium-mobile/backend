@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Thread;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThreadByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllThreadQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThreadsByAreaCompanyIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ThreadQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ThreadRepository;
 
@@ -38,5 +39,10 @@ public class ThreadQueryServiceImpl implements ThreadQueryService {
     @Override
     public Optional<Thread> handle(GetThreadByIdQuery query) {
         return threadRepository.findById(query.threadId());
+    }
+
+    @Override
+    public List<Thread> handle(GetThreadsByAreaCompanyIdQuery query) {
+        return threadRepository.findByAreaCompanyId(query.areaCompanyId());
     }
 }

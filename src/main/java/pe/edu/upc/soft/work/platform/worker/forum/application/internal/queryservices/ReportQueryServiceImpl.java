@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Report;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllReportsQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetReportByIdQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetReportsByUserAccountIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ReportQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ReportRepository;
 
@@ -41,5 +42,10 @@ public class ReportQueryServiceImpl implements ReportQueryService {
     @Override
     public Optional<Report> handle(GetReportByIdQuery query) {
         return reportRepository.findById(query.reportId());
+    }
+
+    @Override
+    public List<Report> handle(GetReportsByUserAccountIdQuery query) {
+        return reportRepository.findByUserAccountId(query.userAccountId());
     }
 }

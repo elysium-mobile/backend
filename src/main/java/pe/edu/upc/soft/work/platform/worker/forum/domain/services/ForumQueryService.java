@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.worker.forum.domain.services;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Forum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllForumQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumsByCompanyIdQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +22,6 @@ public interface ForumQueryService {
      * Retrieves a Forum by their unique identifier.
      */
     Optional<Forum> handle(GetForumByIdQuery query);
+
+    List<Forum> handle(GetForumsByCompanyIdQuery query);
 }

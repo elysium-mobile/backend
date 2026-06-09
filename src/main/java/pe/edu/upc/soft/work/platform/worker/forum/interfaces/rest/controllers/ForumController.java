@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllForumQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumByIdQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumsByCompanyIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.ForumAssembler;
@@ -153,5 +154,27 @@ public class ForumController {
         }
         var forumResponse = ForumAssembler.toResponseFromEntity(forum.get());
         return ResponseEntity.ok(forumResponse);
+    }
+
+    @Operation(summary = "Get Forums by Company ID", description = "Retrieve a list of Forums associated with a specific Company ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Forums retrieved successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ForumResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No Forums found for the given Company ID", content = @Content)
+    })
+    @GetMapping("/company/{companyId}")
+    public ResponseEntity<List<ForumResponse>> getForumsByCompanyId(@PathVariable Long companyId) {
+        var getForumsByCompanyIdQuery = new GetForumsByCompanyIdQuery(companyId);
+        var forums = this.forumQueryService.handle(getForumsByCompanyIdQuery);
+
+        if (forums.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var forumResponses = forums.stream()
+                .map(ForumAssembler::toResponseFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(forumResponses);
     }
 }

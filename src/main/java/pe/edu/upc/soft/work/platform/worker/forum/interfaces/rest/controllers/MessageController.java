@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllMessageQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessageByIdQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessageByUserAccountIdQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessagesByThreadIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.MessageAssembler;
@@ -154,5 +157,48 @@ public class MessageController {
         }
         var messageResponse = MessageAssembler.toResponseFromEntity(message.get());
         return ResponseEntity.ok(messageResponse);
+    }
+
+    @Operation(summary = "Get Messages by Thread ID", description = "Retrieve a list of Messages associated with a specific Thread ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Messages retrieved successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No Messages found for the given Thread ID", content = @Content)
+    })
+    @GetMapping("/thread/{threadId}")
+    public ResponseEntity<List<MessageResponse>> getMessagesByThreadId(@PathVariable Long threadId) {
+        var getMessagesByThreadIdQuery = new GetMessagesByThreadIdQuery(threadId);
+        var messages = this.messageQueryService.handle(getMessagesByThreadIdQuery);
+
+        if (messages.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        var messageResponses = messages.stream()
+                .map(MessageAssembler::toResponseFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(messageResponses);
+    }
+
+    @Operation(summary = "Get Messages by User Account ID", description = "Retrieve a list of Messages associated with a specific User Account ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Messages retrieved successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = MessageResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No Messages found for the given User Account ID", content = @Content)
+    })
+    @GetMapping("/user/{userAccountId}")
+    public ResponseEntity<List<MessageResponse>> getMessagesByUserAccountId(@PathVariable Long userAccountId){
+        var getMessagesByUserAccountIdQuery = new GetMessageByUserAccountIdQuery(userAccountId);
+        var messages = this.messageQueryService.handle(getMessagesByUserAccountIdQuery);
+
+        if (messages.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var messagesResponses = messages.stream()
+            .map(MessageAssembler::toResponseFromEntity)
+            .collect(Collectors.toList());
+        return ResponseEntity.ok(messagesResponses);
     }
 }

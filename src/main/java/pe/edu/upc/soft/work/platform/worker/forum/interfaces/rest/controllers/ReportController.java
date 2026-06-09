@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteReportCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllReportsQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetReportByIdQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetReportsByUserAccountIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ReportCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ReportQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.ReportAssembler;
@@ -135,5 +136,27 @@ public class ReportController{
         var deleteReportCommand= new DeleteReportCommand(id);
         this.reportCommandService.handle(deleteReportCommand);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @Operation(summary = "Get Reports by User Account ID", description = "Retrieve a list of Reports associated with a specific User Account ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Reports retrieved successfully",
+                    content = @io.swagger.v3.oas.annotations.media.Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = ReportResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No Reports found for the specified User Account ID", content = @io.swagger.v3.oas.annotations.media.Content)
+    })
+    @GetMapping("/user-account/{userAccountId}")
+    public ResponseEntity<List<ReportResponse>> getReportsByUserAccountId(@PathVariable Long userAccountId){
+        var getReportsByUserAccount = new GetReportsByUserAccountIdQuery(userAccountId);
+        var reports = this.reportQueryService.handle(getReportsByUserAccount);
+
+        if (reports.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        var reportResponses = reports.stream()
+                .map(ReportAssembler::toResponseFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(reportResponses);
     }
 }

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Forum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllForumQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumsByCompanyIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ForumRepository;
 
@@ -38,5 +39,10 @@ public class ForumQueryServiceImpl implements ForumQueryService {
     @Override
     public Optional<Forum> handle(GetForumByIdQuery query) {
         return forumRepository.findById(query.forumId());
+    }
+
+    @Override
+    public List<Forum> handle(GetForumsByCompanyIdQuery query) {
+        return forumRepository.findByCompanyId(query.companyId());
     }
 }

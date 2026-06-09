@@ -37,6 +37,7 @@ public class SurveyCommandServiceImpl implements SurveyCommandService {
      */
     @Override
     public Long handle(CreateSurveyCommand command) {
+
         var survey = new Survey(command);
         try {
             surveyRepository.save(survey);

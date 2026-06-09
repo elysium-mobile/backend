@@ -21,8 +21,6 @@ public record UpdateAssetRequest(
         @NotNull
         @NotBlank
         @JsonProperty("fileSize")
-        String fileSize,
-        @NotNull
-        @JsonProperty("fileType")
-        FileType fileType
+        String fileSize
+
 ) {}

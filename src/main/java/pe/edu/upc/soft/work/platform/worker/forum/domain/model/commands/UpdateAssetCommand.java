@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Command to update an existing Attachment
  */
-public record UpdateAssetCommand(Long attachmentId, Long messageId, String name, String url, String fileSize, FileType fileType) {
+public record UpdateAssetCommand(Long attachmentId, Long messageId, String name, String url, String fileSize) {
 
     /**
      * Constructor with validation

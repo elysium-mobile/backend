@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.AssetFactory;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllAssetsQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAssetByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.AssetRepository;
@@ -32,7 +33,14 @@ class AssetQueryServiceImplTest {
     private AssetQueryServiceImpl service;
 
     private static Asset sample() {
-        return new Asset(WorkerForumCommandFixtures.validCreateAttachmentCommand());
+        var command = WorkerForumCommandFixtures.validCreateAssetCommand();
+        return AssetFactory.create(
+            command.messageId(),
+            command.name(),
+            command.url(),
+            command.fileSize(),
+            command.fileType()
+        );
     }
 
     @Test

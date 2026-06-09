@@ -6,11 +6,13 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Order
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteOrderCommand;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.MembershipStatus;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.OrderCommandService;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.OrderRepository;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -52,6 +54,18 @@ public class OrderCommandServiceImpl implements OrderCommandService {
                     String.format("[OrderCommandServiceImpl] Membership ID: %s not found in the external IAM service",
                             command.membershipId())
             );
+        }
+        var membership = membershipRepository.findById(command.membershipId()).get();
+        if (membership.getMembershipStatus() != MembershipStatus.ACTIVE) {
+            throw new IllegalStateException(
+                String.format("[OrderCommandServiceImpl] Membership ID: %s is not active (current status: %s)",
+                    command.membershipId(), membership.getMembershipStatus()));
+        }
+        var now = new Date();
+        if (now.before(membership.getMembershipStart()) || now.after(membership.getMembershipOver())) {
+            throw new IllegalStateException(
+                String.format("[OrderCommandServiceImpl] Membership ID: %s is outside its validity period",
+                    command.membershipId()));
         }
 
         var order = new Order(command);

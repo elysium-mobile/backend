@@ -14,4 +14,6 @@ import java.util.List;
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     List<Company> findByNameContainingIgnoreCase(String name);
+
+    boolean existsByRUC(String ruc);
 }

@@ -12,7 +12,9 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.File
  */
 @Entity
 @Table(name = "attachments")
-public class Asset extends AuditableAbstractAggregateRoot<Asset> {
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "file_type", discriminatorType = DiscriminatorType.STRING)
+public abstract class Asset extends AuditableAbstractAggregateRoot<Asset> {
 
     @Getter
     @Column(name = "message_id", nullable = false)
@@ -26,15 +28,19 @@ public class Asset extends AuditableAbstractAggregateRoot<Asset> {
     @Getter
     @Column(name = "file_size", nullable = false)
     private String fileSize;
-    @Getter
-    @Enumerated(EnumType.STRING)
-    @Column(name = "file_type", nullable = false)
-    private FileType fileType;
+
 
     /**
      * Default constructor for JPA.
      */
     public Asset() {}
+
+    protected Asset(Long messageId, String name, String url, String fileSize) {
+        this.messageId = messageId;
+        this.name = name;
+        this.url = url;
+        this.fileSize = fileSize;
+    }
 
     /**
      * Constructor to create a Attachment from a CreateAttachmentCommand.
@@ -45,7 +51,7 @@ public class Asset extends AuditableAbstractAggregateRoot<Asset> {
         this.name = command.name();
         this.url = command.url();
         this.fileSize = command.fileSize();
-        this.fileType = command.fileType();
+
     }
 
     /**
@@ -57,6 +63,21 @@ public class Asset extends AuditableAbstractAggregateRoot<Asset> {
         this.name = command.name();
         this.url = command.url();
         this.fileSize = command.fileSize();
-        this.fileType = command.fileType();
+
     }
+
+    public void updateAsset(Long messageId, String name, String url, String fileSize) {
+        this.messageId = messageId;
+        this.name = name;
+        this.url = url;
+        this.fileSize = fileSize;
+    }
+
+    public abstract FileType getFileType();
+
+    public abstract boolean isViewable();
+
+    public abstract boolean isReadable();
+
+
 }

@@ -75,4 +75,15 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
             this.assets.add(asset);
         }
     }
+
+    public boolean hasViewableAssets() {
+        return assets.stream().anyMatch(Asset::isViewable);
+    }
+
+    public boolean hasReadableAssets() {
+        return assets.stream().anyMatch(Asset::isReadable);
+    }
+
+
+
 }

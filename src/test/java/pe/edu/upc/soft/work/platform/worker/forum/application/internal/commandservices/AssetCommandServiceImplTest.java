@@ -10,6 +10,7 @@ import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentEx
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.AssetFactory;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.AssetRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.MessageRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.test.fixtures.WorkerForumCommandFixtures;
@@ -44,7 +45,7 @@ class AssetCommandServiceImplTest {
     @DisplayName("handle(CreateAttachmentCommand) -> creates Attachment when guard passes (AAA)")
     void handleCreateSuccess() {
         // Arrange
-        var command = WorkerForumCommandFixtures.validCreateAttachmentCommand();
+        var command = WorkerForumCommandFixtures.validCreateAssetCommand();
         // NOTE (source quirk): the service guards via attachmentRepository.existsById(command.messageId())
         when(assetRepository.existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID)).thenReturn(true);
         when(assetRepository.save(any(Asset.class))).thenAnswer(inv -> {
@@ -68,7 +69,7 @@ class AssetCommandServiceImplTest {
     @DisplayName("handle(CreateAttachmentCommand) -> throws NotFoundArgumentException when guard returns false (AAA)")
     void handleCreateGuardFails() {
         // Arrange
-        var command = WorkerForumCommandFixtures.validCreateAttachmentCommand();
+        var command = WorkerForumCommandFixtures.validCreateAssetCommand();
         when(assetRepository.existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID)).thenReturn(false);
 
         // Act + Assert
@@ -83,7 +84,7 @@ class AssetCommandServiceImplTest {
     @DisplayName("handle(CreateAttachmentCommand) -> wraps save failure in RuntimeException (AAA)")
     void handleCreateSaveFailure() {
         // Arrange
-        var command = WorkerForumCommandFixtures.validCreateAttachmentCommand();
+        var command = WorkerForumCommandFixtures.validCreateAssetCommand();
         when(assetRepository.existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID)).thenReturn(true);
         when(assetRepository.save(any(Asset.class))).thenThrow(new RuntimeException("db"));
 
@@ -100,15 +101,22 @@ class AssetCommandServiceImplTest {
     @DisplayName("handle(UpdateAttachmentCommand) -> returns Optional with updated Attachment when present (AAA)")
     void handleUpdateSuccess() {
         // Arrange
-        var existing = new Asset(WorkerForumCommandFixtures.validCreateAttachmentCommand());
+        var command = WorkerForumCommandFixtures.validCreateAssetCommand();
+        var existing = AssetFactory.create(
+            command.messageId(),
+            command.name(),
+            command.url(),
+            command.fileSize(),
+            command.fileType()
+        );
         ReflectionTestUtils.setId(existing, ATTACHMENT_ID);
-        var command = WorkerForumCommandFixtures.updateAttachmentCommand(ATTACHMENT_ID);
+        var updateCommand = WorkerForumCommandFixtures.updateAssetCommand(ATTACHMENT_ID);
         when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(true);
         when(assetRepository.findById(ATTACHMENT_ID)).thenReturn(Optional.of(existing));
         when(assetRepository.save(existing)).thenReturn(existing);
 
         // Act
-        Optional<Asset> result = service.handle(command);
+        Optional<Asset> result = service.handle(updateCommand);
 
         // Assert
         assertThat(result).isPresent();
@@ -124,7 +132,7 @@ class AssetCommandServiceImplTest {
     @DisplayName("handle(UpdateAttachmentCommand) -> throws RuntimeException when id does not exist (AAA)")
     void handleUpdateMissing() {
         // Arrange
-        var command = WorkerForumCommandFixtures.updateAttachmentCommand(ATTACHMENT_ID);
+        var command = WorkerForumCommandFixtures.updateAssetCommand(ATTACHMENT_ID);
         when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(false);
 
         // Act + Assert
@@ -138,16 +146,22 @@ class AssetCommandServiceImplTest {
     @Test
     @DisplayName("handle(UpdateAttachmentCommand) -> wraps save failure in RuntimeException (AAA)")
     void handleUpdateSaveFailure() {
-        // Arrange
-        var existing = new Asset(WorkerForumCommandFixtures.validCreateAttachmentCommand());
+        var command = WorkerForumCommandFixtures.validCreateAssetCommand();
+        var existing = AssetFactory.create(
+            command.messageId(),
+            command.name(),
+            command.url(),
+            command.fileSize(),
+            command.fileType()
+        );
         ReflectionTestUtils.setId(existing, ATTACHMENT_ID);
-        var command = WorkerForumCommandFixtures.updateAttachmentCommand(ATTACHMENT_ID);
+        var updateCommand = WorkerForumCommandFixtures.updateAssetCommand(ATTACHMENT_ID);
         when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(true);
         when(assetRepository.findById(ATTACHMENT_ID)).thenReturn(Optional.of(existing));
         when(assetRepository.save(existing)).thenThrow(new RuntimeException("boom"));
 
         // Act + Assert
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(updateCommand));
         assertThat(ex.getMessage()).contains("Error updating Attachment").contains("boom");
         verify(assetRepository, times(1)).existsById(ATTACHMENT_ID);
         verify(assetRepository, times(1)).findById(ATTACHMENT_ID);

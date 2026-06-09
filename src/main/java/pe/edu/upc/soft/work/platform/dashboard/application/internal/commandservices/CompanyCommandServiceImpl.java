@@ -47,6 +47,10 @@ public class CompanyCommandServiceImpl implements CompanyCommandService {
      */
     @Override
     public Long handle(CreateCompanyCommand command) {
+        if (companyRepository.existsByRUC(command.RUC())) {
+            throw new IllegalArgumentException(
+                    "A Company with RUC " + command.RUC() + " already exists.");
+        }
         var company = new Company(command);
         try {
             companyRepository.save(company);

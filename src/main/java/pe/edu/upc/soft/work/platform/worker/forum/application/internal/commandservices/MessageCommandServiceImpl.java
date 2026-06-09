@@ -93,6 +93,12 @@ public class MessageCommandServiceImpl implements MessageCommandService {
         }
 
         var messageToUpdate = this.messageRepository.findById(messageId).get();
+        if (!messageToUpdate.getUserAccountId().userAccountId()
+            .equals(command.userAccountId().userAccountId())) {
+            throw new IllegalArgumentException(
+                String.format("[MessageCommandServiceImpl] User Account ID: %s is not the author of Message ID: %s",
+                    command.userAccountId().userAccountId(), messageId));
+        }
         messageToUpdate.updateMessage(command);
         try {
             var updatedMessage = this.messageRepository.save(messageToUpdate);

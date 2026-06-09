@@ -44,6 +44,10 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
 
     @Override
     public Long handle(CreateUserAccountCommand command) {
+        if (userAccountRepository.findByEmail(command.email()).isPresent()) {
+            throw new IllegalArgumentException(
+                    "A UserAccount with email '" + command.email() + "' already exists.");
+        }
         var userAccount = new UserAccount(command);
         try{
             userAccountRepository.save(userAccount);

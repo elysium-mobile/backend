@@ -13,6 +13,7 @@ import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.rep
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyResponseRepository;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -56,6 +57,16 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
             throw new NotFoundArgumentException(
                     String.format("[SurveyResponseCommandServiceImpl] Employee Profile ID: %s not found in the external IAM service",
                             command.employeeProfileId().employeeProfileId()));
+        }
+
+        var survey = surveyRepository.findById(command.surveyId()).get();
+        if (survey.getExpirationTime() != null && new Date().after(survey.getExpirationTime())) {
+            throw new RuntimeException("Cannot submit response: Survey has expired.");
+        }
+        boolean alreadyAnswered = surveyResponseRepository.findBySurveyId(command.surveyId()).stream()
+            .anyMatch(response -> response.getEmployeeProfileId().equals(command.employeeProfileId().employeeProfileId()));
+        if (alreadyAnswered) {
+            throw new RuntimeException("Employee has already submitted a response for this survey.");
         }
         var surveyResponse = new SurveyResponse(command);
         try {

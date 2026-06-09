@@ -10,23 +10,23 @@ import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.Upda
 public class AssetAssembler {
 
     /**
-     * Converts a CreateAttachmentRequest to a CreateAttachmentCommand.
+     * Converts a CreateAssetRequest to a CreateAssetCommand.
      */
     public static CreateAssetCommand toCommandFromRequest(CreateAssetRequest request) {
         return new CreateAssetCommand(request.messageId(), request.name(), request.url(), request.fileSize(), request.fileType());
     }
 
     /**
-     * Converts an UpdateAttachmentRequest to an UpdateAttachmentCommand.
+     * Converts an UpdateAssetRequest to an UpdateAssetCommand.
      */
     public static UpdateAssetCommand toCommandFromRequest(Long attachmentId, UpdateAssetRequest request) {
-        return new UpdateAssetCommand(attachmentId, request.messageId(), request.name(), request.url(), request.fileSize(), request.fileType());
+        return new UpdateAssetCommand(attachmentId, request.messageId(), request.name(), request.url(), request.fileSize());
     }
 
     /**
-     * Converts an Attachment entity to an AttachmentResponse.
+     * Converts an Asset entity to an AssetResponse.
      */
     public static AssetResponse toResponseFromEntity(Asset asset) {
-        return new AssetResponse(asset.getId(), asset.getMessageId(), asset.getName(), asset.getUrl(), asset.getFileSize(), asset.getFileType());
+        return new AssetResponse(asset.getId(), asset.getMessageId(), asset.getName(), asset.getUrl(), asset.getFileSize(), asset.getFileType(),asset.isViewable(),asset.isReadable());
     }
 }

@@ -75,6 +75,10 @@ public class PerformanceCommandServiceImpl implements PerformanceCommandService 
         if (!this.performanceRepository.existsById(performanceId)) {
             throw new RuntimeException("Performance with ID " + performanceId + " does not exist.");
         }
+        if(command.classification()<1 || command.classification()>5)
+        {
+            throw new IllegalArgumentException("Classification must be between 1 and 5, got: " + command.classification());
+        }
 
         var performanceToUpdate = this.performanceRepository.findById(performanceId).get();
         performanceToUpdate.updatePerformance(command);

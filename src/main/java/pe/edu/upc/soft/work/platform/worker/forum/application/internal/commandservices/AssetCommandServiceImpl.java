@@ -6,6 +6,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteAssetCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.AssetFactory;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.AssetCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.AssetRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.MessageRepository;
@@ -21,7 +22,7 @@ public class AssetCommandServiceImpl implements AssetCommandService {
     private final MessageRepository messageRepository;
 
     /**
-     * Constructor for AttachmentCommandServiceImpl.
+     * Constructor for AssetCommandServiceImpl.
      * @param assetRepository the repository for Attachment persistence
      */
     public AssetCommandServiceImpl(AssetRepository assetRepository,
@@ -31,9 +32,9 @@ public class AssetCommandServiceImpl implements AssetCommandService {
     }
 
     /**
-     * Handles the creation of an Attachment
-     * @param command the command to create an Attachment
-     * @return the generated ID of the new Attachment
+     * Handles the creation of an Asset
+     * @param command the command to create an Asset
+     * @return the generated ID of the new Asset
      */
     @Override
     public Long handle(CreateAssetCommand command) {
@@ -42,50 +43,65 @@ public class AssetCommandServiceImpl implements AssetCommandService {
                     String.format("[SurveyResponseCommandServiceImpl] Message ID: %s not found in the external Workers Forum context",
                             command.messageId()));
         }
-        var attachment = new Asset(command);
+        var asset = AssetFactory.create(
+                command.messageId(),
+                command.name(),
+                command.url(),
+                command.fileSize(),
+                command.fileType()
+        );
         try {
-            assetRepository.save(attachment);
+            assetRepository.save(asset);
         } catch (Exception e) {
             throw new RuntimeException("Error creating Attachment: " + e.getMessage(), e);
         }
-        return attachment.getId();
+        return asset.getId();
     }
 
     /**
-     * Handles the update of an existing Attachment
-     * @param command the command to update an Attachment
-     * @return the updated Attachment as an Optional
+     * Handles the update of an existing Asset
+     * @param command the asset to update an Asset
+     * @return the updated Asset as an Optional
      */
     @Override
     public Optional<Asset> handle(UpdateAssetCommand command) {
-        var attachmentId = command.attachmentId();
-        if (!this.assetRepository.existsById(attachmentId)) {
-            throw new RuntimeException("Attachment with ID " + attachmentId + " does not exist.");
+        var assetId = command.attachmentId();
+
+        var assetToUpdate = assetRepository.findById(assetId)
+                .orElseThrow(() -> new NotFoundArgumentException(
+                        String.format("[AssetCommandServiceImpl] Attachment ID: %s not found", assetId)));
+        if (!this.assetRepository.existsById(assetId)) {
+            throw new RuntimeException("Attachment with ID " + assetId + " does not exist.");
         }
 
-        var attachmentToUpdate = this.assetRepository.findById(attachmentId).get();
-        attachmentToUpdate.updateAttachment(command);
+        assetToUpdate.updateAsset(
+                command.messageId(),
+                command.name(),
+                command.url(),
+                command.fileSize()
+        );
+
         try {
-            var updatedAttachment = this.assetRepository.save(attachmentToUpdate);
-            return Optional.of(updatedAttachment);
+            var updatedAsset = this.assetRepository.save(assetToUpdate);
+            return Optional.of(updatedAsset);
         } catch (Exception e) {
-            throw new RuntimeException("Error updating Attachment: " + e.getMessage(), e);
+            throw new RuntimeException("Error updating Asset: " + e.getMessage(), e);
         }
     }
 
     /**
-     * Handles the deletion of an Attachment
-     * @param command the command to delete an Attachment
+     * Handles the deletion of an Asset
+     * @param command the command to delete an Asset
      */
     @Override
     public void handle(DeleteAssetCommand command) {
         if (!assetRepository.existsById(command.attachmentId())) {
-            throw new RuntimeException("Attachment with ID " + command.attachmentId() + " does not exist.");
+            throw new RuntimeException("Asset with ID " + command.attachmentId() + " does not exist.");
         }
         try {
             assetRepository.deleteById(command.attachmentId());
         } catch (Exception e) {
-            throw new RuntimeException("Error deleting Attachment: " + e.getMessage(), e);
+            throw new RuntimeException("Error deleting Asset: " + e.getMessage(), e);
         }
     }
 }

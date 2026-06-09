@@ -29,6 +29,8 @@ public final class WorkerForumCommandFixtures {
     public static final String VALID_ATTACHMENT_URL = "https://files.example/report.pdf";
     public static final String VALID_FILE_SIZE = "1024KB";
     public static final FileType VALID_FILE_TYPE = FileType.PDF;
+    public static boolean VALID_FILE_TYPE_IS_VIEWABLE = true;
+    public static boolean VALID_FILE_TYPE_IS_READABLE = false;
 
     public static final Long VALID_CATEGORY_ID = 3L;
     public static final String VALID_CATEGORY_TITLE = "General Discussion";
@@ -53,14 +55,14 @@ public final class WorkerForumCommandFixtures {
     }
 
     // ---------- Attachment ----------
-    public static CreateAssetCommand validCreateAttachmentCommand() {
+    public static CreateAssetCommand validCreateAssetCommand() {
         return new CreateAssetCommand(
                 VALID_MESSAGE_ID, VALID_ATTACHMENT_NAME, VALID_ATTACHMENT_URL, VALID_FILE_SIZE, VALID_FILE_TYPE);
     }
 
-    public static UpdateAssetCommand updateAttachmentCommand(Long attachmentId) {
+    public static UpdateAssetCommand updateAssetCommand(Long attachmentId) {
         return new UpdateAssetCommand(
-                attachmentId, VALID_MESSAGE_ID, VALID_ATTACHMENT_NAME, VALID_ATTACHMENT_URL, VALID_FILE_SIZE, VALID_FILE_TYPE);
+                attachmentId, VALID_MESSAGE_ID, VALID_ATTACHMENT_NAME, VALID_ATTACHMENT_URL, VALID_FILE_SIZE);
     }
 
     // ---------- Category ----------

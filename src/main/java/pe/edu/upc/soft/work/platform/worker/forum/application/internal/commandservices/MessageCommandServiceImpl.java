@@ -4,6 +4,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
+import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalIamServiceFromWorkerForum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddAttachmentsToMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
@@ -23,7 +24,7 @@ import java.util.Optional;
 @Service
 public class MessageCommandServiceImpl implements MessageCommandService {
     private final MessageRepository messageRepository;
-    private final ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService;
+    private final ExternalIamServiceFromWorkerForum externalIamServiceFromWorkerForum;
     private final ApplicationEventPublisher eventPublisher;
     private final ThreadRepository threadRepository;
     private final AttachmentRepository attachmentRepository;
@@ -33,12 +34,12 @@ public class MessageCommandServiceImpl implements MessageCommandService {
      * @param messageRepository the repository for Message persistence
      */
     public MessageCommandServiceImpl(MessageRepository messageRepository,
-                                     ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService,
+                                     ExternalIamServiceFromWorkerForum externalIamServiceFromWorkerForum,
                                      ApplicationEventPublisher eventPublisher,
                                      ThreadRepository threadRepository,
                                      AttachmentRepository attachmentRepository) {
         this.messageRepository = messageRepository;
-        this.externalIamServiceFromPaymentService = externalIamServiceFromPaymentService;
+        this.externalIamServiceFromWorkerForum = externalIamServiceFromWorkerForum;
         this.eventPublisher = eventPublisher;
         this.threadRepository = threadRepository;
         this.attachmentRepository = attachmentRepository;
@@ -52,7 +53,7 @@ public class MessageCommandServiceImpl implements MessageCommandService {
      */
     @Override
     public Long handle(CreateMessageCommand command) {
-        if(!externalIamServiceFromPaymentService.existsUserAccountById(command.userAccountId().userAccountId())){
+        if(!externalIamServiceFromWorkerForum.existsUserAccountById(command.userAccountId().userAccountId())){
             throw new NotFoundArgumentException(
                     String.format("[MessageCommandServiceImpl] User Account ID: %s not found in the external IAM service",
                             command.userAccountId().userAccountId())

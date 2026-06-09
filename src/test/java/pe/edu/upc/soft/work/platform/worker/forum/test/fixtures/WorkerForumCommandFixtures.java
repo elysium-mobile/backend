@@ -1,11 +1,11 @@
 package pe.edu.upc.soft.work.platform.worker.forum.test.fixtures;
 
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAttachmentCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateThreadCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAttachmentCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
@@ -53,13 +53,13 @@ public final class WorkerForumCommandFixtures {
     }
 
     // ---------- Attachment ----------
-    public static CreateAttachmentCommand validCreateAttachmentCommand() {
-        return new CreateAttachmentCommand(
+    public static CreateAssetCommand validCreateAttachmentCommand() {
+        return new CreateAssetCommand(
                 VALID_MESSAGE_ID, VALID_ATTACHMENT_NAME, VALID_ATTACHMENT_URL, VALID_FILE_SIZE, VALID_FILE_TYPE);
     }
 
-    public static UpdateAttachmentCommand updateAttachmentCommand(Long attachmentId) {
-        return new UpdateAttachmentCommand(
+    public static UpdateAssetCommand updateAttachmentCommand(Long attachmentId) {
+        return new UpdateAssetCommand(
                 attachmentId, VALID_MESSAGE_ID, VALID_ATTACHMENT_NAME, VALID_ATTACHMENT_URL, VALID_FILE_SIZE, VALID_FILE_TYPE);
     }
 

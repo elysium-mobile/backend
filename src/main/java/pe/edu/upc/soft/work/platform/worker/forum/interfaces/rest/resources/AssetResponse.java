@@ -5,7 +5,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.File
 /**
  * Response object representing an Attachment in the system.
  */
-public record AttachmentResponse(
+public record AssetResponse(
         Long attachmentId,
         Long messageId,
         String name,

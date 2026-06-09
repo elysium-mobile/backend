@@ -2,11 +2,11 @@ package pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jp
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Attachment;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
 
 /**
  * Repository interface for managing Attachment entities.
  */
 @Repository
-public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
+public interface AssetRepository extends JpaRepository<Asset, Long> {
 }

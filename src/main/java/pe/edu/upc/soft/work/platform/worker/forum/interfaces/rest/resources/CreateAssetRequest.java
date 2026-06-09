@@ -6,9 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.FileType;
 
 /**
- * Request object for updating an existing Attachment.
+ * Request object for creating a new Attachment.
  */
-public record UpdateAttachmentRequest(
+public record CreateAssetRequest(
         @NotNull
         @JsonProperty("messageId")
         Long messageId,

@@ -37,8 +37,8 @@ public class CategoryAssembler {
                 .map(thread -> {
                     List<MessageResponse> messageResponses = thread.getMessages().stream()
                             .map(message -> {
-                                List<AttachmentResponse> attachmentResponses = message.getAttachments().stream()
-                                        .map(attachment -> new AttachmentResponse(
+                                List<AssetResponse> assetRespons = message.getAssets().stream()
+                                        .map(attachment -> new AssetResponse(
                                                 attachment.getId(),
                                                 attachment.getMessageId(),
                                                 attachment.getName(),
@@ -52,7 +52,7 @@ public class CategoryAssembler {
                                         message.getUserAccountId().userAccountId(),
                                         message.getContentMessage(),
                                         message.getThreadId(),
-                                        attachmentResponses
+                                    assetRespons
                                 );
                             })
                             .toList();

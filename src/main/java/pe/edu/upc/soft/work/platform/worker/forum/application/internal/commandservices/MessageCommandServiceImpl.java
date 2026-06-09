@@ -2,7 +2,6 @@ package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commands
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalIamServiceFromWorkerForum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
@@ -12,7 +11,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMe
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.events.MessagePostedEvent;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageCommandService;
-import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.AttachmentRepository;
+import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.AssetRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.MessageRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ThreadRepository;
 
@@ -27,7 +26,7 @@ public class MessageCommandServiceImpl implements MessageCommandService {
     private final ExternalIamServiceFromWorkerForum externalIamServiceFromWorkerForum;
     private final ApplicationEventPublisher eventPublisher;
     private final ThreadRepository threadRepository;
-    private final AttachmentRepository attachmentRepository;
+    private final AssetRepository assetRepository;
 
     /**
      * Constructor for MessageCommandServiceImpl.
@@ -37,12 +36,12 @@ public class MessageCommandServiceImpl implements MessageCommandService {
                                      ExternalIamServiceFromWorkerForum externalIamServiceFromWorkerForum,
                                      ApplicationEventPublisher eventPublisher,
                                      ThreadRepository threadRepository,
-                                     AttachmentRepository attachmentRepository) {
+                                     AssetRepository assetRepository) {
         this.messageRepository = messageRepository;
         this.externalIamServiceFromWorkerForum = externalIamServiceFromWorkerForum;
         this.eventPublisher = eventPublisher;
         this.threadRepository = threadRepository;
-        this.attachmentRepository = attachmentRepository;
+        this.assetRepository = assetRepository;
 
     }
 
@@ -121,7 +120,7 @@ public class MessageCommandServiceImpl implements MessageCommandService {
 
     @Override
     public void handle(AddAttachmentsToMessageCommand command) {
-        var attachment = attachmentRepository.findById(command.attachmentId()).orElseThrow(() -> new NotFoundArgumentException(
+        var attachment = assetRepository.findById(command.attachmentId()).orElseThrow(() -> new NotFoundArgumentException(
                 String.format("[MessageCommandServiceImpl] Attachment ID: %s not found in the database",
                         command.attachmentId())));
         var message = messageRepository.findById(command.messageId()).orElseThrow(() -> new NotFoundArgumentException(

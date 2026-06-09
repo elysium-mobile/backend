@@ -3,12 +3,12 @@ package pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries;
 /**
  * Query to retrieve a Attachment by their unique identifier.
  */
-public record GetAttachmentByIdQuery(Long attachmentId) {
+public record GetAssetByIdQuery(Long attachmentId) {
 
     /**
      * Constructor to validate the attachmentId parameter.
      */
-    public GetAttachmentByIdQuery {
+    public GetAssetByIdQuery {
         if (attachmentId == null || attachmentId <= 0) {
             throw new IllegalArgumentException("Attachment ID must be a positive number.");
         }

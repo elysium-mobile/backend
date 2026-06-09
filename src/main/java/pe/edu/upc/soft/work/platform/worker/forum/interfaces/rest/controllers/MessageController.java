@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +18,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessag
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.MessageAssembler;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AddAttachmentToMessageRequest;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AddAssetToMessageRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateMessageRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.MessageResponse;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateMessageRequest;
@@ -147,7 +146,7 @@ public class MessageController {
             @ApiResponse(responseCode = "404", description = "Message not found", content = @Content)
     })
     @PostMapping("/{id}/attachments")
-    public ResponseEntity<MessageResponse> addAttachmentToMessage(@PathVariable Long id, @RequestBody AddAttachmentToMessageRequest request){
+    public ResponseEntity<MessageResponse> addAttachmentToMessage(@PathVariable Long id, @RequestBody AddAssetToMessageRequest request){
         var command = MessageAssembler.toCommandFromRequest(id, request);
         this.messageCommandService.handle(command);
 

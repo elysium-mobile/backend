@@ -2,8 +2,8 @@ package pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAttachmentCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAttachmentCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAssetCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.FileType;
 
@@ -12,7 +12,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.File
  */
 @Entity
 @Table(name = "attachments")
-public class Attachment extends AuditableAbstractAggregateRoot<Attachment> {
+public class Asset extends AuditableAbstractAggregateRoot<Asset> {
 
     @Getter
     @Column(name = "message_id", nullable = false)
@@ -34,13 +34,13 @@ public class Attachment extends AuditableAbstractAggregateRoot<Attachment> {
     /**
      * Default constructor for JPA.
      */
-    public Attachment() {}
+    public Asset() {}
 
     /**
      * Constructor to create a Attachment from a CreateAttachmentCommand.
      * @param command the command containing attachment details
      */
-    public Attachment(CreateAttachmentCommand command) {
+    public Asset(CreateAssetCommand command) {
         this.messageId = command.messageId();
         this.name = command.name();
         this.url = command.url();
@@ -52,7 +52,7 @@ public class Attachment extends AuditableAbstractAggregateRoot<Attachment> {
      * Updates the Attachment with details from an UpdateAttachmentCommand.
      * @param command the command containing updated attachment details
      */
-    public void updateAttachment(UpdateAttachmentCommand command) {
+    public void updateAttachment(UpdateAssetCommand command) {
         this.messageId = command.messageId();
         this.name = command.name();
         this.url = command.url();

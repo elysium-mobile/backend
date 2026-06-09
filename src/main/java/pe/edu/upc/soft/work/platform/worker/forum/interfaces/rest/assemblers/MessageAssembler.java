@@ -26,7 +26,7 @@ public class MessageAssembler {
         return new UpdateMessageCommand(messageId, new UserAccountId(request.userAccountId()), request.contentMessage(), request.threadId());
     }
 
-    public static AddAttachmentsToMessageCommand toCommandFromRequest(Long messageId, AddAttachmentToMessageRequest request){
+    public static AddAttachmentsToMessageCommand toCommandFromRequest(Long messageId, AddAssetToMessageRequest request){
         return new AddAttachmentsToMessageCommand(request.attachmentId(), messageId);
     }
 
@@ -34,8 +34,8 @@ public class MessageAssembler {
      * Converts a Message entity to a MessageResponse.
      */
     public static MessageResponse toResponseFromEntity(Message message) {
-        List<AttachmentResponse> attachmentResponses = message.getAttachments().stream()
-                .map(attachment -> new AttachmentResponse(
+        List<AssetResponse> assetRespons = message.getAssets().stream()
+                .map(attachment -> new AssetResponse(
                         attachment.getId(),
                         attachment.getMessageId(),
                         attachment.getName(),
@@ -45,6 +45,6 @@ public class MessageAssembler {
                 ))
                 .toList();
 
-        return new MessageResponse(message.getId(), message.getUserAccountId().userAccountId(), message.getContentMessage(),message.getThreadId(), attachmentResponses);
+        return new MessageResponse(message.getId(), message.getUserAccountId().userAccountId(), message.getContentMessage(),message.getThreadId(), assetRespons);
     }
 }

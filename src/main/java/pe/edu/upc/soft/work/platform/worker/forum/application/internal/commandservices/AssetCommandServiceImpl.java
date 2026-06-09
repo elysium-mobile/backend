@@ -2,12 +2,12 @@ package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commands
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Attachment;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAttachmentCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAttachmentCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteAttachmentCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.services.AttachmentCommandService;
-import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.AttachmentRepository;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAssetCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteAssetCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.services.AssetCommandService;
+import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.AssetRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.MessageRepository;
 
 import java.util.Optional;
@@ -16,17 +16,17 @@ import java.util.Optional;
  * Service implementation for handling Attachment commands
  */
 @Service
-public class AttachmentCommandServiceImpl implements AttachmentCommandService {
-    private final AttachmentRepository attachmentRepository;
+public class AssetCommandServiceImpl implements AssetCommandService {
+    private final AssetRepository assetRepository;
     private final MessageRepository messageRepository;
 
     /**
      * Constructor for AttachmentCommandServiceImpl.
-     * @param attachmentRepository the repository for Attachment persistence
+     * @param assetRepository the repository for Attachment persistence
      */
-    public AttachmentCommandServiceImpl(AttachmentRepository attachmentRepository,
-                                        MessageRepository messageRepository) {
-        this.attachmentRepository = attachmentRepository;
+    public AssetCommandServiceImpl(AssetRepository assetRepository,
+                                   MessageRepository messageRepository) {
+        this.assetRepository = assetRepository;
         this.messageRepository=messageRepository;
     }
 
@@ -36,15 +36,15 @@ public class AttachmentCommandServiceImpl implements AttachmentCommandService {
      * @return the generated ID of the new Attachment
      */
     @Override
-    public Long handle(CreateAttachmentCommand command) {
-        if (!this.attachmentRepository.existsById(command.messageId())){
+    public Long handle(CreateAssetCommand command) {
+        if (!this.assetRepository.existsById(command.messageId())){
             throw new NotFoundArgumentException(
                     String.format("[SurveyResponseCommandServiceImpl] Message ID: %s not found in the external Workers Forum context",
                             command.messageId()));
         }
-        var attachment = new Attachment(command);
+        var attachment = new Asset(command);
         try {
-            attachmentRepository.save(attachment);
+            assetRepository.save(attachment);
         } catch (Exception e) {
             throw new RuntimeException("Error creating Attachment: " + e.getMessage(), e);
         }
@@ -57,16 +57,16 @@ public class AttachmentCommandServiceImpl implements AttachmentCommandService {
      * @return the updated Attachment as an Optional
      */
     @Override
-    public Optional<Attachment> handle(UpdateAttachmentCommand command) {
+    public Optional<Asset> handle(UpdateAssetCommand command) {
         var attachmentId = command.attachmentId();
-        if (!this.attachmentRepository.existsById(attachmentId)) {
+        if (!this.assetRepository.existsById(attachmentId)) {
             throw new RuntimeException("Attachment with ID " + attachmentId + " does not exist.");
         }
 
-        var attachmentToUpdate = this.attachmentRepository.findById(attachmentId).get();
+        var attachmentToUpdate = this.assetRepository.findById(attachmentId).get();
         attachmentToUpdate.updateAttachment(command);
         try {
-            var updatedAttachment = this.attachmentRepository.save(attachmentToUpdate);
+            var updatedAttachment = this.assetRepository.save(attachmentToUpdate);
             return Optional.of(updatedAttachment);
         } catch (Exception e) {
             throw new RuntimeException("Error updating Attachment: " + e.getMessage(), e);
@@ -78,12 +78,12 @@ public class AttachmentCommandServiceImpl implements AttachmentCommandService {
      * @param command the command to delete an Attachment
      */
     @Override
-    public void handle(DeleteAttachmentCommand command) {
-        if (!attachmentRepository.existsById(command.attachmentId())) {
+    public void handle(DeleteAssetCommand command) {
+        if (!assetRepository.existsById(command.attachmentId())) {
             throw new RuntimeException("Attachment with ID " + command.attachmentId() + " does not exist.");
         }
         try {
-            attachmentRepository.deleteById(command.attachmentId());
+            assetRepository.deleteById(command.attachmentId());
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Attachment: " + e.getMessage(), e);
         }

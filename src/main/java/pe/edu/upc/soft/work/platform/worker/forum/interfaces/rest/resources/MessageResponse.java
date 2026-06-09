@@ -10,5 +10,5 @@ public record MessageResponse(
         Long userAccountId,
         String contentMessage,
         Long threadId,
-        List<AttachmentResponse> attachments
+        List<AssetResponse> attachments
 ) {}

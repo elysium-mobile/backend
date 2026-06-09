@@ -3,23 +3,23 @@ package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAttachmentCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAttachmentCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Attachment;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AttachmentResponse;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateAttachmentRequest;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateAttachmentRequest;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAssetCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AssetResponse;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateAssetRequest;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateAssetRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.test.fixtures.WorkerForumCommandFixtures;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AttachmentAssemblerTest {
+class AssetAssemblerTest {
 
     @Test
     @DisplayName("toCommandFromRequest(CreateAttachmentRequest) -> maps every field to CreateAttachmentCommand (AAA)")
     void toCommandFromCreateRequestMapsAllFields() {
         // Arrange
-        var request = new CreateAttachmentRequest(
+        var request = new CreateAssetRequest(
                 WorkerForumCommandFixtures.VALID_MESSAGE_ID,
                 WorkerForumCommandFixtures.VALID_ATTACHMENT_NAME,
                 WorkerForumCommandFixtures.VALID_ATTACHMENT_URL,
@@ -27,7 +27,7 @@ class AttachmentAssemblerTest {
                 WorkerForumCommandFixtures.VALID_FILE_TYPE);
 
         // Act
-        CreateAttachmentCommand command = AttachmentAssembler.toCommandFromRequest(request);
+        CreateAssetCommand command = AssetAssembler.toCommandFromRequest(request);
 
         // Assert
         assertThat(command.messageId()).isEqualTo(WorkerForumCommandFixtures.VALID_MESSAGE_ID);
@@ -41,7 +41,7 @@ class AttachmentAssemblerTest {
     @DisplayName("toCommandFromRequest(Long, UpdateAttachmentRequest) -> maps id and all fields to UpdateAttachmentCommand (AAA)")
     void toCommandFromUpdateRequestMapsAllFields() {
         // Arrange
-        var request = new UpdateAttachmentRequest(
+        var request = new UpdateAssetRequest(
                 WorkerForumCommandFixtures.VALID_MESSAGE_ID,
                 WorkerForumCommandFixtures.VALID_ATTACHMENT_NAME,
                 WorkerForumCommandFixtures.VALID_ATTACHMENT_URL,
@@ -49,7 +49,7 @@ class AttachmentAssemblerTest {
                 WorkerForumCommandFixtures.VALID_FILE_TYPE);
 
         // Act
-        UpdateAttachmentCommand command = AttachmentAssembler.toCommandFromRequest(31L, request);
+        UpdateAssetCommand command = AssetAssembler.toCommandFromRequest(31L, request);
 
         // Assert
         assertThat(command.attachmentId()).isEqualTo(31L);
@@ -64,11 +64,11 @@ class AttachmentAssemblerTest {
     @DisplayName("toResponseFromEntity(Attachment) -> maps every field to AttachmentResponse (AAA)")
     void toResponseFromEntityMapsAllFields() {
         // Arrange
-        var entity = new Attachment(WorkerForumCommandFixtures.validCreateAttachmentCommand());
+        var entity = new Asset(WorkerForumCommandFixtures.validCreateAttachmentCommand());
         ReflectionTestUtils.setId(entity, 31L);
 
         // Act
-        AttachmentResponse response = AttachmentAssembler.toResponseFromEntity(entity);
+        AssetResponse response = AssetAssembler.toResponseFromEntity(entity);
 
         // Assert
         assertThat(response.attachmentId()).isEqualTo(31L);

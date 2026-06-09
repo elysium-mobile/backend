@@ -6,7 +6,7 @@ import lombok.Getter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Attachment;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.UserAccountId;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
     @Getter
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name = "attachments", nullable = true)
-    private List<Attachment> attachments;
+    private List<Asset> assets;
 
     @Getter
     @Column(name = "thread_id", nullable = false)
@@ -51,7 +51,7 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
     public Message(CreateMessageCommand command) {
         this.userAccountId = command.userAccountId();
         this.contentMessage = command.contentMessage();
-        this.attachments =command.attachments();
+        this.assets =command.assets();
         this.threadId = command.threadId();
     }
 
@@ -65,14 +65,14 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
         this.threadId = command.threadId();
     }
 
-    public void addAttachment(Attachment attachment){
-        if (this.attachments == null){
-            this.attachments = new java.util.ArrayList<>();
+    public void addAttachment(Asset asset){
+        if (this.assets == null){
+            this.assets = new java.util.ArrayList<>();
         }
-        boolean alreadyExists = this.attachments.stream()
-                .anyMatch(existingAttachment -> existingAttachment.getId().equals(attachment.getId()));
+        boolean alreadyExists = this.assets.stream()
+                .anyMatch(existingAttachment -> existingAttachment.getId().equals(asset.getId()));
         if (!alreadyExists) {
-            this.attachments.add(attachment);
+            this.assets.add(asset);
         }
     }
 }

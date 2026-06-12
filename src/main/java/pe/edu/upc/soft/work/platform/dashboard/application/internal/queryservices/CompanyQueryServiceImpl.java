@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.dashboard.application.internal.queryservic
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Company;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetCompaniesByNameQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetCompanyByIdQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAllCompanyQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.CompanyQueryService;
@@ -38,5 +39,10 @@ public class CompanyQueryServiceImpl implements CompanyQueryService {
     @Override
     public Optional<Company> handle(GetCompanyByIdQuery query) {
         return companyRepository.findById(query.companyId());
+    }
+
+    @Override
+    public List<Company> handle(GetCompaniesByNameQuery query) {
+        return companyRepository.findByNameContainingIgnoreCase(query.name());
     }
 }

@@ -1,13 +1,18 @@
 package pe.edu.upc.soft.work.platform.payment.service.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Order;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteOrderCommand;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.MembershipStatus;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.OrderCommandService;
+import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.OrderRepository;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -16,13 +21,19 @@ import java.util.Optional;
 @Service
 public class OrderCommandServiceImpl implements OrderCommandService {
     private final OrderRepository orderRepository;
+    private final ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService;
+    private final MembershipRepository membershipRepository;
 
     /**
      * Constructor for OrderCommandServiceImpl
      * @param orderRepository the repository for Order persistence
      */
-    public OrderCommandServiceImpl(OrderRepository orderRepository) {
+    public OrderCommandServiceImpl(OrderRepository orderRepository,
+                                   ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService,
+                                   MembershipRepository membershipRepository) {
         this.orderRepository = orderRepository;
+        this.externalIamServiceFromPaymentService = externalIamServiceFromPaymentService;
+        this.membershipRepository = membershipRepository;
     }
 
     /**
@@ -32,6 +43,31 @@ public class OrderCommandServiceImpl implements OrderCommandService {
      */
     @Override
     public Long handle(CreateOrderCommand command) {
+        if (!externalIamServiceFromPaymentService.existsUserAccountById(command.userAccountId().userAccountId())){
+            throw new NotFoundArgumentException(
+                    String.format("[OrderCommandServiceImpl] User Account ID: %s not found in the external IAM service",
+                            command.userAccountId().userAccountId()));
+        }
+
+        if (!membershipRepository.existsById(command.membershipId())){
+            throw new NotFoundArgumentException(
+                    String.format("[OrderCommandServiceImpl] Membership ID: %s not found in the external IAM service",
+                            command.membershipId())
+            );
+        }
+        var membership = membershipRepository.findById(command.membershipId()).get();
+        if (membership.getMembershipStatus() != MembershipStatus.ACTIVE) {
+            throw new IllegalStateException(
+                String.format("[OrderCommandServiceImpl] Membership ID: %s is not active (current status: %s)",
+                    command.membershipId(), membership.getMembershipStatus()));
+        }
+        var now = new Date();
+        if (now.before(membership.getMembershipStart()) || now.after(membership.getMembershipOver())) {
+            throw new IllegalStateException(
+                String.format("[OrderCommandServiceImpl] Membership ID: %s is outside its validity period",
+                    command.membershipId()));
+        }
+
         var order = new Order(command);
         try {
             orderRepository.save(order);

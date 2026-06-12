@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Command to create a new WorkTeam
  */
-public record CreateWorkTeamCommand(String teamName, String leaderOfTeam) {
+public record CreateWorkTeamCommand(String teamName, String leaderOfTeam, Long unitOfWorkId) {
 
     /**
      * Constructor with validation

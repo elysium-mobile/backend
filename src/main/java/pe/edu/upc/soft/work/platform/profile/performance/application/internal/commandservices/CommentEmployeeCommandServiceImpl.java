@@ -1,12 +1,17 @@
 package pe.edu.upc.soft.work.platform.profile.performance.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.profile.performance.application.internal.outboundservices.acl.ExternalIamServiceFromProfilePerformance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.CommentEmployee;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreateCommentEmployeeCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdateCommentEmployeeCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeleteCommentEmployeeCommand;
+import pe.edu.upc.soft.work.platform.profile.performance.domain.model.events.CommentEmployeeAddedEvent;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.CommentEmployeeCommandService;
 import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.CommentEmployeeRepository;
+import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.PerformanceRepository;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
 import java.util.Optional;
 
@@ -16,13 +21,22 @@ import java.util.Optional;
 @Service
 public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommandService {
     private final CommentEmployeeRepository commentemployeeRepository;
+    private final ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance;
+    private final ApplicationEventPublisher eventPublisher;
+    private final PerformanceRepository performanceRepository;
 
     /**
      * Constructor for CommentEmployeeCommandServiceImpl
      * @param commentemployeeRepository the repository for CommentEmployee persistence
      */
-    public CommentEmployeeCommandServiceImpl(CommentEmployeeRepository commentemployeeRepository) {
+    public CommentEmployeeCommandServiceImpl(CommentEmployeeRepository commentemployeeRepository,
+                                             ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance,
+                                             ApplicationEventPublisher eventPublisher,
+                                             PerformanceRepository performanceRepository) {
         this.commentemployeeRepository = commentemployeeRepository;
+        this.externalIamServiceFromProfilePerformance = externalIamServiceFromProfilePerformance;
+        this.eventPublisher = eventPublisher;
+        this.performanceRepository = performanceRepository;
     }
 
     /**
@@ -32,7 +46,17 @@ public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommand
      */
     @Override
     public Long handle(CreateCommentEmployeeCommand command) {
+        if (!this.externalIamServiceFromProfilePerformance.existsRRHHProfileById(command.rrhhProfileId().rrhhProfileId())){
+            throw new NotFoundArgumentException(String.format("[CommentEmployeeCommandServiceImpl] RRHH Profile ID: %s not found in the external IAM service",
+                            command.rrhhProfileId().rrhhProfileId()));
+        }
+        if (!performanceRepository.existsById(command.performanceId())){
+            throw new NotFoundArgumentException(String.format("[CommentEmployeeCommandServiceImpl] Performance ID: %s not found",
+                    command.performanceId()));
+        }
+
         var commentemployee = new CommentEmployee(command);
+        eventPublisher.publishEvent(new CommentEmployeeAddedEvent(this, commentemployee.getId(),null));
         try {
             commentemployeeRepository.save(commentemployee);
         } catch (Exception e) {
@@ -48,7 +72,11 @@ public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommand
      */
     @Override
     public Optional<CommentEmployee> handle(UpdateCommentEmployeeCommand command) {
-        var commentemployeeId = command.commentemployeeId();
+        if (!performanceRepository.existsById(command.performanceId())){
+            throw new NotFoundArgumentException(String.format("[CommentEmployeeCommandServiceImpl] Performance ID: %s not found",
+                    command.performanceId()));
+        }
+        var commentemployeeId = command.commentEmployeeId();
         if (!this.commentemployeeRepository.existsById(commentemployeeId)) {
             throw new RuntimeException("CommentEmployee with ID " + commentemployeeId + " does not exist.");
         }

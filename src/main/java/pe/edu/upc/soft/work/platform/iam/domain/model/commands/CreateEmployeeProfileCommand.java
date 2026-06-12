@@ -1,6 +1,5 @@
 package pe.edu.upc.soft.work.platform.iam.domain.model.commands;
 
-import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.WorkOfTeamId;
 
 import java.util.Date;

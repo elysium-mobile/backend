@@ -1,8 +1,10 @@
 package pe.edu.upc.soft.work.platform.iam.domain.services;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteUserAccountCommand;
+import pe.edu.upc.soft.work.platform.iam.domain.model.commands.SignInCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateUserAccountCommand;
 
 import java.util.Optional;
@@ -31,5 +33,7 @@ public interface UserAccountCommandService {
      * @param command the command containing the identifier of the UserAccount to be deleted
      */
     void handle(DeleteUserAccountCommand command);
+
+    Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
 
 }

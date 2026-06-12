@@ -6,7 +6,10 @@ import lombok.Getter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.UserAccountId;
+
+import java.util.List;
 
 
 /**
@@ -27,6 +30,15 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
     @Column(name = "content_message", nullable = false, length = 500)
     private String contentMessage;
 
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "attachments", nullable = true)
+    private List<Asset> assets;
+
+    @Getter
+    @Column(name = "thread_id", nullable = false)
+    private Long threadId;
+
     /**
      * Default constructor for JPA.
      */
@@ -39,6 +51,8 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
     public Message(CreateMessageCommand command) {
         this.userAccountId = command.userAccountId();
         this.contentMessage = command.contentMessage();
+        this.assets =command.assets();
+        this.threadId = command.threadId();
     }
 
     /**
@@ -48,5 +62,28 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
     public void updateMessage(UpdateMessageCommand command) {
         this.userAccountId = command.userAccountId();
         this.contentMessage = command.contentMessage();
+        this.threadId = command.threadId();
     }
+
+    public void addAttachment(Asset asset){
+        if (this.assets == null){
+            this.assets = new java.util.ArrayList<>();
+        }
+        boolean alreadyExists = this.assets.stream()
+                .anyMatch(existingAttachment -> existingAttachment.getId().equals(asset.getId()));
+        if (!alreadyExists) {
+            this.assets.add(asset);
+        }
+    }
+
+    public boolean hasViewableAssets() {
+        return assets.stream().anyMatch(Asset::isViewable);
+    }
+
+    public boolean hasReadableAssets() {
+        return assets.stream().anyMatch(Asset::isReadable);
+    }
+
+
+
 }

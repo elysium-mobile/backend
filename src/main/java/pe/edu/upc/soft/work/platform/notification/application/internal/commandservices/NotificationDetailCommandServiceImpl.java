@@ -9,6 +9,7 @@ import pe.edu.upc.soft.work.platform.notification.domain.model.commands.UpdateNo
 import pe.edu.upc.soft.work.platform.notification.domain.model.entities.NotificationDetail;
 import pe.edu.upc.soft.work.platform.notification.domain.services.NotificationDetailCommandService;
 import pe.edu.upc.soft.work.platform.notification.infrastructure.persistence.jpa.repositories.NotificationDetailRepository;
+import pe.edu.upc.soft.work.platform.notification.infrastructure.persistence.jpa.repositories.NotificationRepository;
 
 import java.util.Optional;
 
@@ -16,13 +17,18 @@ import java.util.Optional;
 public class NotificationDetailCommandServiceImpl implements NotificationDetailCommandService {
 
     private final NotificationDetailRepository notificationDetailRepository;
+    private final NotificationRepository notificationRepository;
 
-    public NotificationDetailCommandServiceImpl (NotificationDetailRepository notificationDetailRepository){
+    public NotificationDetailCommandServiceImpl (NotificationDetailRepository notificationDetailRepository,
+                                                 NotificationRepository notificationRepository){
         this.notificationDetailRepository = notificationDetailRepository;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
     public Long handle(CreateNotificationDetailCommand command) {
+        if (!notificationRepository.existsById(command.notificationId()))
+            throw new IllegalArgumentException("Notification with id %s not found".formatted(command.notificationId()));
         var notificationDetail = new NotificationDetail(command);
         try {
             notificationDetailRepository.save(notificationDetail);

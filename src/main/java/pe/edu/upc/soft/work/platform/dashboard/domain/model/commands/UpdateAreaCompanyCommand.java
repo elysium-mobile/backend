@@ -1,17 +1,16 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.commands;
 
 import java.util.Objects;
-import java.util.Date;
 
 /**
  * Command to update an existing AreaCompany
  */
-public record UpdateAreaCompanyCommand(Long areacompanyId, String name, Integer annualBudget) {
+public record UpdateAreaCompanyCommand(Long areaCompanyId, String name, Integer annualBudget, Long companyId) {
 
     /**
      * Constructor with validation
      */
     public UpdateAreaCompanyCommand {
-        Objects.requireNonNull(areacompanyId, "[UpdateAreaCompanyCommand] areacompanyId must not be null");
+        Objects.requireNonNull(areaCompanyId, "[UpdateAreaCompanyCommand] areacompanyId must not be null");
     }
 }

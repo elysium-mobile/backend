@@ -1,9 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.services;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Thread;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateThreadCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateThreadCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteThreadCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.*;
 
 import java.util.Optional;
 
@@ -26,4 +24,10 @@ public interface ThreadCommandService {
      * Handles the deletion of an existing Thread.
      */
     void handle(DeleteThreadCommand command);
+
+    void handle(AddMessageToThreadCommand command);
+
+    Integer handle(IncrementThreadMessageCountCommand command);
+
+    Integer handle(DecrementThreadMessageCountCommand command);
 }

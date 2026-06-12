@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Order;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetOrderByIdQuery;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetAllOrderQuery;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetOrderByUserAccountIdQuery;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.OrderQueryService;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.OrderRepository;
 
@@ -38,5 +39,10 @@ public class OrderQueryServiceImpl implements OrderQueryService {
     @Override
     public Optional<Order> handle(GetOrderByIdQuery query) {
         return orderRepository.findById(query.orderId());
+    }
+
+    @Override
+    public List<Order> handle(GetOrderByUserAccountIdQuery query) {
+        return orderRepository.findByUserAccountId(query.userAccountId());
     }
 }

@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.services;
 
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Dashboard;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetDashboardByCompanyIdQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetDashboardByIdQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAllDashboardQuery;
 
@@ -21,4 +22,6 @@ public interface DashboardQueryService {
      * Retrieves a Dashboard by their unique identifier.
      */
     Optional<Dashboard> handle(GetDashboardByIdQuery query);
+
+    List<Dashboard> handle(GetDashboardByCompanyIdQuery query);
 }

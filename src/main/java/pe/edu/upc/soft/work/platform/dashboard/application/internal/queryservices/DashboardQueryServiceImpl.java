@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.dashboard.application.internal.queryservic
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Dashboard;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetDashboardByCompanyIdQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetDashboardByIdQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAllDashboardQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.DashboardQueryService;
@@ -38,5 +39,10 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     @Override
     public Optional<Dashboard> handle(GetDashboardByIdQuery query) {
         return dashboardRepository.findById(query.dashboardId());
+    }
+
+    @Override
+    public List<Dashboard> handle(GetDashboardByCompanyIdQuery query) {
+        return this.dashboardRepository.findByCompanyId(query.companyId());
     }
 }

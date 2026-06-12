@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.worker.forum.domain.services;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Thread;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThreadByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllThreadQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThreadsByAreaCompanyIdQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,4 +22,6 @@ public interface ThreadQueryService {
      * Retrieves a Thread by their unique identifier.
      */
     Optional<Thread> handle(GetThreadByIdQuery query);
+
+    List<Thread> handle(GetThreadsByAreaCompanyIdQuery query);
 }

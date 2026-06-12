@@ -9,4 +9,6 @@ import pe.edu.upc.soft.work.platform.iam.domain.model.entities.EmployeeProfile;
  */
 @Repository
 public interface EmployeeProfileRepository extends JpaRepository<EmployeeProfile, Long> {
+
+
 }

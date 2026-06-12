@@ -10,7 +10,7 @@ public record DeleteCommentEmployeeCommand(Long commentemployeeId) {
      */
     public DeleteCommentEmployeeCommand {
         if (commentemployeeId == null || commentemployeeId <= 0) {
-            throw new IllegalArgumentException("[DeleteCommentEmployeeCommand] commentemployeeId must be a positive number");
+            throw new IllegalArgumentException("[DeleteCommentEmployeeCommand] commentEmployeeId must be a positive number");
         }
     }
 }

@@ -1,11 +1,13 @@
 package pe.edu.upc.soft.work.platform.payment.service.domain.model.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -16,7 +18,21 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
 public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPlan> {
 
     @Getter
+    @Column(name = "plan_name", nullable = false)
     private String planName;
+
+    @Getter
+    @Column(name = "price", nullable = false)
+    private Integer price;
+
+    @Getter
+    @Column(name = "benefit", nullable = false)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Benefit> benefits;
+
+    @Getter
+    @Column(name = "membership_id", nullable = false)
+    private Long membershipId;
 
     /**
      * Default constructor for JPA.
@@ -29,6 +45,9 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
      */
     public MembershipPlan(CreateMembershipPlanCommand command) {
         this.planName = command.planName();
+        this.price = command.price();
+        this.benefits=command.benefits();
+        this.membershipId = command.membershipId();
     }
 
     /**
@@ -37,5 +56,19 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
      */
     public void updateMembershipPlan(UpdateMembershipPlanCommand command) {
         this.planName = command.planName();
+        this.price = command.price();
+        this.membershipId = command.membershipId();
+    }
+
+    public void addBenefit(Benefit benefit){
+        if (this.benefits == null){
+            this.benefits = new ArrayList<>();
+        }
+        boolean alreadyExists = this.benefits.stream()
+                .anyMatch(b -> b.getDescription().equals(benefit.getDescription()));
+        if (alreadyExists) {
+            throw new IllegalStateException("Benefit with the same description already exists in the membership plan.");
+        }
+        this.benefits.add(benefit);
     }
 }

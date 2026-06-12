@@ -1,8 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources;
 
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.UserAccountId;
-
-import java.util.Date;
+import java.util.List;
 
 /**
  * Response object representing a Message in the system.
@@ -10,5 +8,7 @@ import java.util.Date;
 public record MessageResponse(
         Long messageId,
         Long userAccountId,
-        String contentMessage
+        String contentMessage,
+        Long threadId,
+        List<AssetResponse> attachments
 ) {}

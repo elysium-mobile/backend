@@ -5,5 +5,5 @@ package pe.edu.upc.soft.work.platform.notification.domain.model.commands;
  * @param title the title of the notification
  * @param content the content of the notification
  */
-public record CreateNotificationDetailCommand(String title, String content) {
+public record CreateNotificationDetailCommand(String title, String content, Long notificationId) {
 }

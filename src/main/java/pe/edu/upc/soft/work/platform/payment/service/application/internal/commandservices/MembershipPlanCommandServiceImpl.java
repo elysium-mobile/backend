@@ -1,12 +1,15 @@
 package pe.edu.upc.soft.work.platform.payment.service.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.AddBenefitToMembershipPlan;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.MembershipPlan;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.MembershipPlanCommandService;
+import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.BenefitRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipPlanRepository;
+import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipRepository;
 
 import java.util.Optional;
 
@@ -16,13 +19,19 @@ import java.util.Optional;
 @Service
 public class MembershipPlanCommandServiceImpl implements MembershipPlanCommandService {
     private final MembershipPlanRepository membershipplanRepository;
+    private final MembershipRepository membershipRepository;
+    private final BenefitRepository benefitRepository;
 
     /**
      * Constructor for MembershipPlanCommandServiceImpl
      * @param membershipplanRepository the repository for MembershipPlan persistence
      */
-    public MembershipPlanCommandServiceImpl(MembershipPlanRepository membershipplanRepository) {
+    public MembershipPlanCommandServiceImpl(MembershipPlanRepository membershipplanRepository,
+                                            MembershipRepository membershipRepository,
+                                            BenefitRepository benefitRepository) {
         this.membershipplanRepository = membershipplanRepository;
+        this.membershipRepository = membershipRepository;
+        this.benefitRepository = benefitRepository;
     }
 
 
@@ -33,6 +42,9 @@ public class MembershipPlanCommandServiceImpl implements MembershipPlanCommandSe
      */
     @Override
     public Long handle(CreateMembershipPlanCommand command) {
+        if (!membershipRepository.existsById(command.membershipId())) {
+            throw new RuntimeException("Membership with ID " + command.membershipId() + " does not exist.");
+        }
         var membershipplan = new MembershipPlan(command);
         try {
             membershipplanRepository.save(membershipplan);
@@ -49,6 +61,9 @@ public class MembershipPlanCommandServiceImpl implements MembershipPlanCommandSe
      */
     @Override
     public Optional<MembershipPlan> handle(UpdateMembershipPlanCommand command) {
+        if (!membershipRepository.existsById(command.membershipId())) {
+            throw new RuntimeException("Membership with ID " + command.membershipId() + " does not exist.");
+        }
         var membershipplanId = command.membershipplanId();
         if (!this.membershipplanRepository.existsById(membershipplanId)) {
             throw new RuntimeException("MembershipPlan with ID " + membershipplanId + " does not exist.");
@@ -77,6 +92,22 @@ public class MembershipPlanCommandServiceImpl implements MembershipPlanCommandSe
             membershipplanRepository.deleteById(command.membershipplanId());
         } catch (Exception e) {
             throw new RuntimeException("Error deleting MembershipPlan: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void handle(AddBenefitToMembershipPlan command) {
+        var benefit = benefitRepository.findById(command.benefitId())
+                .orElseThrow(() -> new RuntimeException("Benefit with ID " + command.benefitId() + " does not exist."));
+        var membershipPlan = membershipplanRepository.findById(command.membershipPlanId())
+                .orElseThrow(() -> new RuntimeException("MembershipPlan with ID " + command.membershipPlanId() + " does not exist."));
+        try {
+            membershipPlan.addBenefit(benefit);
+            membershipplanRepository.save(membershipPlan);
+        }catch (IllegalStateException ex){
+            throw new IllegalArgumentException("Domain error while adding Benefit to MembershipPlan: " + ex.getMessage());
+        }catch (Exception ex){
+            throw new IllegalArgumentException("Error adding Benefit to MembershipPlan: " + ex.getMessage());
         }
     }
 }

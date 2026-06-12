@@ -13,6 +13,8 @@ public record NotificationDetailResponse(
         String title,
 
         @JsonProperty("content")
-        String content
+        String content,
+
+        Long notificationId
 ) {
 }

@@ -1,11 +1,17 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
+import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalDashboardServiceFromWorkerForum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Forum;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddCategoryToForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteForumCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.events.ForumCreatedEvent;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ForumCommandService;
+import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.CategoryRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ForumRepository;
 
 import java.util.Optional;
@@ -16,13 +22,21 @@ import java.util.Optional;
 @Service
 public class ForumCommandServiceImpl implements ForumCommandService {
     private final ForumRepository forumRepository;
-
+    private final ApplicationEventPublisher eventPublisher;
+    private final ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum;
+    private final CategoryRepository categoryRepository;
     /**
      * Constructor for ForumCommandServiceImpl.
      * @param forumRepository the repository for Forum persistence
      */
-    public ForumCommandServiceImpl(ForumRepository forumRepository) {
+    public ForumCommandServiceImpl(ForumRepository forumRepository,
+                                   ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum,
+                                   ApplicationEventPublisher eventPublisher,
+                                   CategoryRepository categoryRepository) {
         this.forumRepository = forumRepository;
+        this.externalDashboardServiceFromWorkerForum = externalDashboardServiceFromWorkerForum;
+        this.eventPublisher = eventPublisher;
+        this.categoryRepository = categoryRepository;
     }
 
     /**
@@ -32,7 +46,13 @@ public class ForumCommandServiceImpl implements ForumCommandService {
      */
     @Override
     public Long handle(CreateForumCommand command) {
+        if (!this.externalDashboardServiceFromWorkerForum.existsCompanyById(command.companyId().companyId())){
+            throw new NotFoundArgumentException(String.format("[ForumCommandServiceImpl] Company ID: %s not found in the external Dashboard service",
+                    command.companyId().companyId()));
+        }
+
         var forum = new Forum(command);
+        eventPublisher.publishEvent(new ForumCreatedEvent(this, forum.getId(), forum.getCompanyId(), forum.getTitle()));
         try {
             forumRepository.save(forum);
         } catch (Exception e) {
@@ -64,7 +84,7 @@ public class ForumCommandServiceImpl implements ForumCommandService {
     }
 
     /**
-     * Handles the deletion of an Forum
+     * Handles the deletion of an existing Forum
      * @param command the command to delete a Forum
      */
     @Override
@@ -76,6 +96,23 @@ public class ForumCommandServiceImpl implements ForumCommandService {
             forumRepository.deleteById(command.forumId());
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Forum: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void handle(AddCategoryToForumCommand command) {
+        var category = categoryRepository.findById(command.categoryId()).orElseThrow(() -> new NotFoundArgumentException(
+                String.format("[ForumCommandServiceImpl] Category ID: %s not found in the database",
+                        command.categoryId())));
+
+        var forum = forumRepository.findById(command.forumId()).orElseThrow(() -> new NotFoundArgumentException(
+                String.format("[ForumCommandServiceImpl] Forum ID: %s not found in the database",
+                        command.forumId())));
+        try {
+            forum.addCategory(category);
+            forumRepository.save(forum);
+        } catch (Exception e) {
+            throw new RuntimeException("Error adding Category to Forum: " + e.getMessage(), e);
         }
     }
 }

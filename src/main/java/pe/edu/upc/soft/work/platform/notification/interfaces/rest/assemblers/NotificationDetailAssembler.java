@@ -11,7 +11,8 @@ public class NotificationDetailAssembler {
     public static CreateNotificationDetailCommand toCommandFromRequest(CreateNotificationDetailRequest request){
         return new CreateNotificationDetailCommand(
                 request.title(),
-                request.content()
+                request.content(),
+                request.notificationId()
         );
     }
 
@@ -19,7 +20,8 @@ public class NotificationDetailAssembler {
         return new UpdateNotificationDetailCommand(
                 notificationDetailId,
                 request.title(),
-                request.content()
+                request.content(),
+                request.notificationId()
         );
     }
 
@@ -27,7 +29,8 @@ public class NotificationDetailAssembler {
         return new NotificationDetailResponse(
                 entity.getId(),
                 entity.getTitle(),
-                entity.getContent()
+                entity.getContent(),
+                entity.getNotificationId()
         );
     }
 }

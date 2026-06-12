@@ -1,12 +1,13 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
-import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.QuestionSurvey;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateQuestionSurveyCommand;
-import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateQuestionSurveyCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteQuestionSurveyCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateQuestionSurveyCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.QuestionSurvey;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.QuestionSurveyCommandService;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.QuestionSurveyRepository;
+import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
 
 import java.util.Optional;
 
@@ -16,13 +17,16 @@ import java.util.Optional;
 @Service
 public class QuestionSurveyCommandServiceImpl implements QuestionSurveyCommandService {
     private final QuestionSurveyRepository questionsurveyRepository;
+    private final SurveyRepository surveyRepository;
 
     /**
      * Constructor for QuestionSurveyCommandServiceImpl
      * @param questionsurveyRepository the repository for QuestionSurvey persistence
      */
-    public QuestionSurveyCommandServiceImpl(QuestionSurveyRepository questionsurveyRepository) {
+    public QuestionSurveyCommandServiceImpl(QuestionSurveyRepository questionsurveyRepository,
+                                            SurveyRepository surveyRepository) {
         this.questionsurveyRepository = questionsurveyRepository;
+        this.surveyRepository = surveyRepository;
     }
 
 
@@ -33,6 +37,9 @@ public class QuestionSurveyCommandServiceImpl implements QuestionSurveyCommandSe
      */
     @Override
     public Long handle(CreateQuestionSurveyCommand command) {
+        if(!surveyRepository.existsById(command.surveyId())) {
+            throw new RuntimeException("Survey with ID " + command.surveyId() + " does not exist.");
+        }
         var questionsurvey = new QuestionSurvey(command);
         try {
             questionsurveyRepository.save(questionsurvey);
@@ -49,7 +56,10 @@ public class QuestionSurveyCommandServiceImpl implements QuestionSurveyCommandSe
      */
     @Override
     public Optional<QuestionSurvey> handle(UpdateQuestionSurveyCommand command) {
-        var questionsurveyId = command.questionsurveyId();
+        if (!surveyRepository.existsById(command.surveyId())) {
+            throw new RuntimeException("Survey with ID " + command.surveyId() + " does not exist.");
+        }
+        var questionsurveyId = command.questionSurveyId();
         if (!this.questionsurveyRepository.existsById(questionsurveyId)) {
             throw new RuntimeException("QuestionSurvey with ID " + questionsurveyId + " does not exist.");
         }

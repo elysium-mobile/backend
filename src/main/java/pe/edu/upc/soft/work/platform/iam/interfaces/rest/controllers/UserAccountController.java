@@ -11,14 +11,16 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetAllUserAccountQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetUserAccountByIdQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.services.UserAccountCommandService;
 import pe.edu.upc.soft.work.platform.iam.domain.services.UserAccountQueryService;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers.UserAccountAssembler;
-import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.*;
+import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.CreateUserAccountRequest;
+import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UpdateUserAccountRequest;
+import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserAccountResponse;
+import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +28,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/user_accounts", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "UsersAccount", description = "Endpoints for managing user accounts in the IAM system")
+@Tag(name = "User Accounts", description = "Endpoints for managing user accounts in the IAM system")
 public class UserAccountController {
 
     private final UserAccountCommandService userAccountCommandService;

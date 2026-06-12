@@ -6,6 +6,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateWidge
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateWidgetCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteWidgetCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.WidgetCommandService;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.DashboardRepository;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.WidgetRepository;
 
 import java.util.Optional;
@@ -16,13 +17,16 @@ import java.util.Optional;
 @Service
 public class WidgetCommandServiceImpl implements WidgetCommandService {
     private final WidgetRepository widgetRepository;
+    private final DashboardRepository dashboardRepository;
 
     /**
      * Constructor for WidgetCommandServiceImpl.
      * @param widgetRepository the repository for Widget persistence
      */
-    public WidgetCommandServiceImpl(WidgetRepository widgetRepository) {
+    public WidgetCommandServiceImpl(WidgetRepository widgetRepository,
+                                    DashboardRepository dashboardRepository) {
         this.widgetRepository = widgetRepository;
+        this.dashboardRepository = dashboardRepository;
     }
 
     /**
@@ -32,6 +36,9 @@ public class WidgetCommandServiceImpl implements WidgetCommandService {
      */
     @Override
     public Long handle(CreateWidgetCommand command) {
+        if (!dashboardRepository.existsById(command.dashboardId())) {
+            throw new RuntimeException("Dashboard with ID " + command.dashboardId() + " does not exist.");
+        }
         var widget = new Widget(command);
         try {
             widgetRepository.save(widget);

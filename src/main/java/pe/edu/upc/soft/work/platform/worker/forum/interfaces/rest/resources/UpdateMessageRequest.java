@@ -1,10 +1,8 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.UserAccountId;
-
-import java.util.Date;
 
 /**
  * Request object for updating an existing Message.
@@ -12,8 +10,14 @@ import java.util.Date;
 public record UpdateMessageRequest(
         @NotNull
         @NotBlank
+        @JsonProperty("userAccountId")
         Long userAccountId,
         @NotNull
         @NotBlank
-        String contentMessage
+        @JsonProperty("contentMessage")
+        String contentMessage,
+        @NotNull
+        @NotBlank
+        @JsonProperty("threadId")
+        Long threadId
 ) {}

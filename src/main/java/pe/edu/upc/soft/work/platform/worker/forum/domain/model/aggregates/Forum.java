@@ -6,7 +6,11 @@ import lombok.Getter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateForumCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Category;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.CompanyId;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -27,9 +31,13 @@ public class Forum extends AuditableAbstractAggregateRoot<Forum> {
     @AttributeOverrides(
             @AttributeOverride(name = "companyId", column = @Column(name = "company_id", nullable = false, length = 10))
     )
-    @JsonProperty("id_company")
+    @JsonProperty("company_id")
     private CompanyId companyId;
 
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "categories", nullable = true)
+    private List<Category> categories;
     /**
      * Default constructor for JPA.
      */
@@ -43,6 +51,7 @@ public class Forum extends AuditableAbstractAggregateRoot<Forum> {
         this.title = command.title();
         this.description = command.description();
         this.companyId = command.companyId();
+        this.categories = command.categories();
     }
 
     /**
@@ -53,5 +62,16 @@ public class Forum extends AuditableAbstractAggregateRoot<Forum> {
         this.title = command.title();
         this.description = command.description();
         this.companyId = command.companyId();
+    }
+
+    public void addCategory(Category category){
+        if (this.categories == null){
+            this.categories = new ArrayList<>();
+        }
+        boolean alreadyExists = this.categories.stream()
+                .anyMatch(a->a.getId().equals(category.getId()));
+        if (!alreadyExists) {
+            this.categories.add(category);
+        }
     }
 }

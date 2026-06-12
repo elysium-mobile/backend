@@ -14,9 +14,9 @@ public record UserResponse (
         Long userId,
         @JsonProperty("name")
         String name,
-        @JsonProperty("last_name")
+        @JsonProperty("lastName")
         String lastName,
-        @JsonProperty("phone_number")
+        @JsonProperty("phoneNumber")
         String phoneNumber,
         @JsonProperty("dni")
         String dni

@@ -11,14 +11,16 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteThreadCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThreadByIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllThreadQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThreadByIdQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThreadsByAreaCompanyIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ThreadCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ThreadQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.ThreadAssembler;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AddMessageToThreadRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateThreadRequest;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateThreadRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.ThreadResponse;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateThreadRequest;
 
 import java.util.List;
 import java.util.Objects;
@@ -132,5 +134,46 @@ public class ThreadController {
         var deleteThreadCommand = new DeleteThreadCommand(id);
         this.threadCommandService.handle(deleteThreadCommand);
         return ResponseEntity.noContent().build();
+    }
+
+
+    @Operation(summary = "Add a message to a Thread", description = "Add a new message to an existing Thread")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Message added to Thread successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ThreadResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Thread not found", content = @Content)
+    })
+    @PostMapping("/{id}/messages")
+    public ResponseEntity<ThreadResponse> addMessageToThread(@PathVariable Long id, @RequestBody AddMessageToThreadRequest request){
+        var command = ThreadAssembler.toCommandFromRequest(id,request);
+        this.threadCommandService.handle(command);
+
+        var thread = this.threadQueryService.handle(new GetThreadByIdQuery(id));
+        if(thread.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ThreadAssembler.toResponseFromEntity(thread.get()));
+    }
+
+    @Operation(summary = "Get Threads by Area Company ID", description = "Retrieve a list of Threads associated with a specific Area Company")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Threads retrieved successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = ThreadResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No Threads found for the specified Area Company ID", content = @Content)
+    })
+    @GetMapping("/area-company/{areaCompanyId}")
+    public ResponseEntity<List<ThreadResponse>> getThreadByAreaCompany(@PathVariable Long areaCompanyId){
+        var getThreadByAreaCompany = new GetThreadsByAreaCompanyIdQuery(areaCompanyId);
+        var threads = this.threadQueryService.handle(getThreadByAreaCompany);
+        if (threads.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        var threadResponses = threads.stream()
+                .map(ThreadAssembler::toResponseFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(threadResponses);
     }
 }

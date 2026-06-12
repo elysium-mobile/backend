@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.profile.performance.application.internal.q
 
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.Performance;
+import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.GetPerformanceByEmployeeProfileIdQuery;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.GetPerformanceByIdQuery;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.GetAllPerformanceQuery;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.PerformanceQueryService;
@@ -38,5 +39,10 @@ public class PerformanceQueryServiceImpl implements PerformanceQueryService {
     @Override
     public Optional<Performance> handle(GetPerformanceByIdQuery query) {
         return performanceRepository.findById(query.performanceId());
+    }
+
+    @Override
+    public Optional<Performance> handle(GetPerformanceByEmployeeProfileIdQuery query) {
+        return performanceRepository.findByEmployeeProfileId(query.employeeProfileId());
     }
 }

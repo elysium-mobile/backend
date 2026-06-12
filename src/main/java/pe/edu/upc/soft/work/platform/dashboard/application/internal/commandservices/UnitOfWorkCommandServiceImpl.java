@@ -1,12 +1,14 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddWorkTeamToUnitOfWork;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.UnitOfWork;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.UnitOfWorkCommandService;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.UnitOfWorkRepository;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.WorkTeamRepository;
 
 import java.util.Optional;
 
@@ -16,13 +18,16 @@ import java.util.Optional;
 @Service
 public class UnitOfWorkCommandServiceImpl implements UnitOfWorkCommandService {
     private final UnitOfWorkRepository unitofworkRepository;
+    private final WorkTeamRepository workTeamRepository;
 
     /**
      * Constructor for UnitOfWorkCommandServiceImpl.
      * @param unitofworkRepository the repository for UnitOfWork persistence
      */
-    public UnitOfWorkCommandServiceImpl(UnitOfWorkRepository unitofworkRepository) {
+    public UnitOfWorkCommandServiceImpl(UnitOfWorkRepository unitofworkRepository,
+                                        WorkTeamRepository workTeamRepository) {
         this.unitofworkRepository = unitofworkRepository;
+        this.workTeamRepository = workTeamRepository;
     }
 
     /**
@@ -76,6 +81,26 @@ public class UnitOfWorkCommandServiceImpl implements UnitOfWorkCommandService {
             unitofworkRepository.deleteById(command.unitofworkId());
         } catch (Exception e) {
             throw new RuntimeException("Error deleting UnitOfWork: " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void handle(AddWorkTeamToUnitOfWork command) {
+        var workTeam = workTeamRepository.findById(command.widgetId())
+                .orElseThrow(() -> new RuntimeException(
+                        "WorkTeam with ID " + command.widgetId() + " does not exist."));
+
+        var unitOfWork = unitofworkRepository.findById(command.unitOfWorkId())
+                .orElseThrow(() -> new RuntimeException(
+                        "UnitOfWork with ID " + command.unitOfWorkId() + " does not exist."));
+
+        try {
+            unitOfWork.addWorkTeam(workTeam);
+            unitofworkRepository.save(unitOfWork);
+        } catch (IllegalStateException ex) {
+            throw new IllegalArgumentException("Domain error while adding WorkTeam: " + ex.getMessage());
+        } catch (Exception ex) {
+            throw new RuntimeException("Error adding WorkTeam to UnitOfWork: " + ex.getMessage(), ex);
         }
     }
 }

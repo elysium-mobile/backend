@@ -1,10 +1,12 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
-import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.Answer;
+import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
+import pe.edu.upc.soft.work.platform.feedback.application.internal.outboundservices.acl.ExternalIamServiceFromFeedback;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateAnswerCommand;
-import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateAnswerCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteAnswerCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateAnswerCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.Answer;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.AnswerCommandService;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.AnswerRepository;
 
@@ -16,13 +18,16 @@ import java.util.Optional;
 @Service
 public class AnswerCommandServiceImpl implements AnswerCommandService {
     private final AnswerRepository answerRepository;
+    private final ExternalIamServiceFromFeedback externalIamServiceFromFeedback;
 
     /**
      * Constructor for AnswerCommandServiceImpl.
      * @param answerRepository the repository for Answer persistence
      */
-    public AnswerCommandServiceImpl(AnswerRepository answerRepository) {
+    public AnswerCommandServiceImpl(AnswerRepository answerRepository,
+                                    ExternalIamServiceFromFeedback externalIamServiceFromFeedback) {
         this.answerRepository = answerRepository;
+        this.externalIamServiceFromFeedback = externalIamServiceFromFeedback;
     }
 
     /**

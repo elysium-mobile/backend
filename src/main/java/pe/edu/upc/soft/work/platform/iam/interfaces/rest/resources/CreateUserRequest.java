@@ -20,12 +20,12 @@ public record CreateUserRequest(
 
         @NotNull
         @NotBlank
-        @JsonProperty("last_name")
+        @JsonProperty("lastName")
         String lastName,
 
         @NotNull
         @NotBlank
-        @JsonProperty("phone_number")
+        @JsonProperty("phoneNumber")
         String phoneNumber,
 
         @NotNull

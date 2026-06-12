@@ -5,8 +5,8 @@ import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurvey
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.valueObjects.TargetType;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.CreateSurveyRequest;
-import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.UpdateSurveyRequest;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.SurveyResponse;
+import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.UpdateSurveyRequest;
 
 public class SurveyAssembler {
 

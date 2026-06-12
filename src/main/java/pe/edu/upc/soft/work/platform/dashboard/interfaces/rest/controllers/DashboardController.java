@@ -11,11 +11,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteDashboardCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetDashboardByCompanyIdQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetDashboardByIdQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAllDashboardQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.DashboardCommandService;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.DashboardQueryService;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers.DashboardAssembler;
+import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.AddWidgetToDashboardRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateDashboardRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateDashboardRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.DashboardResponse;
@@ -132,5 +134,52 @@ public class DashboardController {
         var deleteDashboardCommand = new DeleteDashboardCommand(id);
         this.dashboardCommandService.handle(deleteDashboardCommand);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "Add a Widget to a Dashboard",
+            description = "Links an existing Widget to the given Dashboard.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Widget added successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = DashboardResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Widget already belongs to this dashboard or invalid data", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Dashboard or Widget not found", content = @Content)
+    })
+    @PostMapping("/{id}/widgets")
+    public ResponseEntity<DashboardResponse> addWidgetToDashboard(
+            @PathVariable Long id,
+            @RequestBody AddWidgetToDashboardRequest request) {
+
+        var command = DashboardAssembler.toCommandFromRequest(id, request);
+        this.dashboardCommandService.handle(command);
+
+        var dashboard = this.dashboardQueryService.handle(new GetDashboardByIdQuery(id));
+        if (dashboard.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(DashboardAssembler.toResponseFromEntity(dashboard.get()));
+    }
+
+
+    @Operation(summary = "Get Dashboards by Company ID", description = "Retrieve a list of Dashboards associated with a specific Company ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Dashboards retrieved successfully",
+                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = DashboardResponse.class))),
+            @ApiResponse(responseCode = "404", description = "No Dashboards found for the given Company ID", content = @Content)
+    })
+    @GetMapping("/company/{companyId}")
+    public ResponseEntity<List<DashboardResponse>> getByCompanyId(@PathVariable Long companyId){
+        var query = new GetDashboardByCompanyIdQuery(companyId);
+        var dashboards = this.dashboardQueryService.handle(query);
+
+        if (dashboards.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        var dashboardResponse = dashboards.stream()
+                .map(DashboardAssembler::toResponseFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(dashboardResponse);
     }
 }

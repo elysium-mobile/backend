@@ -6,7 +6,11 @@ import lombok.Getter;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.CreatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.UpdatePerformanceCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.valueobjects.EmployeeProfileId;
 
 /**
@@ -30,6 +34,11 @@ public class Performance extends AuditableAbstractAggregateRoot<Performance> {
     @Column(name = "classification", nullable = false)
     private Integer classification;
 
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "comment_employee_list", nullable = true)
+    private List<CommentEmployee> commentEmployeeList;
+
     /**
      * Default constructor for JPA.
      */
@@ -43,6 +52,7 @@ public class Performance extends AuditableAbstractAggregateRoot<Performance> {
         this.employeeProfileId = command.employeeProfileId();
         this.dateTime = command.dateTime();
         this.classification = command.classification();
+        this.commentEmployeeList = command.commentEmployeeList();
     }
 
     /**
@@ -53,5 +63,17 @@ public class Performance extends AuditableAbstractAggregateRoot<Performance> {
         this.employeeProfileId = command.employeeProfileId();
         this.dateTime = command.dateTime();
         this.classification = command.classification();
+    }
+
+    public void addCommentEmployee(CommentEmployee commentEmployee){
+        if (this.commentEmployeeList ==null){
+            this.commentEmployeeList = new ArrayList<>();
+        }
+        boolean alreadyExist = this.commentEmployeeList.stream()
+                .anyMatch(c -> c.getId().equals(commentEmployee.getId()));
+        if (alreadyExist){
+            throw new IllegalStateException("CommentEmployee with ID " + commentEmployee.getId() + " already exists in this Performance.");
+        }
+        this.commentEmployeeList.add(commentEmployee);
     }
 }

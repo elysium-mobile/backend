@@ -1,11 +1,14 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.WorkTeam;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateWorkTeamCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateWorkTeamCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteWorkTeamCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.events.WorkTeamCreatedEvent;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.WorkTeamCommandService;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.UnitOfWorkRepository;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.WorkTeamRepository;
 
 import java.util.Optional;
@@ -16,13 +19,19 @@ import java.util.Optional;
 @Service
 public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
     private final WorkTeamRepository workteamRepository;
+    private final UnitOfWorkRepository unitOfWorkRepository;
+    private ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for WorkTeamCommandServiceImpl.
      * @param workteamRepository the repository for WorkTeam persistence
      */
-    public WorkTeamCommandServiceImpl(WorkTeamRepository workteamRepository) {
+    public WorkTeamCommandServiceImpl(WorkTeamRepository workteamRepository,
+                                      ApplicationEventPublisher eventPublisher,
+                                      UnitOfWorkRepository unitOfWorkRepository) {
         this.workteamRepository = workteamRepository;
+        this.eventPublisher = eventPublisher;
+        this.unitOfWorkRepository = unitOfWorkRepository;
     }
 
     /**
@@ -32,9 +41,13 @@ public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
      */
     @Override
     public Long handle(CreateWorkTeamCommand command) {
+        if (!unitOfWorkRepository.existsById(command.unitOfWorkId())) {
+            throw new RuntimeException("UnitOfWork with ID " + command.unitOfWorkId() + " does not exist.");
+        }
         var workteam = new WorkTeam(command);
         try {
             workteamRepository.save(workteam);
+            eventPublisher.publishEvent(new WorkTeamCreatedEvent(this, workteam.getId(), null));
         } catch (Exception e) {
             throw new RuntimeException("Error creating WorkTeam: " + e.getMessage(), e);
         }
@@ -48,6 +61,9 @@ public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
      */
     @Override
     public Optional<WorkTeam> handle(UpdateWorkTeamCommand command) {
+        if (!unitOfWorkRepository.existsById(command.unitOfWorkId())) {
+            throw new RuntimeException("UnitOfWork with ID " + command.unitOfWorkId() + " does not exist.");
+        }
         var workteamId = command.workteamId();
         if (!this.workteamRepository.existsById(workteamId)) {
             throw new RuntimeException("WorkTeam with ID " + workteamId + " does not exist.");

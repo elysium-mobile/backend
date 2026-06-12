@@ -24,6 +24,10 @@ public class QuestionSurvey extends AuditableAbstractAggregateRoot<QuestionSurve
     @Column(name = "question_type", nullable = false)
     private QuestionType questionType;
 
+    @Getter
+    @Column(name = "survey_id", nullable = false)
+    private Long surveyId;
+
     /**
      * Default constructor for JPA.
      */
@@ -36,6 +40,7 @@ public class QuestionSurvey extends AuditableAbstractAggregateRoot<QuestionSurve
     public QuestionSurvey(CreateQuestionSurveyCommand command) {
         this.textQuestion = command.textQuestion();
         this.questionType = command.questionType();
+        this.surveyId = command.surveyId();
     }
 
     /**
@@ -45,5 +50,6 @@ public class QuestionSurvey extends AuditableAbstractAggregateRoot<QuestionSurve
     public void updateQuestionSurvey(UpdateQuestionSurveyCommand command) {
         this.textQuestion = command.textQuestion();
         this.questionType = command.questionType();
+        this.surveyId = command.surveyId();
     }
 }

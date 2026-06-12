@@ -15,7 +15,7 @@ public record CreateUserAccountRequest(
 
         @NotNull
         @NotBlank
-        @JsonProperty("user_id")
+        @JsonProperty("userId")
         Long userId,
 
         @NotNull
@@ -30,7 +30,19 @@ public record CreateUserAccountRequest(
 
         @NotNull
         @NotBlank
-        @JsonProperty("anonymous_name")
-        String anonymousName
+        @JsonProperty("anonymousName")
+        String anonymousName,
+
+        @NotNull
+        @NotBlank
+        @JsonProperty("membershipId")
+        Long membershipId,
+
+        @NotNull
+        @NotBlank
+        @JsonProperty("companyId")
+        Long companyId
+
+
 ) {
 }

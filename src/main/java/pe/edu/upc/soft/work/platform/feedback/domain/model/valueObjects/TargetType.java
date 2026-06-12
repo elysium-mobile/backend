@@ -1,6 +1,5 @@
 package pe.edu.upc.soft.work.platform.feedback.domain.model.valueObjects;
 
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**

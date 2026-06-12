@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Command to update an existing Category
  */
-public record UpdateCategoryCommand(Long categoryId, String title, String description) {
+public record UpdateCategoryCommand(Long categoryId, String title, String description, Long forumId) {
 
     /**
      * Constructor with validation

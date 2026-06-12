@@ -24,12 +24,12 @@ public class User extends AuditableAbstractAggregateRoot<User> {
 
     @Getter
     @Column(name = "last_name", nullable = false, length = 100)
-    @JsonProperty("last_name")
+    @JsonProperty("lastName")
     private String lastName;
 
     @Getter
     @Column(name = "phone_number", nullable = false, length = 15)
-    @JsonProperty("phone_number")
+    @JsonProperty("phoneNumber")
     private String phoneNumber;
 
     @Getter

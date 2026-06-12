@@ -1,12 +1,14 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Thread;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddMessageToThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.AreaCompanyId;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateThreadRequest;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateThreadRequest;
-import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.ThreadResponse;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ThreadAssembler {
 
@@ -14,20 +16,48 @@ public class ThreadAssembler {
      * Converts a CreateThreadRequest to a CreateThreadCommand.
      */
     public static CreateThreadCommand toCommandFromRequest(CreateThreadRequest request) {
-        return new CreateThreadCommand(request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage());
+        return new CreateThreadCommand(request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage(),request.categoryId(),request.messageCount(), new ArrayList<>());
     }
 
     /**
      * Converts an UpdateThreadRequest to an UpdateThreadCommand.
      */
     public static UpdateThreadCommand toCommandFromRequest(Long threadId, UpdateThreadRequest request) {
-        return new UpdateThreadCommand(threadId, request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage());
+        return new UpdateThreadCommand(threadId, request.title(), new AreaCompanyId(request.areaCompanyId()), request.lastMessage(), request.categoryId(), request.messageCount());
+    }
+
+    public static AddMessageToThreadCommand toCommandFromRequest(Long threadId, AddMessageToThreadRequest request)
+    {
+        return new AddMessageToThreadCommand(request.messageId(),threadId);
     }
 
     /**
      * Converts a Thread entity to a ThreadResponse.
      */
     public static ThreadResponse toResponseFromEntity(Thread thread) {
-        return new ThreadResponse(thread.getId(), thread.getTitle(), thread.getAreaCompanyId().areaCompanyId(), thread.getLastMessage());
+        List<MessageResponse> messageResponses = thread.getMessages().stream()
+                .map(message -> {
+                    List<AssetResponse> assetRespons = message.getAssets().stream()
+                            .map(attachment -> new AssetResponse(
+                                    attachment.getId(),
+                                    attachment.getMessageId(),
+                                    attachment.getName(),
+                                    attachment.getUrl(),
+                                    attachment.getFileSize(),
+                                    attachment.getFileType(),
+                                attachment.isViewable(), attachment.isReadable()
+                            ))
+                            .toList();
+                    return new MessageResponse(
+                            message.getId(),
+                            message.getUserAccountId().userAccountId(),
+                            message.getContentMessage(),
+                            message.getThreadId(),
+                        assetRespons
+                    );
+                })
+                .toList();
+
+        return new ThreadResponse(thread.getId(), thread.getTitle(), thread.getAreaCompanyId().areaCompanyId(), thread.getLastMessage(), thread.getCategoryId(), thread.getMessageCount(), messageResponses);
     }
 }

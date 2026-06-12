@@ -15,7 +15,7 @@ public record UserAccountResponse(
 
         Long userAccountId,
 
-        @JsonProperty("user_id")
+        @JsonProperty("userId")
         Long userId,
 
         @JsonProperty("email")
@@ -24,8 +24,14 @@ public record UserAccountResponse(
         @JsonProperty("password")
         String password,
 
-        @JsonProperty("anonymous_name")
-        String anonymousName
+        @JsonProperty("anonymousName")
+        String anonymousName,
+
+        @JsonProperty("membershipId")
+        Long membershipId,
+
+        @JsonProperty("companyId")
+        Long companyId
 
 ) {
 }

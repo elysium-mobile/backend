@@ -1,0 +1,11 @@
+package pe.edu.upc.soft.work.platform.payment.service.interfaces.rest.resources;
+
+public record BenefitResponse(
+
+        Long benefitId,
+        String title,
+        String description,
+        Long membershipPlanId
+
+) {
+}

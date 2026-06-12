@@ -10,4 +10,6 @@ import pe.edu.upc.soft.work.platform.iam.domain.model.entities.RRHHProfile;
 @Repository
 public interface RRHHProfileRepository extends JpaRepository<RRHHProfile, Long> {
 
+
+
 }

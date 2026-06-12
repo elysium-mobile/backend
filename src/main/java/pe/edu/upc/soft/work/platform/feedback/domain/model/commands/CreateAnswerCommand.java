@@ -1,7 +1,6 @@
 package pe.edu.upc.soft.work.platform.feedback.domain.model.commands;
 
 import java.util.Objects;
-import java.util.Date;
 
 /**
  * Command to create a new Answer

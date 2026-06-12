@@ -1,12 +1,13 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Thread;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateCategoryCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
+import java.util.List;
 
 
 /**
@@ -23,6 +24,15 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
     @Column(name = "description", nullable = false, length = 500)
     private String description;
 
+    @Getter
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "threads", nullable = true)
+    private List<Thread> threads;
+
+    @Getter
+    @Column(name = "forum_id", nullable = false)
+    private Long forumId;
+
     /**
      * Default constructor for JPA.
      */
@@ -35,6 +45,8 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
     public Category(CreateCategoryCommand command) {
         this.title = command.title();
         this.description = command.description();
+        this.threads = command.threads();
+        this.forumId = command.forumId();
     }
 
     /**
@@ -44,5 +56,17 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
     public void updateCategory(UpdateCategoryCommand command) {
         this.title = command.title();
         this.description = command.description();
+        this.forumId = command.forumId();
+    }
+
+    public void addThread(Thread thread){
+        if (threads == null) {
+            threads = new java.util.ArrayList<>();
+        }
+        boolean alreadyExists = this.threads.stream()
+                .anyMatch(t -> t.getId().equals(thread.getId()));
+        if (!alreadyExists) {
+            this.threads.add(thread);
+        }
     }
 }

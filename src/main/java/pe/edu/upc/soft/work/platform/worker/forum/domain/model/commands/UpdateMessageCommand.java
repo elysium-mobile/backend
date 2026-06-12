@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Command to update an existing Message
  */
-public record UpdateMessageCommand(Long messageId, UserAccountId userAccountId, String contentMessage) {
+public record UpdateMessageCommand(Long messageId, UserAccountId userAccountId, String contentMessage, Long threadId) {
 
     /**
      * Constructor with validation

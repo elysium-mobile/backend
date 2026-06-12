@@ -1,12 +1,15 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.model.commands;
 
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.Widget;
+
+import java.util.List;
 import java.util.Objects;
 import java.util.Date;
 
 /**
  * Command to create a new Dashboard
  */
-public record CreateDashboardCommand(String ruc) {
+public record CreateDashboardCommand(String ruc,String title, String description,Long companyId, List<Widget> widgetList) {
 
     /**
      * Constructor with validation

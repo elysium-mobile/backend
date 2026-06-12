@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.payment.service.domain.services;
 
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.AddBenefitToMembershipPlan;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.MembershipPlan;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateMembershipPlanCommand;
@@ -26,4 +27,6 @@ public interface MembershipPlanCommandService {
      * Handles the deletion of an existing MembershipPlan.
      */
     void handle(DeleteMembershipPlanCommand command);
+
+    void handle(AddBenefitToMembershipPlan command);
 }

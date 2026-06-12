@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.services;
 
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddThreadToCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Category;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateCategoryCommand;
@@ -26,4 +27,6 @@ public interface CategoryCommandService {
      * Handles the deletion of an existing Category.
      */
     void handle(DeleteCategoryCommand command);
+
+    void handle(AddThreadToCategoryCommand command);
 }

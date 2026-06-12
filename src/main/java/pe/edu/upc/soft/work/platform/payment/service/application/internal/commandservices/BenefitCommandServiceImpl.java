@@ -7,6 +7,7 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.Updat
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteBenefitCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.BenefitCommandService;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.BenefitRepository;
+import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipPlanRepository;
 
 import java.util.Optional;
 
@@ -16,13 +17,16 @@ import java.util.Optional;
 @Service
 public class BenefitCommandServiceImpl implements BenefitCommandService {
     private final BenefitRepository benefitRepository;
+    private final MembershipPlanRepository membershipPlanRepository;
 
     /**
      * Constructor for BenefitCommandServiceImpl
      * @param benefitRepository the repository for Benefit persistence
      */
-    public BenefitCommandServiceImpl(BenefitRepository benefitRepository) {
+    public BenefitCommandServiceImpl(BenefitRepository benefitRepository,
+                                     MembershipPlanRepository membershipPlanRepository) {
         this.benefitRepository = benefitRepository;
+        this.membershipPlanRepository = membershipPlanRepository;
     }
 
     /**
@@ -32,6 +36,9 @@ public class BenefitCommandServiceImpl implements BenefitCommandService {
      */
     @Override
     public Long handle(CreateBenefitCommand command) {
+        if (!membershipPlanRepository.existsById(command.membershipPlanId())) {
+            throw new RuntimeException("Membership Plan with ID " + command.membershipPlanId() + " does not exist.");
+        }
         var benefit = new Benefit(command);
         try {
             benefitRepository.save(benefit);
@@ -48,6 +55,9 @@ public class BenefitCommandServiceImpl implements BenefitCommandService {
      */
     @Override
     public Optional<Benefit> handle(UpdateBenefitCommand command) {
+        if (!membershipPlanRepository.existsById(command.membershipPlanId())) {
+            throw new RuntimeException("Membership Plan with ID " + command.membershipPlanId() + " does not exist.");
+        }
         var benefitId = command.benefitId();
         if (!this.benefitRepository.existsById(benefitId)) {
             throw new RuntimeException("Benefit with ID " + benefitId + " does not exist.");

@@ -3,6 +3,8 @@ package pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateUserAccountCommand;
+import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.CompanyId;
+import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.MembershipId;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.CreateUserAccountRequest;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UpdateUserAccountRequest;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserAccountResponse;
@@ -20,7 +22,9 @@ public class UserAccountAssembler {
                 request.userId(),
                 request.password(),
                 request.email(),
-                request.anonymousName()
+                request.anonymousName(),
+                new MembershipId(request.membershipId()),
+                new CompanyId(request.companyId())
         );
     }
 
@@ -33,9 +37,11 @@ public class UserAccountAssembler {
      public static UpdateUserAccountCommand toCommandFromRequest(Long userAccountId, UpdateUserAccountRequest request) {
         return new UpdateUserAccountCommand(
                 userAccountId,
-                request.password(),
                 request.email(),
-                request.anonymousName()
+                request.password(),
+                request.anonymousName(),
+                new MembershipId(request.membershipId()),
+                new CompanyId(request.companyId())
         );
     }
 
@@ -50,7 +56,9 @@ public class UserAccountAssembler {
                 entity.getUserId(),
                 entity.getEmail(),
                 entity.getPassword(),
-                entity.getAnonymousName()
+                entity.getAnonymousName(),
+                entity.getMembershipId().MembershipId(),
+                entity.getCompanyId().CompanyId()
         );
     }
 }

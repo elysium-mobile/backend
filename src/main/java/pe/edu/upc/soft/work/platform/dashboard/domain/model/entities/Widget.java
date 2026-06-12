@@ -23,6 +23,10 @@ public class Widget extends AuditableAbstractAggregateRoot<Widget> {
     @Column(name = "refresh_period", nullable = false)
     private Integer refreshPeriod;
 
+    @Getter
+    @Column(name = "dashboard_id", nullable = false)
+    private Long dashboardId;
+
     /**
      * Default constructor for JPA.
      */
@@ -35,6 +39,7 @@ public class Widget extends AuditableAbstractAggregateRoot<Widget> {
     public Widget(CreateWidgetCommand command) {
         this.title = command.title();
         this.refreshPeriod = command.refreshPeriod();
+        this.dashboardId = command.dashboardId();
     }
 
     /**
@@ -44,5 +49,6 @@ public class Widget extends AuditableAbstractAggregateRoot<Widget> {
     public void updateWidget(UpdateWidgetCommand command) {
         this.title = command.title();
         this.refreshPeriod = command.refreshPeriod();
+        this.dashboardId = command.dashboardId();
     }
 }

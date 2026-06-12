@@ -1,14 +1,17 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands;
 
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.AreaCompanyId;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.Date;
 
 /**
  * Command to create a new Thread
  */
-public record CreateThreadCommand(String title, AreaCompanyId areaCompanyId, Date lastMessage) {
+public record CreateThreadCommand(String title, AreaCompanyId areaCompanyId, Date lastMessage,Long categoryId,Integer messageCount,
+                                  List<Message> messages) {
 
     /**
      * Constructor with validation

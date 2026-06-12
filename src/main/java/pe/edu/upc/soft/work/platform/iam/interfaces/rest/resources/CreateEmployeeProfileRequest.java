@@ -1,11 +1,8 @@
 package pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import pe.edu.upc.soft.work.platform.shared.domain.model.valueobjects.UserAccountId;
 
 import java.util.Date;
 

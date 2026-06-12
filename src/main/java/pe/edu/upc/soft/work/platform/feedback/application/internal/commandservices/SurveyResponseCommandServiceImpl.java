@@ -1,13 +1,19 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.SurveyResponse;
+import pe.edu.upc.soft.work.platform.feedback.application.internal.outboundservices.acl.ExternalIamServiceFromFeedback;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurveyResponseCommand;
-import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurveyResponseCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyResponseCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.SurveyResponse;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.events.SurveyResponseRegisteredEvent;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyResponseCommandService;
+import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyResponseRepository;
+import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -15,14 +21,23 @@ import java.util.Optional;
  */
 @Service
 public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandService {
-    private final SurveyResponseRepository surveyresponseRepository;
+    private final SurveyResponseRepository surveyResponseRepository;
+    private final ExternalIamServiceFromFeedback externalIamServiceFromFeedback;
+    private final SurveyRepository surveyRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for SurveyResponseCommandServiceImpl.
      * @param surveyresponseRepository the repository for SurveyResponse persistence
      */
-    public SurveyResponseCommandServiceImpl(SurveyResponseRepository surveyresponseRepository) {
-        this.surveyresponseRepository = surveyresponseRepository;
+    public SurveyResponseCommandServiceImpl(SurveyResponseRepository surveyresponseRepository,
+                                            ExternalIamServiceFromFeedback externalIamServiceFromFeedback,
+                                            SurveyRepository surveyRepository,
+                                            ApplicationEventPublisher eventPublisher) {
+        this.surveyResponseRepository = surveyresponseRepository;
+        this.externalIamServiceFromFeedback = externalIamServiceFromFeedback;
+        this.surveyRepository = surveyRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -32,13 +47,35 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
      */
     @Override
     public Long handle(CreateSurveyResponseCommand command) {
-        var surveyresponse = new SurveyResponse(command);
+
+        if (!surveyRepository.existsById(command.surveyId())){
+            throw new NotFoundArgumentException(
+                    String.format("[SurveyResponseCommandServiceImpl] Survey ID: %s not found in the external Feedback service",
+                            command.surveyId()));
+        }
+        if(!externalIamServiceFromFeedback.existEmployeeProfileById(command.employeeProfileId().employeeProfileId())){
+            throw new NotFoundArgumentException(
+                    String.format("[SurveyResponseCommandServiceImpl] Employee Profile ID: %s not found in the external IAM service",
+                            command.employeeProfileId().employeeProfileId()));
+        }
+
+        var survey = surveyRepository.findById(command.surveyId()).get();
+        if (survey.getExpirationTime() != null && new Date().after(survey.getExpirationTime())) {
+            throw new RuntimeException("Cannot submit response: Survey has expired.");
+        }
+        boolean alreadyAnswered = surveyResponseRepository.findBySurveyId(command.surveyId()).stream()
+            .anyMatch(response -> response.getEmployeeProfileId().equals(command.employeeProfileId().employeeProfileId()));
+        if (alreadyAnswered) {
+            throw new RuntimeException("Employee has already submitted a response for this survey.");
+        }
+        var surveyResponse = new SurveyResponse(command);
         try {
-            surveyresponseRepository.save(surveyresponse);
+            surveyResponseRepository.save(surveyResponse);
+            eventPublisher.publishEvent(new SurveyResponseRegisteredEvent(this, surveyResponse.getId(), surveyResponse.getSurveyId()));
         } catch (Exception e) {
             throw new RuntimeException("Error creating SurveyResponse: " + e.getMessage(), e);
         }
-        return surveyresponse.getId();
+        return surveyResponse.getId();
     }
 
     /**
@@ -49,14 +86,14 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
     @Override
     public Optional<SurveyResponse> handle(UpdateSurveyResponseCommand command) {
         var surveyresponseId = command.surveyresponseId();
-        if (!this.surveyresponseRepository.existsById(surveyresponseId)) {
+        if (!this.surveyResponseRepository.existsById(surveyresponseId)) {
             throw new RuntimeException("SurveyResponse with ID " + surveyresponseId + " does not exist.");
         }
 
-        var surveyresponseToUpdate = this.surveyresponseRepository.findById(surveyresponseId).get();
+        var surveyresponseToUpdate = this.surveyResponseRepository.findById(surveyresponseId).get();
         surveyresponseToUpdate.updateSurveyResponse(command);
         try {
-            var updatedSurveyResponse = this.surveyresponseRepository.save(surveyresponseToUpdate);
+            var updatedSurveyResponse = this.surveyResponseRepository.save(surveyresponseToUpdate);
             return Optional.of(updatedSurveyResponse);
         } catch (Exception e) {
             throw new RuntimeException("Error updating SurveyResponse: " + e.getMessage(), e);
@@ -69,11 +106,11 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
      */
     @Override
     public void handle(DeleteSurveyResponseCommand command) {
-        if (!surveyresponseRepository.existsById(command.surveyresponseId())) {
+        if (!surveyResponseRepository.existsById(command.surveyresponseId())) {
             throw new RuntimeException("SurveyResponse with ID " + command.surveyresponseId() + " does not exist.");
         }
         try {
-            surveyresponseRepository.deleteById(command.surveyresponseId());
+            surveyResponseRepository.deleteById(command.surveyresponseId());
         } catch (Exception e) {
             throw new RuntimeException("Error deleting SurveyResponse: " + e.getMessage(), e);
         }

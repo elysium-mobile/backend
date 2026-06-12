@@ -7,6 +7,7 @@ import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurvey
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.valueObjects.EmployeeProfileId;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
+
 import java.util.Date;
 
 /**
@@ -17,17 +18,26 @@ import java.util.Date;
 public class SurveyResponse extends AuditableAbstractAggregateRoot<SurveyResponse> {
 
     @Getter
+    @Column(name = "survey_id", nullable = false)
     private Long surveyId;
 
     @Getter
     @Embedded
     @AttributeOverride(name = "employeeProfileId", column = @Column(name = "employee_profile_id"))
     @JsonProperty("employeeProfileId")
-
     private EmployeeProfileId employeeProfileId;
+
     @Getter
     @Column(name = "submitted_at")
     private Date submittedAt;
+
+    @Getter
+    @Column(name = "commentary", nullable = false)
+    private String commentary;
+
+    @Getter
+    @Column(name = "cause", nullable = false)
+    private String cause;
 
     /**
      * Default constructor for JPA.
@@ -42,6 +52,8 @@ public class SurveyResponse extends AuditableAbstractAggregateRoot<SurveyRespons
         this.surveyId = command.surveyId();
         this.employeeProfileId = command.employeeProfileId();
         this.submittedAt = command.submittedAt();
+        this.commentary = command.commentary();
+        this.cause = command.cause();
     }
 
     /**
@@ -52,5 +64,7 @@ public class SurveyResponse extends AuditableAbstractAggregateRoot<SurveyRespons
         this.surveyId = command.surveyId();
         this.employeeProfileId = command.employeeProfileId();
         this.submittedAt = command.submittedAt();
+        this.commentary = command.commentary();
+        this.cause = command.cause();
     }
 }

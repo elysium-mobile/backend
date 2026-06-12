@@ -1,9 +1,7 @@
 package pe.edu.upc.soft.work.platform.dashboard.domain.services;
 
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Company;
-import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateCompanyCommand;
-import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateCompanyCommand;
-import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteCompanyCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.*;
 
 import java.util.Optional;
 
@@ -26,4 +24,8 @@ public interface CompanyCommandService {
      * Handles the deletion of an existing Company.
      */
     void handle(DeleteCompanyCommand command);
+
+    void handle (AddAreaCompanyToCompanyCommand command);
+
+    void handle (AddEmployeesToCompanyCommand command);
 }

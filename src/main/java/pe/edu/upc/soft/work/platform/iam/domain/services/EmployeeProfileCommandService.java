@@ -1,8 +1,8 @@
 package pe.edu.upc.soft.work.platform.iam.domain.services;
 
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateEmployeeProfileCommand;
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteEmployeeProfileCommand;
-import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateEmployeeProfileCommand;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
+import pe.edu.upc.soft.work.platform.iam.domain.model.commands.*;
 import pe.edu.upc.soft.work.platform.iam.domain.model.entities.EmployeeProfile;
 
 import java.util.Optional;
@@ -31,4 +31,9 @@ public interface EmployeeProfileCommandService {
      * @param command the command containing the identifier of the employee profile to be deleted
      */
     void handle(DeleteEmployeeProfileCommand command);
+
+
+    Optional<EmployeeProfile> handle(EmployeeSignUpCommand command);
+
+//    Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
 }

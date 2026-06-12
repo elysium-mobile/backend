@@ -13,7 +13,12 @@ public record UpdateNotificationDetailRequest(
         @NotNull
         @NotBlank
         @JsonProperty("content")
-        String content
+        String content,
+
+        @NotNull
+        @NotBlank
+        @JsonProperty("notificationId")
+        Long notificationId
 
 ) {
 }

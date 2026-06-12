@@ -1,10 +1,12 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.aggregates.Survey;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurveyCommand;
-import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurveyCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.events.SurveyCreatedEvent;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyCommandService;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
 
@@ -16,13 +18,16 @@ import java.util.Optional;
 @Service
 public class SurveyCommandServiceImpl implements SurveyCommandService {
     private final SurveyRepository surveyRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for SurveyCommandServiceImpl
      * @param surveyRepository the repository for Survey persistence
      */
-    public SurveyCommandServiceImpl(SurveyRepository surveyRepository) {
+    public SurveyCommandServiceImpl(SurveyRepository surveyRepository,
+                                    ApplicationEventPublisher eventPublisher) {
         this.surveyRepository = surveyRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -32,9 +37,11 @@ public class SurveyCommandServiceImpl implements SurveyCommandService {
      */
     @Override
     public Long handle(CreateSurveyCommand command) {
+
         var survey = new Survey(command);
         try {
             surveyRepository.save(survey);
+            eventPublisher.publishEvent(new SurveyCreatedEvent(this, survey.getId(), survey.getTitle(), survey.getTargetType()));
         } catch (Exception e) {
             throw new RuntimeException("Error creating Survey: " + e.getMessage(), e);
         }

@@ -54,7 +54,7 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
         this.userId = command.userId();
         this.email = command.email();
         this.password = command.password();
-        this.anonymousName = command.anonymousName();
+        this.anonymousName = generateAnonymousName();
         this.membershipId = command.membershipId();
         this.companyId = command.companyId();
     }
@@ -72,5 +72,9 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
         this.companyId = command.companyId();
     }
 
+    public static String generateAnonymousName(){
+        int digits = (int) (Math.random()*900_000)+100_000;
+        return "Anonimo"+digits;
+    }
 
 }

@@ -10,7 +10,7 @@ public record DeleteAssetCommand(Long attachmentId) {
      */
     public DeleteAssetCommand {
         if (attachmentId == null || attachmentId <= 0) {
-            throw new IllegalArgumentException("[DeleteAttachmentCommand] attachmentId must be a positive number");
+            throw new IllegalArgumentException("[DeleteAttachmentCommand] assetId must be a positive number");
         }
     }
 }

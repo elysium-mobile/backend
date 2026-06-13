@@ -109,7 +109,7 @@ Para facilitar las pruebas locales, se incluye un archivo SQL con datos precarga
 ### Archivo (provisional)
 Se aloja de manera porvisional hasta el despliegue de la aplicación en un entorno de pruebas, donde se podrá acceder directamente desde el repositorio.
 
-https://drive.google.com/uc?export=download&id=1KMZ-u6C9M62CdayNSHqFRIJeuYjkzWlA
+https://drive.google.com/uc?export=download&id=1xGKYzhkJiyhcXw54YMT9KVbGBbG0M-1N
 
 ### Escenario de datos
 

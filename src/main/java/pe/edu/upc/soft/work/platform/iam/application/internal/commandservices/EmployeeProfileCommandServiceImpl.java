@@ -111,7 +111,7 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
                     user.getId(),
                     command.email(),
                     hashingService.encode(command.password()),
-                    command.anonymousName(),
+                    UserAccount.generateAnonymousName(),
                     new MembershipId(0L),
                     new CompanyId(0L)
             ));

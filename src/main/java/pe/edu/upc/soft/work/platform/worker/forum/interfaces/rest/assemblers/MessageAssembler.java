@@ -27,7 +27,7 @@ public class MessageAssembler {
     }
 
     public static AddAssetToMessageCommand toCommandFromRequest(Long messageId, AddAssetToMessageRequest request){
-        return new AddAssetToMessageCommand(request.attachmentId(), messageId);
+        return new AddAssetToMessageCommand(request.assetId(), messageId);
     }
 
     /**

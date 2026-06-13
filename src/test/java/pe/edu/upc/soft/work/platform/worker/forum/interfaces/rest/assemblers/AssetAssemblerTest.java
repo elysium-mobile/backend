@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAssetCommand;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.AssetFactory;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AssetResponse;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateAssetRequest;
@@ -52,7 +51,7 @@ class AssetAssemblerTest {
         UpdateAssetCommand command = AssetAssembler.toCommandFromRequest(31L, request);
 
         // Assert
-        assertThat(command.attachmentId()).isEqualTo(31L);
+        assertThat(command.assetId()).isEqualTo(31L);
         assertThat(command.messageId()).isEqualTo(WorkerForumCommandFixtures.VALID_MESSAGE_ID);
         assertThat(command.name()).isEqualTo(WorkerForumCommandFixtures.VALID_ATTACHMENT_NAME);
         assertThat(command.url()).isEqualTo(WorkerForumCommandFixtures.VALID_ATTACHMENT_URL);
@@ -77,7 +76,7 @@ class AssetAssemblerTest {
         AssetResponse response = AssetAssembler.toResponseFromEntity(entity);
 
         // Assert
-        assertThat(response.attachmentId()).isEqualTo(31L);
+        assertThat(response.assetId()).isEqualTo(31L);
         assertThat(response.messageId()).isEqualTo(WorkerForumCommandFixtures.VALID_MESSAGE_ID);
         assertThat(response.name()).isEqualTo(WorkerForumCommandFixtures.VALID_ATTACHMENT_NAME);
         assertThat(response.url()).isEqualTo(WorkerForumCommandFixtures.VALID_ATTACHMENT_URL);

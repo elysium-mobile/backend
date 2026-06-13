@@ -6,7 +6,7 @@ package pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries;
 public record GetAssetByIdQuery(Long attachmentId) {
 
     /**
-     * Constructor to validate the attachmentId parameter.
+     * Constructor to validate the assetId parameter.
      */
     public GetAssetByIdQuery {
         if (attachmentId == null || attachmentId <= 0) {

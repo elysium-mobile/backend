@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
-@RequestMapping(value = "/api/v1/attachments", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "Attachments", description = "Endpoints for managing Attachments")
+@RequestMapping(value = "/api/v1/assets", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Assets", description = "Endpoints for managing Assets")
 public class AssetController {
 
     private final AssetCommandService assetCommandService;
@@ -38,13 +38,13 @@ public class AssetController {
         this.assetQueryService = assetQueryService;
     }
 
-    @Operation(summary = "Create a new Attachment", description = "Create a new Attachment in the system")
+    @Operation(summary = "Create a new Asset", description = "Create a new Asset in the system")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Attachment created successfully",
+            @ApiResponse(responseCode = "201", description = "Asset created successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = AssetResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Attachment not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Asset not found", content = @Content)
     })
     @PostMapping
     public ResponseEntity<AssetResponse> createAttachment(@RequestBody CreateAssetRequest request) {
@@ -65,12 +65,12 @@ public class AssetController {
         return new ResponseEntity<>(attachmentResponse, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Get all Attachments", description = "Retrieve a list of all Attachments in the system")
+    @Operation(summary = "Get all Asset", description = "Retrieve a list of all Asset in the system")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Attachments retrieved successfully",
+            @ApiResponse(responseCode = "200", description = "Asset retrieved successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = AssetResponse.class))),
-            @ApiResponse(responseCode = "404", description = "No Attachments found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "No Asset found", content = @Content)
     })
     @GetMapping
     public ResponseEntity<List<AssetResponse>> getAllAttachments() {
@@ -83,12 +83,12 @@ public class AssetController {
         return ResponseEntity.ok(attachmentResponses);
     }
 
-    @Operation(summary = "Get Attachment by ID", description = "Retrieve an Attachment by its unique identifier")
+    @Operation(summary = "Get Asset by ID", description = "Retrieve an Asset by its unique identifier")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Attachment retrieved successfully",
+            @ApiResponse(responseCode = "200", description = "Asset retrieved successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = AssetResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Attachment not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Asset not found", content = @Content)
     })
     @GetMapping("/{id}")
     public ResponseEntity<AssetResponse> getAttachmentById(@PathVariable Long id) {
@@ -103,13 +103,13 @@ public class AssetController {
         return ResponseEntity.ok(attachmentResponse);
     }
 
-    @Operation(summary = "Update Attachment information", description = "Update the information of an existing Attachment")
+    @Operation(summary = "Update Asset information", description = "Update the information of an existing Asset")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Attachment updated successfully",
+            @ApiResponse(responseCode = "200", description = "Asset updated successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = AssetResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Attachment not found", content = @Content)
+            @ApiResponse(responseCode = "404", description = "Asset not found", content = @Content)
     })
     @PutMapping("/{id}")
     public ResponseEntity<AssetResponse> updateAttachment(@PathVariable Long id, @RequestBody UpdateAssetRequest request) {
@@ -122,10 +122,10 @@ public class AssetController {
         return ResponseEntity.ok(attachmentResponse);
     }
 
-    @Operation(summary = "Delete Attachment by ID", description = "Delete an Attachment by its unique identifier")
+    @Operation(summary = "Delete Asset by ID", description = "Delete an Asset by its unique identifier")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Attachment deleted successfully", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Attachment not found", content = @Content)
+            @ApiResponse(responseCode = "204", description = "Asset deleted successfully", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Asset not found", content = @Content)
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteAttachmentById(@PathVariable Long id) {

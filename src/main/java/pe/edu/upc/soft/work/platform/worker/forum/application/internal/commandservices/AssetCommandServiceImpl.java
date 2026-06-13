@@ -65,7 +65,7 @@ public class AssetCommandServiceImpl implements AssetCommandService {
      */
     @Override
     public Optional<Asset> handle(UpdateAssetCommand command) {
-        var assetId = command.attachmentId();
+        var assetId = command.assetId();
 
         var assetToUpdate = assetRepository.findById(assetId)
                 .orElseThrow(() -> new NotFoundArgumentException(

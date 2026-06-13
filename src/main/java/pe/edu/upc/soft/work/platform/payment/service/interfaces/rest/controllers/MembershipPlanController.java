@@ -148,12 +148,12 @@ public class MembershipPlanController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Membership Plan or Benefit not found", content = @Content)
     })
-    @PostMapping("/{id}/benefits")
-    public ResponseEntity<MembershipPlanResponse> addBenefitToMembershipPlan(@PathVariable Long id, @RequestBody AddBenefitToMembershipPlanRequest request){
+    @PostMapping("/{membershipPlanId}/benefits")
+    public ResponseEntity<MembershipPlanResponse> addBenefitToMembershipPlan(@PathVariable Long membershipPlanId, @RequestBody AddBenefitToMembershipPlanRequest request){
 
-        var command= MembershipPlanAssembler.toCommandFromRequest(id, request);
+        var command= MembershipPlanAssembler.toCommandFromRequest(membershipPlanId, request);
         this.membershipPlanCommandService.handle(command);
-        var membershipPlan = this.membershipPlanQueryService.handle(new GetMembershipPlanByIdQuery(id));
+        var membershipPlan = this.membershipPlanQueryService.handle(new GetMembershipPlanByIdQuery(membershipPlanId));
         if (membershipPlan.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

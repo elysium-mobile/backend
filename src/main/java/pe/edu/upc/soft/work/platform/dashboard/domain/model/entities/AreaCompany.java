@@ -59,6 +59,10 @@ public class AreaCompany extends AuditableAbstractAggregateRoot<AreaCompany> {
         this.companyId = command.companyId();
     }
 
+    /**
+     *  Adds a UnitOfWork to the AreaCompany's list of UnitOfWork.
+     * @param unitOfWork    the UnitOfWork to be added
+     */
     public void addUnitOfWork(UnitOfWork unitOfWork){
         if (this.unitOfWorkList == null) {
             this.unitOfWorkList = new ArrayList<>();
@@ -70,5 +74,19 @@ public class AreaCompany extends AuditableAbstractAggregateRoot<AreaCompany> {
                     "UnitOfWork with ID " + unitOfWork.getId() + " is already assigned to this area.");
         }
         this.unitOfWorkList.add(unitOfWork);
+    }
+
+    /**
+     *  Removes a UnitOfWork from the AreaCompany's list of UnitOfWork by its ID.
+     * @param unitOfWorkId  the ID of the UnitOfWork to be removed
+     */
+    public void removeUnitOfWork(Long unitOfWorkId) {
+        if (this.unitOfWorkList == null) {
+            throw new IllegalArgumentException("UnitOfWork with ID " + unitOfWorkId + " not found in this area.");
+        }
+        boolean removed = this.unitOfWorkList.removeIf(u -> u.getId().equals(unitOfWorkId));
+        if (!removed) {
+            throw new IllegalArgumentException("UnitOfWork with ID " + unitOfWorkId + " not found in this area.");
+        }
     }
 }

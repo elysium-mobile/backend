@@ -27,6 +27,12 @@ public class UnitOfWorkAssembler {
         return new UpdateUnitOfWorkCommand(unitOfWorkId, request.name());
     }
 
+    /**
+     *  Converts an AddWorkTeamToUnitOFWorkRequest to an AddWorkTeamToUnitOfWork command.
+     * @param unitOfWorkId  the unique identifier of the UnitOfWork to which the WorkTeam will be added
+     * @param request   the request object containing the details of the WorkTeam to be added
+     * @return  an AddWorkTeamToUnitOfWork command with the necessary information to add a WorkTeam to a UnitOfWork
+     */
     public static AddWorkTeamToUnitOfWork toCommandFromRequest(Long unitOfWorkId, AddWorkTeamToUnitOFWorkRequest request)
     {
         return new AddWorkTeamToUnitOfWork(request.workTeamId(), unitOfWorkId);

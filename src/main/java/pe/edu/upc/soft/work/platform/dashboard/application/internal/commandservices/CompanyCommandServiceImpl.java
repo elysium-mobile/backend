@@ -99,6 +99,10 @@ public class CompanyCommandServiceImpl implements CompanyCommandService {
         }
     }
 
+    /**
+     *  Handles the addition of an AreaCompany to a Company.
+     * @param command the command to add an AreaCompany to a Company
+     */
     @Override
     public void handle(AddAreaCompanyToCompanyCommand command) {
         var areaCompany = areaCompanyRepository.findById(command.areaCompanyId())
@@ -115,6 +119,10 @@ public class CompanyCommandServiceImpl implements CompanyCommandService {
         }
     }
 
+    /**
+     *  Handles the addition of an Employee to a Company.
+     * @param command  the command to add an Employee to a Company
+     */
     @Override
     public void handle(AddEmployeesToCompanyCommand command) {
         if (!externalIamServiceFromDashboard.existsUserAccountById(command.employeeId())) {

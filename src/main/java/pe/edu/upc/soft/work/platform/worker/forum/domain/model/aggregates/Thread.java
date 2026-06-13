@@ -97,4 +97,14 @@ public class Thread extends AuditableAbstractAggregateRoot<Thread> {
             this.messages.add(message);
         }
     }
+
+    public void removeMessage(Long messageId) {
+        if (this.messages == null) {
+            throw new IllegalArgumentException("Message with ID " + messageId + " not found in this thread.");
+        }
+        boolean removed = this.messages.removeIf(m -> m.getId().equals(messageId));
+        if (!removed) {
+            throw new IllegalArgumentException("Message with ID " + messageId + " not found in this thread.");
+        }
+    }
 }

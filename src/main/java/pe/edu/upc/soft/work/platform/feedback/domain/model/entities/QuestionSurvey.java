@@ -11,7 +11,7 @@ import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbs
  * QuestionSurvey aggregate root entity.
  */
 @Entity
-@Table(name = "question_surveys")
+@Table(name = "questions_survey")
 public class QuestionSurvey extends AuditableAbstractAggregateRoot<QuestionSurvey> {
 
     @Getter

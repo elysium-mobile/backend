@@ -25,5 +25,8 @@ public interface AreaCompanyCommandService {
      */
     void handle(DeleteAreaCompanyCommand command);
 
+    /**
+     *  Handles the addition of a UnitOfWork to an AreaCompany.
+     */
     void handle(AddUnitOfWorkToAreaCompanyCommand command);
 }

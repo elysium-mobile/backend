@@ -1,7 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.domain.services;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddAttachmentsToMessageCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddAssetToMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteMessageCommand;
@@ -28,5 +28,5 @@ public interface MessageCommandService {
      */
     void handle(DeleteMessageCommand command);
 
-    void handle(AddAttachmentsToMessageCommand command);
+    void handle(AddAssetToMessageCommand command);
 }

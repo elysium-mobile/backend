@@ -71,6 +71,10 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
         this.contactPhone = command.contactPhone();
     }
 
+    /**
+     *  Adds an employee to the company if they are not already present.
+     * @param employee  the UserAccount of the employee to add
+     */
     public void addEmployee(UserAccount employee){
         if (this.employees ==null){
             this.employees = new ArrayList<>();
@@ -82,6 +86,10 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
         }
     }
 
+    /**
+     *  Removes an employee from the company by their ID.
+     * @param areaCompany   the ID of the employee to remove
+     */
     public void addAreaCompany(AreaCompany areaCompany){
         if (this.areaCompanyList == null) {
             this.areaCompanyList = new ArrayList<>();
@@ -93,5 +101,19 @@ public class Company extends AuditableAbstractAggregateRoot<Company> {
                     "AreaCompany with ID " + areaCompany.getId() + " is already assigned to this company.");
         }
         this.areaCompanyList.add(areaCompany);
+    }
+
+    /**
+     *  Removes an AreaCompany from the company by its ID.
+     * @param areaCompanyId the ID of the AreaCompany to remove
+     */
+    public void removeAreaCompany(Long areaCompanyId) {
+        if (this.areaCompanyList == null) {
+            throw new IllegalArgumentException("AreaCompany with ID " + areaCompanyId + " not found in this company.");
+        }
+        boolean removed = this.areaCompanyList.removeIf(a -> a.getId().equals(areaCompanyId));
+        if (!removed) {
+            throw new IllegalArgumentException("AreaCompany with ID " + areaCompanyId + " not found in this company.");
+        }
     }
 }

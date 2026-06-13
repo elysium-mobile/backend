@@ -23,6 +23,10 @@ public interface CompanyQueryService {
      */
     Optional<Company> handle(GetCompanyByIdQuery query);
 
-
+    /**
+     *  Retrieves a list of Companies that match the given name.
+     * @param query the query containing the name to search for
+     * @return  a list of Companies that match the given name
+     */
     List<Company> handle(GetCompaniesByNameQuery query);
 }

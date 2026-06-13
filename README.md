@@ -101,6 +101,51 @@ Se estan acomodando algunos eventos instaciados.
 Además, se esta verificando la implementacion de atributos establecidos en el diseño y la base de datos.
 ---
 
+
+## Datos de Prueba (Seed)
+
+Para facilitar las pruebas locales, se incluye un archivo SQL con datos precargados que cubre todos los contextos de dominio de la plataforma.
+
+### Archivo (provisional)
+Se aloja de manera porvisional hasta el despliegue de la aplicación en un entorno de pruebas, donde se podrá acceder directamente desde el repositorio.
+
+https://drive.google.com/uc?export=download&id=1KMZ-u6C9M62CdayNSHqFRIJeuYjkzWlA
+
+### Escenario de datos
+
+| Empresa | RUC |
+|---|---|
+| TechCorp SAC | 20123456781 |
+| InnovatePeru SRL | 20987654322 |
+
+### Credenciales de acceso
+
+| Email | Contraseña | Rol | Empresa |
+|---|---|---|---|
+| carlos.ramirez@techcorp.pe | carlos123 | Backend Developer / RRHH | TechCorp |
+| maria.lopez@techcorp.pe | maria123 | Frontend Developer | TechCorp |
+| jorge.quispe@techcorp.pe | jorge123 | QA Engineer | TechCorp |
+| diego.chavez@techcorp.pe | diego123 | Tech Lead | TechCorp |
+| valeria.mendoza@techcorp.pe | valeria123 | Junior Developer | TechCorp |
+| ana.torres@innovateperu.com | ana123 | Product Manager / RRHH | InnovatePeru |
+| luis.mamani@innovateperu.com | luis123 | Data Analyst | InnovatePeru |
+| sofia.vargas@innovateperu.com | sofia123 | DevOps Engineer | InnovatePeru |
+
+### Datos incluidos por contexto
+
+| Contexto | Datos cargados |
+|---|---|
+| **IAM** | 8 usuarios, 8 cuentas, 8 perfiles de empleado, 2 perfiles RRHH |
+| **Dashboard** | 2 dashboards, 4 widgets |
+| **Workers Forum** | 2 foros, 4 categorías, 4 threads, 7 mensajes, 4 archivos adjuntos |
+| **Payments** | 3 membresías, 3 planes, 6 beneficios, 3 órdenes, 3 pagos |
+| **Notifications** | 6 notificaciones, 6 detalles |
+| **Profile Performance** | 5 evaluaciones de rendimiento, 5 comentarios RRHH |
+| **Feedback** | 3 encuestas, 5 preguntas, 5 respuestas |
+
+---
+
+
 ##  Consideraciones
 
 * Verifique que PostgreSQL se encuentre activo antes de iniciar la aplicación.
@@ -113,10 +158,10 @@ Además, se esta verificando la implementacion de atributos establecidos en el d
 
 Integrantes del equipo:
 
-- Cesar Augusto Arostegui Alzamora
-- Diego Andres Avalos Cordova
-- Flor de Maria Contreras Leon
-- Gianmarco Fabian Jiménez Guerra
-- Piero Francesco Tenorio Medina
+- Cesar Augusto Arostegui Alzamora (U202114548)
+- Diego Andres Avalos Cordova (U202313922)
+- Flor de Maria Contreras Leon (U202323243)
+- Gianmarco Fabian Jiménez Guerra (U202123843)
+- Piero Francesco Tenorio Medina (U202318731)
 
 ---

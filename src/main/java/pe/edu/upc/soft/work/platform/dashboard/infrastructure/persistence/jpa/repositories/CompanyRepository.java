@@ -13,7 +13,17 @@ import java.util.List;
 @Repository
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
+    /**
+     *  Find companies by name containing the specified string, ignoring case.
+     * @param name  The string to search for in company names.
+     * @return  A list of companies whose names contain the specified string, ignoring case.
+     */
     List<Company> findByNameContainingIgnoreCase(String name);
 
+    /**
+     *  Check if a company with the specified RUC exists.
+     * @param ruc   The RUC to check for existence.
+     * @return  True if a company with the specified RUC exists, false otherwise.
+     */
     boolean existsByRUC(String ruc);
 }

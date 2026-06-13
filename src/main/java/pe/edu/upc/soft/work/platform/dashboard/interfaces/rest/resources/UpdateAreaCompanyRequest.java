@@ -4,6 +4,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ * Request DTO for updating an existing AreaCompany.
+ * @param name the new name of the AreaCompany
+ * @param annualBudget  the new annual budget of the AreaCompany
+ * @param companyId     the ID of the company to which the AreaCompany belongs
+ */
 public record UpdateAreaCompanyRequest(
         @NotNull
         @NotBlank

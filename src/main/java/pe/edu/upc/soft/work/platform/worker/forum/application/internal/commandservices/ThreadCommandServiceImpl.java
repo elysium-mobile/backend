@@ -100,11 +100,14 @@ public class ThreadCommandServiceImpl implements ThreadCommandService {
      */
     @Override
     public void handle(DeleteThreadCommand command) {
-        if (!threadRepository.existsById(command.threadId())) {
-            throw new RuntimeException("Thread with ID " + command.threadId() + " does not exist.");
-        }
+        var thread = threadRepository.findById(command.threadId())
+            .orElseThrow(() -> new RuntimeException("Thread with ID " + command.threadId() + " does not exist."));
+        var category = categoryRepository.findById(thread.getCategoryId())
+            .orElseThrow(() -> new RuntimeException(
+                "[ThreadCommandServiceImpl] Category with ID " + thread.getCategoryId() + " not found for Thread " + command.threadId()));
         try {
-            threadRepository.deleteById(command.threadId());
+            category.removeThread(command.threadId());
+            categoryRepository.save(category);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Thread: " + e.getMessage(), e);
         }

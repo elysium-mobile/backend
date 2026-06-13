@@ -25,7 +25,13 @@ public interface CompanyCommandService {
      */
     void handle(DeleteCompanyCommand command);
 
+    /**
+     *  Handles the addition of an AreaCompany to a Company.
+     */
     void handle (AddAreaCompanyToCompanyCommand command);
 
+    /**
+     *  Handles the addition of an Employee to a Company.
+     */
     void handle (AddEmployeesToCompanyCommand command);
 }

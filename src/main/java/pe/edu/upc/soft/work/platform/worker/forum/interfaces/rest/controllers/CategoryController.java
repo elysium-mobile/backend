@@ -143,11 +143,11 @@ public class CategoryController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Category or Thread not found", content = @Content)
     })
-    @PostMapping("/{id}/threads")
-    public ResponseEntity<CategoryResponse> addThreadToCategory(@PathVariable Long id, @RequestBody AddThreadToCategoryRequest request){
-        var command = CategoryAssembler.toCommandFromRequest(id, request);
+    @PostMapping("/{categoryId}/threads")
+    public ResponseEntity<CategoryResponse> addThreadToCategory(@PathVariable Long categoryId, @RequestBody AddThreadToCategoryRequest request){
+        var command = CategoryAssembler.toCommandFromRequest(categoryId, request);
         this.categoryCommandService.handle(command);
-        var category = this.categoryQueryService.handle(new GetCategoryByIdQuery(id));
+        var category = this.categoryQueryService.handle(new GetCategoryByIdQuery(categoryId));
         if (category.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

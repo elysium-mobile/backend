@@ -88,16 +88,23 @@ public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService 
      */
     @Override
     public void handle(DeleteAreaCompanyCommand command) {
-        if (!areacompanyRepository.existsById(command.areacompanyId())) {
-            throw new RuntimeException("AreaCompany with ID " + command.areacompanyId() + " does not exist.");
-        }
+        var areaCompany = areacompanyRepository.findById(command.areacompanyId())
+            .orElseThrow(() -> new RuntimeException("AreaCompany with ID " + command.areacompanyId() + " does not exist."));
+        var company = companyRepository.findById(areaCompany.getCompanyId())
+            .orElseThrow(() -> new RuntimeException(
+                "[AreaCompanyCommandServiceImpl] Company with ID " + areaCompany.getCompanyId() + " not found for AreaCompany " + command.areacompanyId()));
         try {
-            areacompanyRepository.deleteById(command.areacompanyId());
+            company.removeAreaCompany(command.areacompanyId());
+            companyRepository.save(company);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting AreaCompany: " + e.getMessage(), e);
         }
     }
 
+    /**
+     *  Handles the addition of a UnitOfWork to an AreaCompany.
+     * @param command   the command to add a UnitOfWork to an AreaCompany
+     */
     @Override
     public void handle(AddUnitOfWorkToAreaCompanyCommand command) {
         var unitOfWork = unitOfWorkRepository.findById(command.unitOfWork())

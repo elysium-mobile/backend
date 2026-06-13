@@ -23,5 +23,10 @@ public interface DashboardQueryService {
      */
     Optional<Dashboard> handle(GetDashboardByIdQuery query);
 
+    /**
+     *  Retrieves a list of Dashboards that belong to a specific Company.
+     * @param query the query containing the Company ID to search for
+     * @return  a list of Dashboards that belong to the specified Company
+     */
     List<Dashboard> handle(GetDashboardByCompanyIdQuery query);
 }

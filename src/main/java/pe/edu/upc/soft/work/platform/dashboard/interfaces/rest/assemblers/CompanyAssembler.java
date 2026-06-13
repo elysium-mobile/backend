@@ -27,10 +27,22 @@ public class CompanyAssembler {
         return new UpdateCompanyCommand(companyId, request.name(), request.RUC(), request.contactEmail(), request.contactPhone());
     }
 
+  /**
+   *  Converts an AddEmployeeToCompanyRequest to an AddEmployeesToCompanyCommand.
+   * @param companyId the ID of the company to which the employee will be added
+   * @param request the request containing the employee ID to be added to the company
+   * @return  an AddEmployeesToCompanyCommand containing the employee ID and company ID for processing the addition of the employee to the company
+   */
     public static AddEmployeesToCompanyCommand toCommandFromRequest(Long companyId, AddEmployeeToCompanyRequest request){
         return new AddEmployeesToCompanyCommand(request.employeeId(), companyId);
     }
 
+  /**
+   *  Converts an AddAreaCompanyToCompanyRequest to an AddAreaCompanyToCompanyCommand.
+   * @param companyId the ID of the company to which the area company will be added
+   * @param request the request containing the area company ID to be added to the company
+   * @return  an AddAreaCompanyToCompanyCommand containing the area company ID and company ID for processing the addition of the area company to the company
+   */
     public static AddAreaCompanyToCompanyCommand toCommandFromRequest(Long companyId, AddAreaCompanyToCompanyRequest request) {
         return new AddAreaCompanyToCompanyCommand(request.areaCompanyId(), companyId);
     }

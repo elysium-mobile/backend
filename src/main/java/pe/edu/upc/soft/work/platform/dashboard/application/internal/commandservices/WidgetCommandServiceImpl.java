@@ -76,11 +76,14 @@ public class WidgetCommandServiceImpl implements WidgetCommandService {
      */
     @Override
     public void handle(DeleteWidgetCommand command) {
-        if (!widgetRepository.existsById(command.widgetId())) {
-            throw new RuntimeException("Widget with ID " + command.widgetId() + " does not exist.");
-        }
+        var widget = widgetRepository.findById(command.widgetId())
+            .orElseThrow(() -> new RuntimeException("Widget with ID " + command.widgetId() + " does not exist."));
+        var dashboard = dashboardRepository.findById(widget.getDashboardId())
+            .orElseThrow(() -> new RuntimeException(
+                "[WidgetCommandServiceImpl] Dashboard with ID " + widget.getDashboardId() + " not found for Widget " + command.widgetId()));
         try {
-            widgetRepository.deleteById(command.widgetId());
+            dashboard.removeWidget(command.widgetId());
+            dashboardRepository.save(dashboard);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Widget: " + e.getMessage(), e);
         }

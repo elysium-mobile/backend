@@ -95,11 +95,14 @@ public class AssetCommandServiceImpl implements AssetCommandService {
      */
     @Override
     public void handle(DeleteAssetCommand command) {
-        if (!assetRepository.existsById(command.attachmentId())) {
-            throw new RuntimeException("Asset with ID " + command.attachmentId() + " does not exist.");
-        }
+        var asset = assetRepository.findById(command.attachmentId())
+            .orElseThrow(() -> new RuntimeException("Asset with ID " + command.attachmentId() + " does not exist."));
+        var message = messageRepository.findById(asset.getMessageId())
+            .orElseThrow(() -> new RuntimeException(
+                "[AssetCommandServiceImpl] Message with ID " + asset.getMessageId() + " not found for Asset " + command.attachmentId()));
         try {
-            assetRepository.deleteById(command.attachmentId());
+            message.removeAttachment(command.attachmentId());
+            messageRepository.save(message);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Asset: " + e.getMessage(), e);
         }

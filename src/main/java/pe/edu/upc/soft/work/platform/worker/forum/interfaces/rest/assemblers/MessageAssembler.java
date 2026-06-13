@@ -1,7 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddAttachmentsToMessageCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddAssetToMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.UserAccountId;
@@ -26,8 +26,8 @@ public class MessageAssembler {
         return new UpdateMessageCommand(messageId, new UserAccountId(request.userAccountId()), request.contentMessage(), request.threadId());
     }
 
-    public static AddAttachmentsToMessageCommand toCommandFromRequest(Long messageId, AddAssetToMessageRequest request){
-        return new AddAttachmentsToMessageCommand(request.attachmentId(), messageId);
+    public static AddAssetToMessageCommand toCommandFromRequest(Long messageId, AddAssetToMessageRequest request){
+        return new AddAssetToMessageCommand(request.attachmentId(), messageId);
     }
 
     /**

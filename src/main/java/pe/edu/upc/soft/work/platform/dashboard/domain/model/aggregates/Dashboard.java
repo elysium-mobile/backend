@@ -67,6 +67,10 @@ public class Dashboard extends AuditableAbstractAggregateRoot<Dashboard> {
     this.companyId = command.companyId();
   }
 
+  /**
+   *  Adds a widget to the dashboard, ensuring no duplicates by widget ID.
+   * @param widget  the widget to be added
+   */
   public void addWidget(Widget widget){
     if (this.widgets == null) {
       this.widgets = new ArrayList<>();
@@ -78,5 +82,19 @@ public class Dashboard extends AuditableAbstractAggregateRoot<Dashboard> {
           "Widget with ID " + widget.getId() + " is already assigned to this dashboard.");
     }
     this.widgets.add(widget);
+  }
+
+  /**
+   *  Removes a widget from the dashboard by its ID.
+   * @param widgetId  the ID of the widget to be removed
+   */
+  public void removeWidget(Long widgetId) {
+    if (this.widgets == null) {
+      throw new IllegalArgumentException("Widget with ID " + widgetId + " not found in this dashboard.");
+    }
+    boolean removed = this.widgets.removeIf(w -> w.getId().equals(widgetId));
+    if (!removed) {
+      throw new IllegalArgumentException("Widget with ID " + widgetId + " not found in this dashboard.");
+    }
   }
 }

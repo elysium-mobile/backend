@@ -44,8 +44,8 @@ public class UserCommandServiceImpl implements UserCommandService {
         var userToUpdate = this.userRepository.findById(userId).get();
         userToUpdate.updateUser(command);
         try{
-            var updatedUser = this.userRepository.save(userToUpdate);
-            return Optional.of(updatedUser);
+            this.userRepository.save(userToUpdate);
+            return Optional.of(userToUpdate);
         } catch (Exception e) {
             throw new RuntimeException("Error updating user: " + e.getMessage(), e);
         }

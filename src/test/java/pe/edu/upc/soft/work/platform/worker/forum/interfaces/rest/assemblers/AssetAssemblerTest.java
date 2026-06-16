@@ -82,7 +82,5 @@ class AssetAssemblerTest {
         assertThat(response.url()).isEqualTo(WorkerForumCommandFixtures.VALID_ATTACHMENT_URL);
         assertThat(response.fileSize()).isEqualTo(WorkerForumCommandFixtures.VALID_FILE_SIZE);
         assertThat(response.fileType()).isEqualTo(WorkerForumCommandFixtures.VALID_FILE_TYPE);
-        assertThat(response.isViewable()).isEqualTo(WorkerForumCommandFixtures.VALID_FILE_TYPE_IS_VIEWABLE);
-        assertThat(response.isReadable()).isEqualTo(WorkerForumCommandFixtures.VALID_FILE_TYPE_IS_READABLE);
-    }
+     }
 }

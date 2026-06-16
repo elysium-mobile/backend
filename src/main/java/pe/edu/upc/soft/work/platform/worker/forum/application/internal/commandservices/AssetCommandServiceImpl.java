@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
@@ -8,6 +9,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAs
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.AssetFactory;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.AssetCommandService;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ExternalStorageService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.AssetRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.MessageRepository;
 
@@ -20,16 +22,47 @@ import java.util.Optional;
 public class AssetCommandServiceImpl implements AssetCommandService {
     private final AssetRepository assetRepository;
     private final MessageRepository messageRepository;
+    private final ExternalStorageService storageService;
 
     /**
      * Constructor for AssetCommandServiceImpl.
      * @param assetRepository the repository for Attachment persistence
      */
     public AssetCommandServiceImpl(AssetRepository assetRepository,
-                                   MessageRepository messageRepository) {
+                                   MessageRepository messageRepository,
+                                   ExternalStorageService storageService) {
         this.assetRepository = assetRepository;
         this.messageRepository=messageRepository;
+        this.storageService =storageService;
     }
+    public Long handle(CreateAssetCommand command, MultipartFile file) {
+        var message = messageRepository.findById(command.messageId())
+            .orElseThrow(() -> new NotFoundArgumentException(
+                String.format("[AssetCommandServiceImpl] Message ID: %s not found", command.messageId())));
+
+        ExternalStorageService.UploadResult result = storageService.upload(file, command.fileType());
+
+        var asset = AssetFactory.create(
+            command.messageId(),
+            command.name(),
+            result.url(),
+            result.fileSize(),
+            command.fileType()
+        );
+
+        try {
+            assetRepository.save(asset);
+            message.addAttachment(asset);
+            messageRepository.save(message);
+
+        } catch (Exception e) {
+            storageService.delete(result.url());
+            throw new RuntimeException("Error creating Asset: " + e.getMessage(), e);
+        }
+
+        return asset.getId();
+    }
+
 
     /**
      * Handles the creation of an Asset
@@ -43,6 +76,7 @@ public class AssetCommandServiceImpl implements AssetCommandService {
                     String.format("[SurveyResponseCommandServiceImpl] Message ID: %s not found in the external Workers Forum context",
                             command.messageId()));
         }
+
         var asset = AssetFactory.create(
                 command.messageId(),
                 command.name(),

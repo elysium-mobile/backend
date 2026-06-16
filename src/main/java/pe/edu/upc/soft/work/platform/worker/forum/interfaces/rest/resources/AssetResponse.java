@@ -11,7 +11,5 @@ public record AssetResponse(
         String name,
         String url,
         String fileSize,
-        FileType fileType,
-        boolean isViewable,
-        boolean isReadable
+        FileType fileType
 ) {}

@@ -3,9 +3,11 @@ package pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.FileType;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AssetResponse;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.CreateAssetRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateAssetRequest;
+import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UploadAssetRequest;
 
 public class AssetAssembler {
 
@@ -14,6 +16,10 @@ public class AssetAssembler {
      */
     public static CreateAssetCommand toCommandFromRequest(CreateAssetRequest request) {
         return new CreateAssetCommand(request.messageId(), request.name(), request.url(), request.fileSize(), request.fileType());
+    }
+
+    public static CreateAssetCommand toCommandFromRequest(UploadAssetRequest request){
+        return new CreateAssetCommand(request.messageId(),request.name(), FileType.valueOf(request.fileType()));
     }
 
     /**
@@ -27,6 +33,6 @@ public class AssetAssembler {
      * Converts an Asset entity to an AssetResponse.
      */
     public static AssetResponse toResponseFromEntity(Asset asset) {
-        return new AssetResponse(asset.getId(), asset.getMessageId(), asset.getName(), asset.getUrl(), asset.getFileSize(), asset.getFileType(),asset.isViewable(),asset.isReadable());
+        return new AssetResponse(asset.getId(), asset.getMessageId(), asset.getName(), asset.getUrl(), asset.getFileSize(), asset.getFileType());
     }
 }

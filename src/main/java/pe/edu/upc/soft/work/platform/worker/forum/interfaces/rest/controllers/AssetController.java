@@ -10,9 +10,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllAssetsQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAssetByIdQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.FileType;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.AssetCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.AssetQueryService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.AssetAssembler;
@@ -38,31 +41,34 @@ public class AssetController {
         this.assetQueryService = assetQueryService;
     }
 
-    @Operation(summary = "Create a new Asset", description = "Create a new Asset in the system")
+    @Operation(summary = "Create a new Asset", description = "Upload a file to Cloudinary and register the Asset")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Asset created successfully",
-                    content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = AssetResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Asset not found", content = @Content)
+        @ApiResponse(responseCode = "201", description = "Asset created successfully",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                schema = @Schema(implementation = AssetResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
+        @ApiResponse(responseCode = "404", description = "Asset not found",  content = @Content)
     })
-    @PostMapping
-    public ResponseEntity<AssetResponse> createAttachment(@RequestBody CreateAssetRequest request) {
-        var createAttachmentCommand = AssetAssembler.toCommandFromRequest(request);
-        var attachmentId = this.assetCommandService.handle(createAttachmentCommand);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<AssetResponse> createAttachment(
+        @RequestParam("messageId") Long          messageId,
+        @RequestParam("name")      String         name,
+        @RequestParam("fileType")  FileType       fileType,
+        @RequestParam("file")      MultipartFile  file) {
+
+        var createAttachmentCommand = new CreateAssetCommand(messageId, name, fileType);
+        var attachmentId = this.assetCommandService.handle(createAttachmentCommand, file);
 
         if (Objects.isNull(attachmentId) || attachmentId <= 0) {
             return ResponseEntity.badRequest().build();
         }
-        var getAttachmentById = new GetAssetByIdQuery(attachmentId);
-        var attachment = this.assetQueryService.handle(getAttachmentById);
 
+        var attachment = this.assetQueryService.handle(new GetAssetByIdQuery(attachmentId));
         if (attachment.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        var attachmentResponse = AssetAssembler.toResponseFromEntity(attachment.get());
-        return new ResponseEntity<>(attachmentResponse, HttpStatus.CREATED);
+        return new ResponseEntity<>(AssetAssembler.toResponseFromEntity(attachment.get()), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get all Asset", description = "Retrieve a list of all Asset in the system")
@@ -133,4 +139,6 @@ public class AssetController {
         this.assetCommandService.handle(deleteAttachmentCommand);
         return ResponseEntity.noContent().build();
     }
+
+
 }

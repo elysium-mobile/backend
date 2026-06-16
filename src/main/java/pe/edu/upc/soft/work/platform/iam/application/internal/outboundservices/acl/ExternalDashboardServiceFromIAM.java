@@ -34,4 +34,8 @@ public class ExternalDashboardServiceFromIAM {
     public boolean existsWorkTeamById(Long workTeamId){
         return this.dashboardContextFacade.existsWorkTeamById(workTeamId);
     }
+
+    public void addEmployeeToCompany(Long userAccountId, Long companyId) {
+        this.dashboardContextFacade.addEmployeeToCompany(userAccountId, companyId);
+    }
 }

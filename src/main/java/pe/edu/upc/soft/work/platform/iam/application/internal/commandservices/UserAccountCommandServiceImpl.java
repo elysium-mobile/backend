@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.iam.application.internal.commandservices;
 
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.tokens.TokenService;
@@ -10,6 +11,7 @@ import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserAccount
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.SignInCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateUserAccountCommand;
+import pe.edu.upc.soft.work.platform.iam.domain.model.events.UserAccountCreatedEvent;
 import pe.edu.upc.soft.work.platform.iam.domain.services.UserAccountCommandService;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.EmployeeProfileRepository;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.RRHHProfileRepository;
@@ -27,19 +29,23 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
     private final HashingService hashingService;
     private final TokenService tokenService;
     private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public UserAccountCommandServiceImpl(UserAccountRepository userAccountRepository,
                                          EmployeeProfileRepository employeeProfileRepository,
                                          RRHHProfileRepository rrhhProfileRepository,
                                          HashingService hashingService,
                                          TokenService tokenService,
-                                         UserRepository userRepository) {
+                                         UserRepository userRepository,
+                                         ApplicationEventPublisher eventPublisher) {
         this.userAccountRepository = userAccountRepository;
         this.employeeProfileRepository =employeeProfileRepository;
         this.rrhhProfileRepository = rrhhProfileRepository;
         this.hashingService = hashingService;
         this.tokenService = tokenService;
         this.userRepository = userRepository;
+        this.eventPublisher = eventPublisher;
+
     }
 
     @Override
@@ -54,6 +60,12 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
         }catch (Exception e){
             throw new IllegalArgumentException("Error saving user account: %s".formatted(e.getMessage()));
         }
+        eventPublisher.publishEvent(new UserAccountCreatedEvent(
+            this,
+            userAccount.getId(),
+            userAccount.getUserId(),
+            userAccount.getCompanyId().CompanyId()  // Long del value object
+        ));
         return userAccount.getId();
 
     }

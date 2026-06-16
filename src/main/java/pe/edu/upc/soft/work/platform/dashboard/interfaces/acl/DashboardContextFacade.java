@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.acl;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddEmployeesToCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetCompanyByIdQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetWorkTeamByIdQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.CompanyCommandService;
@@ -88,5 +89,9 @@ public class DashboardContextFacade {
     public boolean existsWorkTeamById(Long workTeamId) {
         var query = new GetWorkTeamByIdQuery(workTeamId);
         return this.workTeamQueryService.handle(query).isPresent();
+    }
+
+    public void addEmployeeToCompany(Long userAccountId, Long companyId){
+        this.companyCommandService.handle(new AddEmployeesToCompanyCommand(userAccountId,companyId));
     }
 }

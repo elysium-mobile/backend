@@ -143,7 +143,11 @@ resource "aws_instance" "app_server" {
   user_data = <<-EOF
               #!/bin/bash
               apt-get update -y
-              apt-get install -y docker.io docker-compose
+              curl -fsSL https://get.docker.com | sh
+
+              curl -SL https://github.com/docker/compose/releases/download/v2.29.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
+              chmod +x /usr/local/bin/docker-compose
+
               systemctl start docker
               systemctl enable docker
               usermod -aG docker ubuntu
@@ -156,6 +160,9 @@ resource "aws_instance" "app_server" {
               JWT_SECRET=un_secreto_seguro_de_al_menos_256_bits_para_firmar_tokens_12345
               JWT_EXPIRATION_DAYS=7
               ENVEOF
+
+              chmod 644 /home/ubuntu/app/.env
+              chown ubuntu:ubuntu /home/ubuntu/app/.env
 
               cat > /home/ubuntu/app/update-api-host.sh << 'SCRIPT'
               #!/bin/bash

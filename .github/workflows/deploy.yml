@@ -30,6 +30,6 @@ jobs:
           script: |
             cd /home/ubuntu/app
             ./update-api-host.sh
-            docker-compose build
-            docker-compose up -d --force-recreate
-            docker-compose ps
+            docker compose build
+            docker compose up -d --force-recreate
+            docker compose ps

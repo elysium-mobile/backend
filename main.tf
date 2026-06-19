@@ -149,6 +149,7 @@ resource "aws_instance" "app_server" {
               usermod -aG docker ubuntu
 
               mkdir -p /home/ubuntu/app
+              chown -R ubuntu:ubuntu /home/ubuntu/app
 
               cat > /home/ubuntu/app/.env << 'ENVEOF'
               PORT=8080

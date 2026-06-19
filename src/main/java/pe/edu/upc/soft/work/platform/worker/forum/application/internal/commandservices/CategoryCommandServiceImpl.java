@@ -44,9 +44,14 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
         if (!forumRepository.existsById(command.forumId())) {
             throw new RuntimeException("Forum with ID " + command.forumId() + " does not exist.");
         }
+
+        var forum = forumRepository.findById(command.forumId()).orElseThrow(()-> new RuntimeException("Forum with ID" + command.forumId()+"does not exists"));
+
         var category = new Category(command);
         try {
             categoryRepository.save(category);
+            forum.addCategory(category);
+            forumRepository.save(forum);
         } catch (Exception e) {
             throw new RuntimeException("Error creating Category: " + e.getMessage(), e);
         }

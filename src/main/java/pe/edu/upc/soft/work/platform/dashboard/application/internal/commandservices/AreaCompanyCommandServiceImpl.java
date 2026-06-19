@@ -49,9 +49,14 @@ public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService 
         if (!companyRepository.existsById(command.companyId())) {
             throw new RuntimeException("Company with ID " + command.companyId() + " does not exist.");
         }
+        var company = companyRepository.findById(command.companyId()).orElseThrow(()-> new RuntimeException("Company with ID" + command.companyId()+"does not exists"));
+
+
         var areacompany = new AreaCompany(command);
         try {
             areacompanyRepository.save(areacompany);
+            company.addAreaCompany(areacompany);
+            companyRepository.save(company);
         } catch (Exception e) {
             throw new RuntimeException("Error creating AreaCompany: " + e.getMessage(), e);
         }

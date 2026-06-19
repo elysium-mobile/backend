@@ -44,7 +44,7 @@ public final class PaymentCommandFixtures {
 
     public static final Long VALID_MEMBERSHIP_PLAN_ID =6L;
 
-    public static final String VALID_METHOD ="Card";
+    public static final String VALID_METHOD ="CREDIT_CARD";
 
     public static final PaymentStatus VALID_PAYMENT_STATUS =PaymentStatus.SUCCEEDED;
 

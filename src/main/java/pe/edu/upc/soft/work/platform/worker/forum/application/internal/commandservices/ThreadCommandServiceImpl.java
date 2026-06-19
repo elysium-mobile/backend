@@ -58,8 +58,12 @@ public class ThreadCommandServiceImpl implements ThreadCommandService {
             );
         }
         var thread = new Thread(command);
+
+        var category = categoryRepository.findById(command.categoryId()).orElseThrow(()-> new RuntimeException("Category with ID" + command.categoryId()+"does not exists"));
         try {
             threadRepository.save(thread);
+            category.addThread(thread);
+            categoryRepository.save(category);
         } catch (Exception e) {
             throw new RuntimeException("Error creating Thread: " + e.getMessage(), e);
         }

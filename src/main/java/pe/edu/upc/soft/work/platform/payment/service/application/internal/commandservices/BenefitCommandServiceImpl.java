@@ -39,9 +39,13 @@ public class BenefitCommandServiceImpl implements BenefitCommandService {
         if (!membershipPlanRepository.existsById(command.membershipPlanId())) {
             throw new RuntimeException("Membership Plan with ID " + command.membershipPlanId() + " does not exist.");
         }
+        var membershipPlan = membershipPlanRepository.findById(command.membershipPlanId()).orElseThrow(()-> new RuntimeException("Membership Plan with ID" + command.membershipPlanId()+"does not exists"));
+
         var benefit = new Benefit(command);
         try {
             benefitRepository.save(benefit);
+            membershipPlan.addBenefit(benefit);
+            membershipPlanRepository.save(membershipPlan);
         } catch (Exception e) {
             throw new RuntimeException("Error creating Benefit: " + e.getMessage(), e);
         }

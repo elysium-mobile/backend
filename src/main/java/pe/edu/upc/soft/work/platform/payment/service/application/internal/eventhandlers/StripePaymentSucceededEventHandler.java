@@ -75,7 +75,7 @@ public class StripePaymentSucceededEventHandler {
                 event.getStripePaymentIntentId(),
                 new Date(),
                 PaymentStatus.SUCCEEDED,
-            "card"
+            "CREDIT_CARD"
             );
         var payment = new Payment(createPaymentCommand);
         paymentRepository.save(payment);

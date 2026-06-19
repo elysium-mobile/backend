@@ -56,9 +56,12 @@ public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommand
         }
 
         var commentemployee = new CommentEmployee(command);
+        var performance = performanceRepository.findById(command.performanceId()).orElseThrow(()-> new RuntimeException("Performance with ID" + command.performanceId()+"does not exists"));
         eventPublisher.publishEvent(new CommentEmployeeAddedEvent(this, commentemployee.getId(),null));
         try {
             commentemployeeRepository.save(commentemployee);
+            performance.addCommentEmployee(commentemployee);
+            performanceRepository.save(performance);
         } catch (Exception e) {
             throw new RuntimeException("Error creating CommentEmployee: " + e.getMessage(), e);
         }

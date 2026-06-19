@@ -79,7 +79,7 @@ public class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
             return new PaymentGatewayResponse(
                     paymentIntent.getClientSecret(),
                     paymentIntent.getId(),
-                    "card"  // Default payment method; could be more dynamic
+                    "CREDIT_CARD"  // Default payment method; could be more dynamic
             );
 
         } catch (StripeException e) {

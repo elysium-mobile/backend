@@ -11,6 +11,8 @@ import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateU
 import pe.edu.upc.soft.work.platform.dashboard.test.fixtures.DashboardCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UnitOfWorkAssemblerTest {
@@ -48,6 +50,7 @@ class UnitOfWorkAssemblerTest {
         // Arrange
         var entity = new UnitOfWork(DashboardCommandFixtures.validCreateUnitOfWorkCommand());
         ReflectionTestUtils.setId(entity, 33L);
+        ReflectionTestUtils.setField(entity, "workTeamList", new ArrayList<>());
 
         // Act
         UnitOfWorkResponse response = UnitOfWorkAssembler.toResponseFromEntity(entity);

@@ -11,6 +11,8 @@ import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.Mess
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateMessageRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.test.fixtures.WorkerForumCommandFixtures;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MessageAssemblerTest {
@@ -60,6 +62,7 @@ class MessageAssemblerTest {
         // Arrange
         var entity = new Message(WorkerForumCommandFixtures.validCreateMessageCommand());
         ReflectionTestUtils.setId(entity, 61L);
+        ReflectionTestUtils.setField(entity, "assets", new ArrayList<>());
 
         // Act
         MessageResponse response = MessageAssembler.toResponseFromEntity(entity);

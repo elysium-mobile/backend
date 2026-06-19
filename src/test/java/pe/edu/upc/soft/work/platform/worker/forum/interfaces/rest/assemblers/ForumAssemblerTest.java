@@ -11,6 +11,8 @@ import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.Foru
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateForumRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.test.fixtures.WorkerForumCommandFixtures;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ForumAssemblerTest {
@@ -58,6 +60,7 @@ class ForumAssemblerTest {
         // Arrange
         var entity = new Forum(WorkerForumCommandFixtures.validCreateForumCommand());
         ReflectionTestUtils.setId(entity, 51L);
+        ReflectionTestUtils.setField(entity, "categories", new ArrayList<>());
 
         // Act
         ForumResponse response = ForumAssembler.toResponseFromEntity(entity);

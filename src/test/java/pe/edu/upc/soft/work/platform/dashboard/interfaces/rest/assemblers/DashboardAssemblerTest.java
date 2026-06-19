@@ -11,6 +11,8 @@ import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateD
 import pe.edu.upc.soft.work.platform.dashboard.test.fixtures.DashboardCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DashboardAssemblerTest {
@@ -55,6 +57,7 @@ class DashboardAssemblerTest {
         // Arrange
         var dashboard = new Dashboard(DashboardCommandFixtures.validCreateDashboardCommand());
         ReflectionTestUtils.setId(dashboard, 5L);
+        ReflectionTestUtils.setField(dashboard, "widgets", new ArrayList<>());
 
         // Act
         DashboardResponse response = DashboardAssembler.toResponseFromEntity(dashboard);

@@ -11,6 +11,8 @@ import pe.edu.upc.soft.work.platform.payment.service.interfaces.rest.resources.U
 import pe.edu.upc.soft.work.platform.payment.service.test.fixtures.PaymentCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MembershipPlanAssemblerTest {
@@ -57,6 +59,7 @@ class MembershipPlanAssemblerTest {
         // Arrange
         var entity = new MembershipPlan(PaymentCommandFixtures.validCreateMembershipPlanCommand());
         ReflectionTestUtils.setId(entity, 31L);
+        ReflectionTestUtils.setField(entity, "benefits", new ArrayList<>());
 
         // Act
         MembershipPlanResponse response = MembershipPlanAssembler.toResponseFromEntity(entity);

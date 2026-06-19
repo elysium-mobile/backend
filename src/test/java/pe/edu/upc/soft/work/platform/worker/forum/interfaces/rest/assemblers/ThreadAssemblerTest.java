@@ -11,6 +11,8 @@ import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.Thre
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateThreadRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.test.fixtures.WorkerForumCommandFixtures;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ThreadAssemblerTest {
@@ -67,6 +69,7 @@ class ThreadAssemblerTest {
         // Arrange
         var entity = new Thread(WorkerForumCommandFixtures.validCreateThreadCommand());
         ReflectionTestUtils.setId(entity, 71L);
+        ReflectionTestUtils.setField(entity, "messages", new ArrayList<>());
 
         // Act
         ThreadResponse response = ThreadAssembler.toResponseFromEntity(entity);

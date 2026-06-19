@@ -11,6 +11,8 @@ import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.Crea
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.UpdateCategoryRequest;
 import pe.edu.upc.soft.work.platform.worker.forum.test.fixtures.WorkerForumCommandFixtures;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CategoryAssemblerTest {
@@ -57,6 +59,7 @@ class CategoryAssemblerTest {
         // Arrange
         var entity = new Category(WorkerForumCommandFixtures.validCreateCategoryCommand());
         ReflectionTestUtils.setId(entity, 41L);
+        ReflectionTestUtils.setField(entity, "threads", new ArrayList<>());
 
         // Act
         CategoryResponse response = CategoryAssembler.toResponseFromEntity(entity);

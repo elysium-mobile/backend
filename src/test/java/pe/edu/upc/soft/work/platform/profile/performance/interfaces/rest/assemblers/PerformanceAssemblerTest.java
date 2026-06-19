@@ -11,6 +11,8 @@ import pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resourc
 import pe.edu.upc.soft.work.platform.profile.performance.test.fixtures.ProfilePerformanceCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class PerformanceAssemblerTest {
@@ -60,6 +62,7 @@ class PerformanceAssemblerTest {
         // Arrange
         var entity = new Performance(ProfilePerformanceCommandFixtures.validCreatePerformanceCommand());
         ReflectionTestUtils.setId(entity, 23L);
+        ReflectionTestUtils.setField(entity, "commentEmployeeList", new ArrayList<>());
 
         // Act
         PerformanceResponse response = PerformanceAssembler.toResponseFromEntity(entity);
@@ -67,7 +70,7 @@ class PerformanceAssemblerTest {
         // Assert
         assertThat(response.performanceId()).isEqualTo(23L);
         assertThat(response.employeeProfileId())
-                .isEqualTo(ProfilePerformanceCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
+            .isEqualTo(ProfilePerformanceCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
         assertThat(response.dateTime()).isEqualTo(ProfilePerformanceCommandFixtures.VALID_PERFORMANCE_DATE);
         assertThat(response.classification()).isEqualTo(ProfilePerformanceCommandFixtures.VALID_CLASSIFICATION);
     }

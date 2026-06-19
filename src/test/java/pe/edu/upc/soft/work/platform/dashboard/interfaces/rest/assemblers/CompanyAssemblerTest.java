@@ -11,6 +11,8 @@ import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateC
 import pe.edu.upc.soft.work.platform.dashboard.test.fixtures.DashboardCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class CompanyAssemblerTest {
@@ -62,6 +64,8 @@ class CompanyAssemblerTest {
         // Arrange
         var company = new Company(DashboardCommandFixtures.validCreateCompanyCommand());
         ReflectionTestUtils.setId(company, 12L);
+        ReflectionTestUtils.setField(company, "employees", new ArrayList<>());
+        ReflectionTestUtils.setField(company, "areaCompanyList", new ArrayList<>());
 
         // Act
         CompanyResponse response = CompanyAssembler.toResponseFromEntity(company);

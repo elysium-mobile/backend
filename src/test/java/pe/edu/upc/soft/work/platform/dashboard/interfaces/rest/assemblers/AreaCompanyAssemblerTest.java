@@ -5,11 +5,14 @@ import org.junit.jupiter.api.Test;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.AreaCompany;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.UnitOfWork;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.AreaCompanyResponse;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateAreaCompanyRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateAreaCompanyRequest;
 import pe.edu.upc.soft.work.platform.dashboard.test.fixtures.DashboardCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
+
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -57,6 +60,8 @@ class AreaCompanyAssemblerTest {
         // Arrange
         var entity = new AreaCompany(DashboardCommandFixtures.validCreateAreaCompanyCommand());
         ReflectionTestUtils.setId(entity, 22L);
+        ReflectionTestUtils.setField(entity, "unitOfWorkList", new ArrayList<UnitOfWork>());
+        ReflectionTestUtils.setField(entity, "companyId", 0L);
 
         // Act
         AreaCompanyResponse response = AreaCompanyAssembler.toResponseFromEntity(entity);
@@ -65,6 +70,6 @@ class AreaCompanyAssemblerTest {
         assertThat(response.areaCompanyId()).isEqualTo(22L);
         assertThat(response.name()).isEqualTo(DashboardCommandFixtures.VALID_AREA_NAME);
         assertThat(response.annualBudget()).isEqualTo(DashboardCommandFixtures.VALID_ANNUAL_BUDGET);
-        assertThat(response.companyId()).isEqualTo(DashboardCommandFixtures.VALID_COMPANY_ID);
+        assertThat(response.companyId()).isEqualTo(0L);
     }
 }

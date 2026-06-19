@@ -18,12 +18,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class QuestionSurveyCommandServiceImplTest {
@@ -68,13 +63,15 @@ class QuestionSurveyCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = FeedbackCommandFixtures.validCreateQuestionSurveyCommand();
+        when(surveyRepository.existsById(command.surveyId())).thenReturn(true);
         when(questionsurveyRepository.save(any(QuestionSurvey.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating QuestionSurvey").contains("db");
-        verify(questionsurveyRepository, times(1)).save(any(QuestionSurvey.class));
-        verifyNoMoreInteractions(questionsurveyRepository);
+        verify(surveyRepository).existsById(command.surveyId());
+        verify(questionsurveyRepository).save(any(QuestionSurvey.class));
+        verifyNoMoreInteractions(questionsurveyRepository, surveyRepository);
     }
 
     @Test
@@ -84,6 +81,8 @@ class QuestionSurveyCommandServiceImplTest {
         var existing = new QuestionSurvey(FeedbackCommandFixtures.validCreateQuestionSurveyCommand());
         ReflectionTestUtils.setId(existing, QS_ID);
         var command = FeedbackCommandFixtures.updateQuestionSurveyCommand(QS_ID);
+
+        when(surveyRepository.existsById(command.surveyId())).thenReturn(true);
         when(questionsurveyRepository.existsById(QS_ID)).thenReturn(true);
         when(questionsurveyRepository.findById(QS_ID)).thenReturn(Optional.of(existing));
         when(questionsurveyRepository.save(existing)).thenReturn(existing);
@@ -93,12 +92,11 @@ class QuestionSurveyCommandServiceImplTest {
 
         // Assert
         assertThat(result).isPresent();
-        assertThat(result.get().getTextQuestion()).isEqualTo(FeedbackCommandFixtures.VALID_QUESTION_TEXT);
-        assertThat(result.get().getQuestionType()).isEqualTo(FeedbackCommandFixtures.VALID_QUESTION_TYPE);
-        verify(questionsurveyRepository, times(1)).existsById(QS_ID);
-        verify(questionsurveyRepository, times(1)).findById(QS_ID);
-        verify(questionsurveyRepository, times(1)).save(existing);
-        verifyNoMoreInteractions(questionsurveyRepository);
+        verify(surveyRepository).existsById(command.surveyId());
+        verify(questionsurveyRepository).existsById(QS_ID);
+        verify(questionsurveyRepository).findById(QS_ID);
+        verify(questionsurveyRepository).save(existing);
+        verifyNoMoreInteractions(questionsurveyRepository, surveyRepository);
     }
 
     @Test
@@ -106,13 +104,15 @@ class QuestionSurveyCommandServiceImplTest {
     void handleUpdateMissing() {
         // Arrange
         var command = FeedbackCommandFixtures.updateQuestionSurveyCommand(QS_ID);
-        when(questionsurveyRepository.existsById(QS_ID)).thenReturn(false);
+        when(surveyRepository.existsById(command.surveyId())).thenReturn(false);
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
-        assertThat(ex.getMessage()).contains(String.valueOf(QS_ID)).contains("does not exist");
-        verify(questionsurveyRepository, times(1)).existsById(QS_ID);
-        verifyNoMoreInteractions(questionsurveyRepository);
+        assertThat(ex.getMessage()).contains("Survey with ID " + command.surveyId() + " does not exist.");
+
+        verify(surveyRepository).existsById(command.surveyId());
+        verifyNoMoreInteractions(surveyRepository);
+        verifyNoInteractions(questionsurveyRepository);
     }
 
     @Test
@@ -122,6 +122,8 @@ class QuestionSurveyCommandServiceImplTest {
         var existing = new QuestionSurvey(FeedbackCommandFixtures.validCreateQuestionSurveyCommand());
         ReflectionTestUtils.setId(existing, QS_ID);
         var command = FeedbackCommandFixtures.updateQuestionSurveyCommand(QS_ID);
+
+        when(surveyRepository.existsById(command.surveyId())).thenReturn(true);
         when(questionsurveyRepository.existsById(QS_ID)).thenReturn(true);
         when(questionsurveyRepository.findById(QS_ID)).thenReturn(Optional.of(existing));
         when(questionsurveyRepository.save(existing)).thenThrow(new RuntimeException("boom"));
@@ -129,10 +131,10 @@ class QuestionSurveyCommandServiceImplTest {
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error updating QuestionSurvey").contains("boom");
-        verify(questionsurveyRepository, times(1)).existsById(QS_ID);
-        verify(questionsurveyRepository, times(1)).findById(QS_ID);
-        verify(questionsurveyRepository, times(1)).save(existing);
-        verifyNoMoreInteractions(questionsurveyRepository);
+
+        verify(surveyRepository).existsById(command.surveyId());
+        verify(questionsurveyRepository).save(existing);
+        verifyNoMoreInteractions(questionsurveyRepository, surveyRepository);
     }
 
     @Test

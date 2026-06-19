@@ -23,8 +23,6 @@ services:
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       SPRING_PROFILES_ACTIVE: prod
-
-      # Variables añadidas para la firma de tokens JWT
       AUTHORIZATION_JWT_SECRET: "un_secreto_seguro_de_al_menos_256_bits_para_firmar_tokens_12345"
       AUTHORIZATION_JWT_EXPIRATION_DAYS: 7
     depends_on:

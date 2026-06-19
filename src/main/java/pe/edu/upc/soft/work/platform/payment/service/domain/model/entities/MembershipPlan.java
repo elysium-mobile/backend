@@ -71,4 +71,14 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
         }
         this.benefits.add(benefit);
     }
+
+    public void removeBenefit(Long benefitId) {
+        if (this.benefits == null) {
+            throw new IllegalArgumentException("Benefit with ID " + benefitId + " not found in this membership plan.");
+        }
+        boolean removed = this.benefits.removeIf(b -> b.getId().equals(benefitId));
+        if (!removed) {
+            throw new IllegalArgumentException("Benefit with ID " + benefitId + " not found in this membership plan.");
+        }
+    }
 }

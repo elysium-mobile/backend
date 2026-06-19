@@ -28,5 +28,9 @@ public interface UnitOfWorkCommandService {
      */
     void handle(DeleteUnitOfWorkCommand command);
 
+    /**
+     *  Handles the addition of a WorkTeam to a UnitOfWork.
+     * @param command   the command containing the details of the WorkTeam to be added and the UnitOfWork it belongs to
+     */
     void handle(AddWorkTeamToUnitOfWork command);
 }

@@ -84,6 +84,10 @@ public class UnitOfWorkCommandServiceImpl implements UnitOfWorkCommandService {
         }
     }
 
+    /**
+     *  Handles the addition of a WorkTeam to a UnitOfWork.
+     * @param command   the command containing the details of the WorkTeam to be added and the UnitOfWork it belongs to
+     */
     @Override
     public void handle(AddWorkTeamToUnitOfWork command) {
         var workTeam = workTeamRepository.findById(command.widgetId())

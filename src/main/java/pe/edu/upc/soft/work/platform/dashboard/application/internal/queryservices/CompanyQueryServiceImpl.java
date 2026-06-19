@@ -41,6 +41,11 @@ public class CompanyQueryServiceImpl implements CompanyQueryService {
         return companyRepository.findById(query.companyId());
     }
 
+    /**
+     *  Handles the GetCompaniesByNameQuery.
+     * @param query the query containing the name to search for
+     * @return  a list of companies whose names contain the specified name, ignoring case
+     */
     @Override
     public List<Company> handle(GetCompaniesByNameQuery query) {
         return companyRepository.findByNameContainingIgnoreCase(query.name());

@@ -26,21 +26,35 @@ import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateU
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ *  Controller for managing Units of Work in the system. Provides endpoints for creating, retrieving, updating, and deleting Units of Work.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/unit-of-work", produces = "application/json")
 @Tag(name = "Unit of Work", description = "Endpoints for managing Unit of Work")
 public class UnitOfWorkController {
 
+
     private final UnitOfWorkCommandService unitOfWorkCommandService;
     private final UnitOfWorkQueryService unitOfWorkQueryService;
 
+    /**
+     *  Constructor for UnitOfWorkController.
+     * @param unitOfWorkCommandService  Service for handling commands related to Unit of Work.
+     * @param unitOfWorkQueryService    Service for handling queries related to Unit of Work.
+     */
     public UnitOfWorkController(UnitOfWorkCommandService unitOfWorkCommandService,UnitOfWorkQueryService unitOfWorkQueryService){
         this.unitOfWorkCommandService = unitOfWorkCommandService;
         this.unitOfWorkQueryService = unitOfWorkQueryService;
     }
 
 
+    /**
+     *  Endpoint for creating a new Unit of Work. Accepts a CreateUnitOfWorkRequest and returns the created Unit of Work as a UnitOfWorkResponse.
+     * @param request   Request body containing the details of the Unit of Work to be created.
+     * @return  ResponseEntity containing the created Unit of Work or an appropriate error response.
+     */
     @Operation(summary = "Create a new Unit of Work", description = "Create a new Unit of Work in the system")
     @ApiResponses(
             value = {
@@ -67,6 +81,10 @@ public class UnitOfWorkController {
         return new ResponseEntity<>(unitOfWorkResponse, HttpStatus.CREATED);
     }
 
+    /**
+     *  Endpoint for retrieving all Units of Work in the system. Returns a list of UnitOfWorkResponse objects representing each Unit of Work.
+     * @return  ResponseEntity containing a list of all Units of Work or an appropriate error response.
+     */
     @Operation(summary = "Get all Units of Work", description = "Retrieve a list of all Units of Work in the system")
     @ApiResponses(
             value = {
@@ -84,6 +102,11 @@ public class UnitOfWorkController {
         return ResponseEntity.ok(unitOfWorkResponseList);
     }
 
+    /**
+     *  Endpoint for retrieving a specific Unit of Work by its ID. Returns a UnitOfWorkResponse representing the requested Unit of Work.
+     * @param id    ID of the Unit of Work to be retrieved.
+     * @return  ResponseEntity containing the requested Unit of Work or an appropriate error response if not found.
+     */
     @Operation(summary = "Get a Unit of Work by ID", description = "Retrieve a specific Unit of Work by its ID")
     @ApiResponses(
             value = {
@@ -104,6 +127,12 @@ public class UnitOfWorkController {
     }
 
 
+    /**
+     *  Endpoint for updating an existing Unit of Work. Accepts an UpdateUnitOfWorkRequest containing the updated details and returns the updated Unit of Work as a UnitOfWorkResponse.
+     * @param id    ID of the Unit of Work to be updated.
+     * @param request   Request body containing the updated details of the Unit of Work.
+     * @return  ResponseEntity containing the updated Unit of Work or an appropriate error response if the update fails or the Unit of Work is not found.
+     */
     @Operation(summary = "Update a Unit of Work", description = "Update an existing Unit of Work by its ID")
     @ApiResponses(
             value = {
@@ -124,6 +153,11 @@ public class UnitOfWorkController {
         return ResponseEntity.ok(unitResponse);
     }
 
+    /**
+     *  Endpoint for deleting an existing Unit of Work by its ID. Returns a 204 No Content response if the deletion is successful or a 404 Not Found response if the Unit of Work does not exist.
+     * @param id    ID of the Unit of Work to be deleted.
+     * @return  ResponseEntity indicating the result of the delete operation.
+     */
     @Operation(summary = "Delete a Unit of Work", description = "Delete an existing Unit of Work by its ID")
     @ApiResponses(
             value = {
@@ -138,6 +172,12 @@ public class UnitOfWorkController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     *  Endpoint for adding a WorkTeam to an existing Unit of Work. Accepts an AddWorkTeamToUnitOFWorkRequest containing the ID of the WorkTeam to be added and returns the updated Unit of Work as a UnitOfWorkResponse.
+     * @param uniOfWorkId   ID of the Unit of Work to which the WorkTeam will be added.
+     * @param request   Request body containing the ID of the WorkTeam to be added to the Unit of Work.
+     * @return  ResponseEntity containing the updated Unit of Work with the added WorkTeam or an appropriate error response if the operation fails, the Unit of Work is not found, or the WorkTeam is not found.
+     */
     @Operation(
             summary = "Add a WorkTeam to a Unit of Work",
             description = "Links an existing WorkTeam to the given Unit of Work.")
@@ -148,15 +188,15 @@ public class UnitOfWorkController {
             @ApiResponse(responseCode = "400", description = "WorkTeam already belongs to this unit or invalid data", content = @Content),
             @ApiResponse(responseCode = "404", description = "UnitOfWork or WorkTeam not found", content = @Content)
     })
-    @PostMapping("/{id}/work-teams")
+    @PostMapping("/{uniOfWorkId}/work-teams")
     public ResponseEntity<UnitOfWorkResponse> addWorkTeamToUnitOfWork(
-            @PathVariable Long id,
+            @PathVariable Long uniOfWorkId,
             @RequestBody AddWorkTeamToUnitOFWorkRequest request) {
 
-        var command = UnitOfWorkAssembler.toCommandFromRequest(id, request);
+        var command = UnitOfWorkAssembler.toCommandFromRequest(uniOfWorkId, request);
         this.unitOfWorkCommandService.handle(command);
 
-        var unitOfWork = this.unitOfWorkQueryService.handle(new GetUnitOfWorkByIdQuery(id));
+        var unitOfWork = this.unitOfWorkQueryService.handle(new GetUnitOfWorkByIdQuery(uniOfWorkId));
         if (unitOfWork.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

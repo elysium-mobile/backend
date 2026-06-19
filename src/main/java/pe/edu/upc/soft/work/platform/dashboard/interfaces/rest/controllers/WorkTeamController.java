@@ -22,6 +22,9 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ *  Controller for managing Work Teams in the system. Provides endpoints for creating, retrieving, updating, and deleting Work Teams.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/work-teams", produces = "application/json")
@@ -31,11 +34,21 @@ public class WorkTeamController {
     private final WorkTeamCommandService workTeamCommandService;
     private final WorkTeamQueryService workTeamQueryService;
 
+    /**
+     *  Constructor for WorkTeamController, initializes the command and query services.
+     * @param workTeamCommandService    Service for handling Work Team commands (create, update, delete)
+     * @param workTeamQueryService  Service for handling Work Team queries (retrieve)
+     */
     public WorkTeamController(WorkTeamCommandService workTeamCommandService, WorkTeamQueryService workTeamQueryService){
         this.workTeamCommandService = workTeamCommandService;
         this.workTeamQueryService = workTeamQueryService;
     }
 
+    /**
+     *  Endpoint for creating a new Work Team. Accepts a CreateWorkTeamRequest and returns the created WorkTeamResponse.
+     * @param request   Request body containing the details of the Work Team to be created
+     * @return  ResponseEntity containing the created WorkTeamResponse and appropriate HTTP status code
+     */
     @Operation(summary = "Create a new Work Team", description = "Create a new Work Team in the system")
     @ApiResponses(
             value = {
@@ -64,6 +77,10 @@ public class WorkTeamController {
         return new ResponseEntity<>(workTeamResponse, HttpStatus.CREATED);
     }
 
+    /**
+     *  Endpoint for retrieving all Work Teams in the system. Returns a list of WorkTeamResponse objects.
+     * @return  ResponseEntity containing a list of WorkTeamResponse objects and appropriate HTTP status code
+     */
     @Operation(summary = "Get All WorkTeams", description = "Retrieve a lis of all Work Team in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "WorkTeam retrieved successfully"),
@@ -81,6 +98,11 @@ public class WorkTeamController {
         return ResponseEntity.ok(workTeamResponse);
     }
 
+    /**
+     *  Endpoint for retrieving a Work Team by its ID. Accepts a path variable for the Work Team ID and returns the corresponding WorkTeamResponse.
+     * @param id    Path variable representing the ID of the Work Team to be retrieved
+     * @return  ResponseEntity containing the WorkTeamResponse for the specified ID and appropriate HTTP status code
+     */
     @Operation(summary = "Get WorkTeam by ID", description = "Retrieve a WorkTeam by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "WorkTeam retrieved successfully"),
@@ -100,6 +122,12 @@ public class WorkTeamController {
     }
 
 
+    /**
+     *  Endpoint for updating an existing Work Team. Accepts a path variable for the Work Team ID and an UpdateWorkTeamRequest containing the updated details. Returns the updated WorkTeamResponse.
+     * @param id    Path variable representing the ID of the Work Team to be updated
+     * @param request   Request body containing the updated details of the Work Team
+     * @return  ResponseEntity containing the updated WorkTeamResponse and appropriate HTTP status code
+     */
     @Operation(summary = "Update a WorkTeam", description = "Update an existing WorkTeam in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "WorkTeam updated successfully"),
@@ -117,6 +145,9 @@ public class WorkTeamController {
         return ResponseEntity.ok(workTeamResponse);
     }
 
+    /**
+     *  Endpoint for deleting a Work Team by its ID. Accepts a path variable for the Work Team ID and deletes the corresponding Work Team. Returns a 204 No Content status if the deletion is successful.
+     */
     @Operation(summary = "Delete a WorkTeam", description = "Delete an existing WorkTeam by its ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "WorkTeam deleted successfully"),

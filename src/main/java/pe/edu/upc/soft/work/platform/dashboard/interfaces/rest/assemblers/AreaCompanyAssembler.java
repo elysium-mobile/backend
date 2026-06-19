@@ -27,7 +27,12 @@ public class AreaCompanyAssembler {
         return new UpdateAreaCompanyCommand(areaCompanyId, request.name(),request.annualBudget(), request.companyId());
     }
 
-
+    /**
+     *  Converts an AddUnitOfWorkToAreaCompanyRequest to an AddUnitOfWorkToAreaCompanyCommand.
+     * @param areaCompanyId the ID of the AreaCompany to which the UnitOfWork will be added
+     * @param request the request containing the ID of the UnitOfWork to be added to the AreaCompany
+     * @return  an AddUnitOfWorkToAreaCompanyCommand containing the necessary information to add a UnitOfWork to an AreaCompany
+     */
     public static AddUnitOfWorkToAreaCompanyCommand toCommandFromRequest(Long areaCompanyId, AddUnitOfWorkToAreaCompanyRequest request) {
         return new AddUnitOfWorkToAreaCompanyCommand(request.unitOfWorkId(), areaCompanyId);
     }

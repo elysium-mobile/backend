@@ -110,7 +110,12 @@ public class UserController {
     }
 
 
-    @Operation(summary = "Update user information", description = "Update the information of an existing user")
+    @Operation(summary = "Update user information", description = "Update the information of an existing user",
+    requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
+        description = "User data for update", required = true,
+        content = @Content(
+            mediaType = MediaType.APPLICATION_JSON_VALUE,
+            schema = @Schema(implementation = UpdateUserRequest.class))))
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "User updated successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,

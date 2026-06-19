@@ -19,8 +19,8 @@ public class AssetAssembler {
     /**
      * Converts an UpdateAssetRequest to an UpdateAssetCommand.
      */
-    public static UpdateAssetCommand toCommandFromRequest(Long attachmentId, UpdateAssetRequest request) {
-        return new UpdateAssetCommand(attachmentId, request.messageId(), request.name(), request.url(), request.fileSize());
+    public static UpdateAssetCommand toCommandFromRequest(Long assetId, UpdateAssetRequest request) {
+        return new UpdateAssetCommand(assetId, request.messageId(), request.name(), request.url(), request.fileSize());
     }
 
     /**

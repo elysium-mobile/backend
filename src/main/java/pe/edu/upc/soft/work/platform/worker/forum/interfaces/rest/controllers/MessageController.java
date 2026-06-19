@@ -137,20 +137,20 @@ public class MessageController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Add Attachment to Message", description = "Add an attachment to an existing Message")
+    @Operation(summary = "Add Asset to Message", description = "Add an Asset to an existing Message")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Attachment added successfully",
+            @ApiResponse(responseCode = "200", description = "Asset added successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = MessageResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Message not found", content = @Content)
     })
-    @PostMapping("/{id}/attachments")
-    public ResponseEntity<MessageResponse> addAttachmentToMessage(@PathVariable Long id, @RequestBody AddAssetToMessageRequest request){
-        var command = MessageAssembler.toCommandFromRequest(id, request);
+    @PostMapping("/{messageId}/assets")
+    public ResponseEntity<MessageResponse> addAssetToMessage(@PathVariable Long messageId, @RequestBody AddAssetToMessageRequest request){
+        var command = MessageAssembler.toCommandFromRequest(messageId, request);
         this.messageCommandService.handle(command);
 
-        var message = this.messageQueryService.handle(new GetMessageByIdQuery(id));
+        var message = this.messageQueryService.handle(new GetMessageByIdQuery(messageId));
         if (message.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

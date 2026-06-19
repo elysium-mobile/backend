@@ -143,12 +143,12 @@ public class PerformanceController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Performance or CommentEmployee not found", content = @Content)
     })
-    @PostMapping("/{id}/comment-employee")
-    public ResponseEntity<PerformanceResponse> addCommentEmployeeToPerformance(@PathVariable Long id, @RequestBody AddCommentEmployeeToPerformanceRequest request){
-        var command = PerformanceAssembler.toCommandFromRequest(id, request);
+    @PostMapping("/{performanceId}/comment-employee")
+    public ResponseEntity<PerformanceResponse> addCommentEmployeeToPerformance(@PathVariable Long performanceId, @RequestBody AddCommentEmployeeToPerformanceRequest request){
+        var command = PerformanceAssembler.toCommandFromRequest(performanceId, request);
         this.performanceCommandService.handle(command);
 
-        var performance = this.performanceQueryService.handle(new GetPerformanceByIdQuery(id));
+        var performance = this.performanceQueryService.handle(new GetPerformanceByIdQuery(performanceId));
         if (performance.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

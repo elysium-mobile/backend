@@ -74,4 +74,14 @@ public class Forum extends AuditableAbstractAggregateRoot<Forum> {
             this.categories.add(category);
         }
     }
+
+    public void removeCategory(Long categoryId) {
+        if (this.categories == null) {
+            throw new IllegalArgumentException("Category with ID " + categoryId + " not found in this forum.");
+        }
+        boolean removed = this.categories.removeIf(c -> c.getId().equals(categoryId));
+        if (!removed) {
+            throw new IllegalArgumentException("Category with ID " + categoryId + " not found in this forum.");
+        }
+    }
 }

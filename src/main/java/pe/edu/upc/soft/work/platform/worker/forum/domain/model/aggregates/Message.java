@@ -76,6 +76,16 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
         }
     }
 
+    public void removeAttachment(Long assetId) {
+        if (this.assets == null) {
+            throw new IllegalArgumentException("Asset with ID " + assetId + " not found in this message.");
+        }
+        boolean removed = this.assets.removeIf(a -> a.getId().equals(assetId));
+        if (!removed) {
+            throw new IllegalArgumentException("Asset with ID " + assetId + " not found in this message.");
+        }
+    }
+
     public boolean hasViewableAssets() {
         return assets.stream().anyMatch(Asset::isViewable);
     }

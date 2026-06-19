@@ -18,10 +18,8 @@ public class Notification extends AuditableAbstractAggregateRoot<Notification> {
     private boolean seen;
 
     @Getter
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "notificationType", column = @Column(name = "notification_type", nullable = false))
-    })
+    @Enumerated(EnumType.STRING)
+    @Column(name = "notification_type", nullable = false)
     private NotificationType notificationType;
 
     @Getter

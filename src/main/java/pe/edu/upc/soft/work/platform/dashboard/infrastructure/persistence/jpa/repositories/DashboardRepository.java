@@ -11,5 +11,10 @@ import java.util.List;
  */
 @Repository
 public interface DashboardRepository extends JpaRepository<Dashboard, Long> {
+    /**
+     *  Find dashboards by company ID.
+     * @param companyId The ID of the company to find dashboards for.
+     * @return  A list of dashboards associated with the specified company ID.
+     */
     List<Dashboard> findByCompanyId(Long companyId);
 }

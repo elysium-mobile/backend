@@ -145,12 +145,12 @@ public class ThreadController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Thread not found", content = @Content)
     })
-    @PostMapping("/{id}/messages")
-    public ResponseEntity<ThreadResponse> addMessageToThread(@PathVariable Long id, @RequestBody AddMessageToThreadRequest request){
-        var command = ThreadAssembler.toCommandFromRequest(id,request);
+    @PostMapping("/{threadId}/messages")
+    public ResponseEntity<ThreadResponse> addMessageToThread(@PathVariable Long threadId, @RequestBody AddMessageToThreadRequest request){
+        var command = ThreadAssembler.toCommandFromRequest(threadId,request);
         this.threadCommandService.handle(command);
 
-        var thread = this.threadQueryService.handle(new GetThreadByIdQuery(id));
+        var thread = this.threadQueryService.handle(new GetThreadByIdQuery(threadId));
         if(thread.isEmpty()){
             return ResponseEntity.notFound().build();
         }

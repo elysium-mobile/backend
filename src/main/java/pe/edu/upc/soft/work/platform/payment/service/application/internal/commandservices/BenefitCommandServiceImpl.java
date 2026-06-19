@@ -79,11 +79,14 @@ public class BenefitCommandServiceImpl implements BenefitCommandService {
      */
     @Override
     public void handle(DeleteBenefitCommand command) {
-        if (!benefitRepository.existsById(command.benefitId())) {
-            throw new RuntimeException("Benefit with ID " + command.benefitId() + " does not exist.");
-        }
+        var benefit = benefitRepository.findById(command.benefitId())
+            .orElseThrow(() -> new RuntimeException("Benefit with ID " + command.benefitId() + " does not exist."));
+        var membershipPlan = membershipPlanRepository.findById(benefit.getMembershipPlanId())
+            .orElseThrow(() -> new RuntimeException(
+                "[BenefitCommandServiceImpl] MembershipPlan with ID " + benefit.getMembershipPlanId() + " not found for Benefit " + command.benefitId()));
         try {
-            benefitRepository.deleteById(command.benefitId());
+            membershipPlan.removeBenefit(command.benefitId());
+            membershipPlanRepository.save(membershipPlan);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Benefit: " + e.getMessage(), e);
         }

@@ -7,12 +7,12 @@ import java.util.Objects;
 /**
  * Command to update an existing Attachment
  */
-public record UpdateAssetCommand(Long attachmentId, Long messageId, String name, String url, String fileSize) {
+public record UpdateAssetCommand(Long assetId, Long messageId, String name, String url, String fileSize) {
 
     /**
      * Constructor with validation
      */
     public UpdateAssetCommand {
-        Objects.requireNonNull(attachmentId, "[UpdateAttachmentCommand] attachmentId must not be null");
+        Objects.requireNonNull(assetId, "[UpdateAttachmentCommand] assetId must not be null");
     }
 }

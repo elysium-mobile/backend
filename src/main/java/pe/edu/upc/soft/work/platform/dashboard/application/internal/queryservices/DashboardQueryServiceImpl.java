@@ -41,6 +41,11 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         return dashboardRepository.findById(query.dashboardId());
     }
 
+    /**
+     *  Handles the GetDashboardByCompanyIdQuery.
+     * @param query the query containing the Company ID to search for
+     * @return  a list of dashboards associated with the specified Company ID
+     */
     @Override
     public List<Dashboard> handle(GetDashboardByCompanyIdQuery query) {
         return this.dashboardRepository.findByCompanyId(query.companyId());

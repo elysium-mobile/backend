@@ -85,11 +85,14 @@ public class CategoryCommandServiceImpl implements CategoryCommandService {
      */
     @Override
     public void handle(DeleteCategoryCommand command) {
-        if (!categoryRepository.existsById(command.categoryId())) {
-            throw new RuntimeException("Category with ID " + command.categoryId() + " does not exist.");
-        }
+        var category = categoryRepository.findById(command.categoryId())
+            .orElseThrow(() -> new RuntimeException("Category with ID " + command.categoryId() + " does not exist."));
+        var forum = forumRepository.findById(category.getForumId())
+            .orElseThrow(() -> new RuntimeException(
+                "[CategoryCommandServiceImpl] Forum with ID " + category.getForumId() + " not found for Category " + command.categoryId()));
         try {
-            categoryRepository.deleteById(command.categoryId());
+            forum.removeCategory(command.categoryId());
+            forumRepository.save(forum);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Category: " + e.getMessage(), e);
         }

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalIamServiceFromWorkerForum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
-import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddAttachmentsToMessageCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddAssetToMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteMessageCommand;
@@ -65,9 +65,14 @@ public class MessageCommandServiceImpl implements MessageCommandService {
             );
         }
         var message = new Message(command);
+        var thread = threadRepository.findById(command.threadId()).get();
         eventPublisher.publishEvent(new MessagePostedEvent(this, message.getId(), null, message.getUserAccountId()));
         try {
+            thread.addMessage(message);
+            thread.incrementMessageCount();
             messageRepository.save(message);
+            threadRepository.save(thread);
+
         } catch (Exception e) {
             throw new RuntimeException("Error creating Message: " + e.getMessage(), e);
         }
@@ -114,18 +119,22 @@ public class MessageCommandServiceImpl implements MessageCommandService {
      */
     @Override
     public void handle(DeleteMessageCommand command) {
-        if (!messageRepository.existsById(command.messageId())) {
-            throw new RuntimeException("Message with ID " + command.messageId() + " does not exist.");
-        }
+        var message = messageRepository.findById(command.messageId())
+            .orElseThrow(() -> new RuntimeException("Message with ID " + command.messageId() + " does not exist."));
+        var thread = threadRepository.findById(message.getThreadId())
+            .orElseThrow(() -> new RuntimeException(
+                "[MessageCommandServiceImpl] Thread with ID " + message.getThreadId() + " not found for Message " + command.messageId()));
         try {
-            messageRepository.deleteById(command.messageId());
+            thread.removeMessage(command.messageId());
+            thread.decrementMessageCount();
+            threadRepository.save(thread);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Message: " + e.getMessage(), e);
         }
     }
 
     @Override
-    public void handle(AddAttachmentsToMessageCommand command) {
+    public void handle(AddAssetToMessageCommand command) {
         var attachment = assetRepository.findById(command.attachmentId()).orElseThrow(() -> new NotFoundArgumentException(
                 String.format("[MessageCommandServiceImpl] Attachment ID: %s not found in the database",
                         command.attachmentId())));

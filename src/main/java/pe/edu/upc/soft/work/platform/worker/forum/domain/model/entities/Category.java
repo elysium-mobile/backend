@@ -69,4 +69,13 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
             this.threads.add(thread);
         }
     }
+    public void removeThread(Long threadId) {
+        if (this.threads == null) {
+            throw new IllegalArgumentException("Thread with ID " + threadId + " not found in this category.");
+        }
+        boolean removed = this.threads.removeIf(t -> t.getId().equals(threadId));
+        if (!removed) {
+            throw new IllegalArgumentException("Thread with ID " + threadId + " not found in this category.");
+        }
+    }
 }

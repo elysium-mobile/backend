@@ -98,6 +98,11 @@ public class DashboardCommandServiceImpl implements DashboardCommandService {
         }
     }
 
+    /**
+     * Handles the addition of a Widget to a Dashboard.
+     *
+     * @param command the command to add a Widget to a Dashboard
+     */
     @Override
     public void handle(AddWidgetToDashboardCommand command) {
         var widget = widgetRepository.findById(command.widgetId())

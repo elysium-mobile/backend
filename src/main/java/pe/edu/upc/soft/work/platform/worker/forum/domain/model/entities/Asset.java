@@ -11,7 +11,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.File
  * Attachment aggregate root entity.
  */
 @Entity
-@Table(name = "attachments")
+@Table(name = "assets")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "file_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Asset extends AuditableAbstractAggregateRoot<Asset> {

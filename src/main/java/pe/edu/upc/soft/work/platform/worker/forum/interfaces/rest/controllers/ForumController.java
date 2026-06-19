@@ -144,11 +144,11 @@ public class ForumController {
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Forum or Category not found", content = @Content)
     })
-    @PostMapping("/{id}/categories")
-    public ResponseEntity<ForumResponse> addCategoryToForum(@PathVariable Long id, @RequestBody AddCategoryToForumRequest request){
-        var command = ForumAssembler.toCommandFromRequest(id, request);
+    @PostMapping("/{forumId}/categories")
+    public ResponseEntity<ForumResponse> addCategoryToForum(@PathVariable Long forumId, @RequestBody AddCategoryToForumRequest request){
+        var command = ForumAssembler.toCommandFromRequest(forumId, request);
         this.forumCommandService.handle(command);
-        var forum = this.forumQueryService.handle(new GetForumByIdQuery(id));
+        var forum = this.forumQueryService.handle(new GetForumByIdQuery(forumId));
         if (forum.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

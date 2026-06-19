@@ -4,6 +4,12 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.WorkTeam;
 
 import java.util.List;
 
+/**
+ * Response DTO for UnitOfWork resource.
+ * @param unitOfWorkId  the unique identifier of the UnitOfWork
+ * @param name  the name of the UnitOfWork
+ * @param workTeamList  the list of WorkTeams associated with this UnitOfWork
+ */
 public record UnitOfWorkResponse(
         Long unitOfWorkId,
         String name,

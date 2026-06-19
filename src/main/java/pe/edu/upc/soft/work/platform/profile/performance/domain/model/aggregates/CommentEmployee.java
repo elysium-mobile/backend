@@ -12,7 +12,7 @@ import pe.edu.upc.soft.work.platform.profile.performance.domain.model.valueobjec
  * CommentEmployee aggregate root entity.
  */
 @Entity
-@Table(name = "comment_employees")
+@Table(name = "comments_employee")
 public class CommentEmployee extends AuditableAbstractAggregateRoot<CommentEmployee> {
 
     @Getter

@@ -60,4 +60,18 @@ public class UnitOfWork extends AuditableAbstractAggregateRoot<UnitOfWork> {
         }
         this.workTeamList.add(workTeam);
     }
+
+    /**
+     *  Removes a WorkTeam from the UnitOfWork's list of WorkTeams by ID.
+     * @param workTeamId the ID of the WorkTeam to remove
+     */
+    public void removeWorkTeam(Long workTeamId) {
+        if (this.workTeamList == null) {
+            throw new IllegalArgumentException("WorkTeam with ID " + workTeamId + " not found in this unit of work.");
+        }
+        boolean removed = this.workTeamList.removeIf(w -> w.getId().equals(workTeamId));
+        if (!removed) {
+            throw new IllegalArgumentException("WorkTeam with ID " + workTeamId + " not found in this unit of work.");
+        }
+    }
 }

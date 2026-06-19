@@ -28,5 +28,9 @@ public interface DashboardCommandService {
      */
     void handle(DeleteDashboardCommand command);
 
+    /**
+     *  Handles the addition of a Widget to a Dashboard.
+     * @param command the command containing the details of the Widget to be added and the Dashboard it belongs to
+     */
     void handle(AddWidgetToDashboardCommand command);
 }

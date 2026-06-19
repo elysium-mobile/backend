@@ -85,11 +85,14 @@ public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
      */
     @Override
     public void handle(DeleteWorkTeamCommand command) {
-        if (!workteamRepository.existsById(command.workteamId())) {
-            throw new RuntimeException("WorkTeam with ID " + command.workteamId() + " does not exist.");
-        }
+        var workTeam = workteamRepository.findById(command.workteamId())
+            .orElseThrow(() -> new RuntimeException("WorkTeam with ID " + command.workteamId() + " does not exist."));
+        var unitOfWork = unitOfWorkRepository.findById(workTeam.getUnitOfWorkId())
+            .orElseThrow(() -> new RuntimeException(
+                "[WorkTeamCommandServiceImpl] UnitOfWork with ID " + workTeam.getUnitOfWorkId() + " not found for WorkTeam " + command.workteamId()));
         try {
-            workteamRepository.deleteById(command.workteamId());
+            unitOfWork.removeWorkTeam(command.workteamId());
+            unitOfWorkRepository.save(unitOfWork);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting WorkTeam: " + e.getMessage(), e);
         }

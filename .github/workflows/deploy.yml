@@ -20,7 +20,7 @@ jobs:
           source: ".,!target,!.git"
           target: "/home/ubuntu/app"
 
-      # 2. Remote Deployment
+      # 2. Deploy with cleanup
       - name: Deploy via SSH
         uses: appleboy/ssh-action@master
         with:
@@ -29,7 +29,29 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/ubuntu/app
+            
+            echo "🔄 Updating API_HOST..."
             ./update-api-host.sh
+            
+            echo "🛑 Stopping old containers..."
+            docker compose down --remove-orphans
+            
+            echo "🔨 Building new image..."
             docker compose build
-            docker compose up -d --force-recreate
+            
+            echo "🚀 Starting new containers..."
+            docker compose up -d
+            
+            echo "🧹 Cleaning up old images..."
+            docker image prune -f
+            
+            echo "🧹 Cleaning up stopped containers..."
+            docker container prune -f
+            
+            echo "✅ Verifying deployment..."
             docker compose ps
+            
+            echo "💾 Disk usage:"
+            docker system df
+            
+            echo "✅ Deploy completed successfully!"

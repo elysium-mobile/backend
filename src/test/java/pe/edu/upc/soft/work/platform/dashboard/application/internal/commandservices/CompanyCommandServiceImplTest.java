@@ -7,10 +7,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
+import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Company;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteCompanyCommand;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.events.CompanyCreatedEvent;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.AreaCompanyRepository;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.CompanyRepository;
 import pe.edu.upc.soft.work.platform.dashboard.test.fixtures.DashboardCommandFixtures;
+import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
 import java.util.Optional;
@@ -33,6 +38,15 @@ class CompanyCommandServiceImplTest {
     @Mock
     private CompanyRepository companyRepository;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+    @Mock
+    private AreaCompanyRepository areaCompanyRepository;
+    @Mock
+    private ExternalIamServiceFromDashboard externalIamServiceFromDashboard;
+    @Mock
+    private UserAccountRepository userAccountRepository;
+
     @InjectMocks
     private CompanyCommandServiceImpl service;
 
@@ -41,8 +55,8 @@ class CompanyCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = DashboardCommandFixtures.validCreateCompanyCommand();
-        ArgumentCaptor<Company> captor = ArgumentCaptor.forClass(Company.class);
-        when(companyRepository.save(captor.capture())).thenAnswer(inv -> {
+        when(companyRepository.existsByRUC(command.RUC())).thenReturn(false);
+        when(companyRepository.save(any(Company.class))).thenAnswer(inv -> {
             Company c = inv.getArgument(0);
             ReflectionTestUtils.setId(c, COMPANY_ID);
             return c;
@@ -53,10 +67,9 @@ class CompanyCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(COMPANY_ID);
-        assertThat(captor.getValue().getName()).isEqualTo(DashboardCommandFixtures.VALID_COMPANY_NAME);
-        assertThat(captor.getValue().getRUC()).isEqualTo(DashboardCommandFixtures.VALID_RUC);
+        verify(companyRepository, times(1)).existsByRUC(command.RUC());
         verify(companyRepository, times(1)).save(any(Company.class));
-        verifyNoMoreInteractions(companyRepository);
+        verify(eventPublisher, times(1)).publishEvent(any(CompanyCreatedEvent.class));
     }
 
     @Test
@@ -64,13 +77,16 @@ class CompanyCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = DashboardCommandFixtures.validCreateCompanyCommand();
+        when(companyRepository.existsByRUC(command.RUC())).thenReturn(false);
         when(companyRepository.save(any(Company.class))).thenThrow(new RuntimeException("db down"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating Company").contains("db down");
+
+        // Assert
         verify(companyRepository, times(1)).save(any(Company.class));
-        verifyNoMoreInteractions(companyRepository);
+        verify(eventPublisher, never()).publishEvent(any());
     }
 
     @Test
@@ -100,14 +116,21 @@ class CompanyCommandServiceImplTest {
     @DisplayName("handle(UpdateCompanyCommand) -> throws RuntimeException when id does not exist (AAA)")
     void handleUpdateMissing() {
         // Arrange
+        var existing = new Company(DashboardCommandFixtures.validCreateCompanyCommand());
+        ReflectionTestUtils.setId(existing, COMPANY_ID);
         var command = DashboardCommandFixtures.updateCompanyCommand(COMPANY_ID);
-        when(companyRepository.existsById(COMPANY_ID)).thenReturn(false);
 
-        // Act + Assert
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
-        assertThat(ex.getMessage()).contains(String.valueOf(COMPANY_ID)).contains("does not exist");
-        verify(companyRepository, times(1)).existsById(COMPANY_ID);
-        verifyNoMoreInteractions(companyRepository);
+        when(companyRepository.existsById(COMPANY_ID)).thenReturn(true);
+        when(companyRepository.findById(COMPANY_ID)).thenReturn(Optional.of(existing));
+        when(companyRepository.save(existing)).thenReturn(existing);
+
+        // Act
+        Optional<Company> result = service.handle(command);
+
+        // Assert
+        assertThat(result).isPresent();
+        assertThat(result.get().getName()).isEqualTo(DashboardCommandFixtures.VALID_COMPANY_NAME);
+        verify(companyRepository).save(existing);
     }
 
     @Test

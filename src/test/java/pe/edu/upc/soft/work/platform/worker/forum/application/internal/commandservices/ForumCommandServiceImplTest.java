@@ -6,11 +6,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalDashboardServiceFromWorkerForum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Forum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteForumCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.events.ForumCreatedEvent;
+import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.CategoryRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ForumRepository;
 import pe.edu.upc.soft.work.platform.worker.forum.test.fixtures.WorkerForumCommandFixtures;
 
@@ -37,6 +40,11 @@ class ForumCommandServiceImplTest {
     @Mock
     private ExternalDashboardServiceFromWorkerForum externalDashboardServiceFromWorkerForum;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+    @Mock
+    private CategoryRepository categoryRepository;
+
     @InjectMocks
     private ForumCommandServiceImpl service;
 
@@ -45,8 +53,7 @@ class ForumCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = WorkerForumCommandFixtures.validCreateForumCommand();
-        when(externalDashboardServiceFromWorkerForum.existsCompanyById(WorkerForumCommandFixtures.VALID_COMPANY_ID))
-                .thenReturn(true);
+        when(externalDashboardServiceFromWorkerForum.existsCompanyById(any())).thenReturn(true);
         when(forumRepository.save(any(Forum.class))).thenAnswer(inv -> {
             Forum f = inv.getArgument(0);
             ReflectionTestUtils.setId(f, FORUM_ID);
@@ -58,10 +65,9 @@ class ForumCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(FORUM_ID);
-        verify(externalDashboardServiceFromWorkerForum, times(1))
-                .existsCompanyById(WorkerForumCommandFixtures.VALID_COMPANY_ID);
-        verify(forumRepository, times(1)).save(any(Forum.class));
-        verifyNoMoreInteractions(externalDashboardServiceFromWorkerForum, forumRepository);
+        verify(eventPublisher).publishEvent(any(ForumCreatedEvent.class));
+        verify(forumRepository).save(any(Forum.class));
+        verifyNoMoreInteractions(externalDashboardServiceFromWorkerForum, forumRepository, eventPublisher);
     }
 
     @Test
@@ -87,16 +93,17 @@ class ForumCommandServiceImplTest {
         // Arrange
         var command = WorkerForumCommandFixtures.validCreateForumCommand();
         when(externalDashboardServiceFromWorkerForum.existsCompanyById(WorkerForumCommandFixtures.VALID_COMPANY_ID))
-                .thenReturn(true);
+            .thenReturn(true);
         when(forumRepository.save(any(Forum.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating Forum").contains("db");
         verify(externalDashboardServiceFromWorkerForum, times(1))
-                .existsCompanyById(WorkerForumCommandFixtures.VALID_COMPANY_ID);
+            .existsCompanyById(WorkerForumCommandFixtures.VALID_COMPANY_ID);
+        verify(eventPublisher, times(1)).publishEvent(any(ForumCreatedEvent.class));
         verify(forumRepository, times(1)).save(any(Forum.class));
-        verifyNoMoreInteractions(externalDashboardServiceFromWorkerForum, forumRepository);
+        verifyNoMoreInteractions(externalDashboardServiceFromWorkerForum, forumRepository, eventPublisher);
     }
 
     @Test

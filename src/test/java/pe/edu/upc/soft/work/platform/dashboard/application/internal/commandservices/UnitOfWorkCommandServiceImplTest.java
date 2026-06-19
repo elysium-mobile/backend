@@ -6,9 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddWorkTeamToUnitOfWork;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.UnitOfWork;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.WorkTeam;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.UnitOfWorkRepository;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.WorkTeamRepository;
 import pe.edu.upc.soft.work.platform.dashboard.test.fixtures.DashboardCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
@@ -17,6 +20,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -31,6 +35,10 @@ class UnitOfWorkCommandServiceImplTest {
 
     @Mock
     private UnitOfWorkRepository unitofworkRepository;
+
+    @Mock
+    private WorkTeamRepository workTeamRepository;
+
 
     @InjectMocks
     private UnitOfWorkCommandServiceImpl service;
@@ -171,5 +179,24 @@ class UnitOfWorkCommandServiceImplTest {
         verify(unitofworkRepository, times(1)).existsById(UOW_ID);
         verify(unitofworkRepository, times(1)).deleteById(UOW_ID);
         verifyNoMoreInteractions(unitofworkRepository);
+    }
+
+    @Test
+    @DisplayName("handle(AddWorkTeamToUnitOfWork) -> adds work team to unit of work successfully (AAA)")
+    void handleAddWorkTeamSuccess() {
+        // Arrange
+        var command = new AddWorkTeamToUnitOfWork(UOW_ID, 1L);
+        var unitOfWork = new UnitOfWork();
+        var workTeam = new WorkTeam();
+
+        when(workTeamRepository.findById(anyLong())).thenReturn(Optional.of(workTeam));
+        when(unitofworkRepository.findById(anyLong())).thenReturn(Optional.of(unitOfWork));
+
+        // Act
+        service.handle(command);
+
+        // Assert
+        verify(unitofworkRepository, times(1)).save(any(UnitOfWork.class));
+        verify(workTeamRepository, times(1)).findById(anyLong());
     }
 }

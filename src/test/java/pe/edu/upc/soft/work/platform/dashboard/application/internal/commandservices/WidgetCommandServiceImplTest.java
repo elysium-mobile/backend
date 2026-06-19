@@ -6,8 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Dashboard;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteWidgetCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.Widget;
+import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.DashboardRepository;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.WidgetRepository;
 import pe.edu.upc.soft.work.platform.dashboard.test.fixtures.DashboardCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
@@ -17,6 +19,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -32,6 +35,10 @@ class WidgetCommandServiceImplTest {
     @Mock
     private WidgetRepository widgetRepository;
 
+    @Mock
+    private DashboardRepository dashboardRepository;
+
+
     @InjectMocks
     private WidgetCommandServiceImpl service;
 
@@ -40,6 +47,7 @@ class WidgetCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = DashboardCommandFixtures.validCreateWidgetCommand();
+        when(dashboardRepository.existsById(command.dashboardId())).thenReturn(true);
         when(widgetRepository.save(any(Widget.class))).thenAnswer(inv -> {
             Widget w = inv.getArgument(0);
             ReflectionTestUtils.setId(w, WIDGET_ID);
@@ -51,8 +59,8 @@ class WidgetCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(WIDGET_ID);
+        verify(dashboardRepository, times(1)).existsById(command.dashboardId());
         verify(widgetRepository, times(1)).save(any(Widget.class));
-        verifyNoMoreInteractions(widgetRepository);
     }
 
     @Test
@@ -60,11 +68,15 @@ class WidgetCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = DashboardCommandFixtures.validCreateWidgetCommand();
+        when(dashboardRepository.existsById(command.dashboardId())).thenReturn(true);
         when(widgetRepository.save(any(Widget.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating Widget").contains("db");
+
+        // Assert
+        verify(dashboardRepository, times(1)).existsById(command.dashboardId());
         verify(widgetRepository, times(1)).save(any(Widget.class));
         verifyNoMoreInteractions(widgetRepository);
     }
@@ -132,15 +144,23 @@ class WidgetCommandServiceImplTest {
     void handleDeleteSuccess() {
         // Arrange
         var command = new DeleteWidgetCommand(WIDGET_ID);
-        when(widgetRepository.existsById(WIDGET_ID)).thenReturn(true);
+
+        var widget = new Widget();
+        ReflectionTestUtils.setId(widget, WIDGET_ID);
+        widget.setDashboardId(1L);
+
+        var dashboard = new Dashboard();
+        dashboard.addWidget(widget);
+
+        when(widgetRepository.findById(WIDGET_ID)).thenReturn(Optional.of(widget));
+        when(dashboardRepository.findById(widget.getDashboardId())).thenReturn(Optional.of(dashboard));
 
         // Act
         service.handle(command);
 
         // Assert
-        verify(widgetRepository, times(1)).existsById(WIDGET_ID);
-        verify(widgetRepository, times(1)).deleteById(WIDGET_ID);
-        verifyNoMoreInteractions(widgetRepository);
+        verify(dashboardRepository, times(1)).save(any(Dashboard.class));
+        verify(widgetRepository, never()).deleteById(anyLong());
     }
 
     @Test
@@ -148,13 +168,15 @@ class WidgetCommandServiceImplTest {
     void handleDeleteMissing() {
         // Arrange
         var command = new DeleteWidgetCommand(WIDGET_ID);
-        when(widgetRepository.existsById(WIDGET_ID)).thenReturn(false);
+        when(widgetRepository.findById(WIDGET_ID)).thenReturn(Optional.empty());
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains(String.valueOf(WIDGET_ID)).contains("does not exist");
-        verify(widgetRepository, times(1)).existsById(WIDGET_ID);
-        verify(widgetRepository, never()).deleteById(any(Long.class));
+
+        // Assert
+        verify(widgetRepository, times(1)).findById(WIDGET_ID);
+        verify(dashboardRepository, never()).findById(anyLong());
         verifyNoMoreInteractions(widgetRepository);
     }
 
@@ -163,14 +185,20 @@ class WidgetCommandServiceImplTest {
     void handleDeleteDeleteFailure() {
         // Arrange
         var command = new DeleteWidgetCommand(WIDGET_ID);
-        when(widgetRepository.existsById(WIDGET_ID)).thenReturn(true);
-        doThrow(new RuntimeException("fk")).when(widgetRepository).deleteById(WIDGET_ID);
+        var widget = new Widget();
+        ReflectionTestUtils.setId(widget, WIDGET_ID);
+        widget.setDashboardId(1L);
+
+        var dashboard = new Dashboard();
+        dashboard.addWidget(widget);
+
+        when(widgetRepository.findById(WIDGET_ID)).thenReturn(Optional.of(widget));
+        when(dashboardRepository.findById(anyLong())).thenReturn(Optional.of(dashboard));
+        when(dashboardRepository.save(any(Dashboard.class))).thenThrow(new RuntimeException("fk"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error deleting Widget").contains("fk");
-        verify(widgetRepository, times(1)).existsById(WIDGET_ID);
-        verify(widgetRepository, times(1)).deleteById(WIDGET_ID);
-        verifyNoMoreInteractions(widgetRepository);
+        verify(dashboardRepository, times(1)).save(any(Dashboard.class));
     }
 }

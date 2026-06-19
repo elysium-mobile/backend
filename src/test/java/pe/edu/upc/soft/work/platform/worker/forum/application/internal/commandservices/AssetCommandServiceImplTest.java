@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Message;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Asset;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.AssetFactory;
@@ -20,13 +21,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AssetCommandServiceImplTest {
@@ -133,12 +128,12 @@ class AssetCommandServiceImplTest {
     void handleUpdateMissing() {
         // Arrange
         var command = WorkerForumCommandFixtures.updateAssetCommand(ATTACHMENT_ID);
-        when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(false);
+        when(assetRepository.findById(ATTACHMENT_ID)).thenReturn(Optional.empty());
 
         // Act + Assert
-        RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
-        assertThat(ex.getMessage()).contains(String.valueOf(ATTACHMENT_ID)).contains("does not exist");
-        verify(assetRepository, times(1)).existsById(ATTACHMENT_ID);
+        NotFoundArgumentException ex = assertThrows(NotFoundArgumentException.class, () -> service.handle(command));
+        assertThat(ex.getMessage()).contains(String.valueOf(ATTACHMENT_ID)).contains("not found");
+        verify(assetRepository, times(1)).findById(ATTACHMENT_ID);
         verifyNoMoreInteractions(assetRepository);
         verifyNoInteractions(messageRepository);
     }
@@ -146,26 +141,20 @@ class AssetCommandServiceImplTest {
     @Test
     @DisplayName("handle(UpdateAttachmentCommand) -> wraps save failure in RuntimeException (AAA)")
     void handleUpdateSaveFailure() {
-        var command = WorkerForumCommandFixtures.validCreateAssetCommand();
-        var existing = AssetFactory.create(
-            command.messageId(),
-            command.name(),
-            command.url(),
-            command.fileSize(),
-            command.fileType()
-        );
+        // Arrange
+        var existing = mock(Asset.class);
         ReflectionTestUtils.setId(existing, ATTACHMENT_ID);
         var updateCommand = WorkerForumCommandFixtures.updateAssetCommand(ATTACHMENT_ID);
-        when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(true);
         when(assetRepository.findById(ATTACHMENT_ID)).thenReturn(Optional.of(existing));
-        when(assetRepository.save(existing)).thenThrow(new RuntimeException("boom"));
+        when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(true);
+        when(assetRepository.save(any(Asset.class))).thenThrow(new RuntimeException("boom"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(updateCommand));
-        assertThat(ex.getMessage()).contains("Error updating Attachment").contains("boom");
-        verify(assetRepository, times(1)).existsById(ATTACHMENT_ID);
-        verify(assetRepository, times(1)).findById(ATTACHMENT_ID);
-        verify(assetRepository, times(1)).save(existing);
+        assertThat(ex.getMessage()).contains("Error updating Asset").contains("boom");
+        verify(assetRepository).findById(ATTACHMENT_ID);
+        verify(assetRepository).existsById(ATTACHMENT_ID);
+        verify(assetRepository).save(any(Asset.class));
         verifyNoMoreInteractions(assetRepository);
         verifyNoInteractions(messageRepository);
     }
@@ -175,16 +164,21 @@ class AssetCommandServiceImplTest {
     void handleDeleteSuccess() {
         // Arrange
         var command = new DeleteAssetCommand(ATTACHMENT_ID);
-        when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(true);
+        Asset mockAsset = mock(Asset.class);
+        when(mockAsset.getMessageId()).thenReturn(10L);
+        Message mockMessage = mock(Message.class);
+        when(assetRepository.findById(ATTACHMENT_ID)).thenReturn(Optional.of(mockAsset));
+        when(messageRepository.findById(10L)).thenReturn(Optional.of(mockMessage));
 
         // Act
         service.handle(command);
 
         // Assert
-        verify(assetRepository, times(1)).existsById(ATTACHMENT_ID);
-        verify(assetRepository, times(1)).deleteById(ATTACHMENT_ID);
-        verifyNoMoreInteractions(assetRepository);
-        verifyNoInteractions(messageRepository);
+        verify(assetRepository, times(1)).findById(ATTACHMENT_ID);
+        verify(messageRepository, times(1)).findById(10L);
+        verify(mockMessage, times(1)).removeAttachment(ATTACHMENT_ID);
+        verify(messageRepository, times(1)).save(mockMessage);
+        verifyNoMoreInteractions(assetRepository, messageRepository);
     }
 
     @Test
@@ -192,13 +186,12 @@ class AssetCommandServiceImplTest {
     void handleDeleteMissing() {
         // Arrange
         var command = new DeleteAssetCommand(ATTACHMENT_ID);
-        when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(false);
+        when(assetRepository.findById(ATTACHMENT_ID)).thenReturn(Optional.empty());
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains(String.valueOf(ATTACHMENT_ID)).contains("does not exist");
-        verify(assetRepository, times(1)).existsById(ATTACHMENT_ID);
-        verify(assetRepository, never()).deleteById(any(Long.class));
+        verify(assetRepository, times(1)).findById(ATTACHMENT_ID);
         verifyNoMoreInteractions(assetRepository);
         verifyNoInteractions(messageRepository);
     }
@@ -208,15 +201,20 @@ class AssetCommandServiceImplTest {
     void handleDeleteDeleteFailure() {
         // Arrange
         var command = new DeleteAssetCommand(ATTACHMENT_ID);
-        when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(true);
-        doThrow(new RuntimeException("fk")).when(assetRepository).deleteById(ATTACHMENT_ID);
+        Asset mockAsset = mock(Asset.class);
+        when(mockAsset.getMessageId()).thenReturn(10L);
+        Message mockMessage = mock(Message.class);
+        when(assetRepository.findById(ATTACHMENT_ID)).thenReturn(Optional.of(mockAsset));
+        when(messageRepository.findById(10L)).thenReturn(Optional.of(mockMessage));
+        doThrow(new RuntimeException("fk")).when(messageRepository).save(any(Message.class));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
-        assertThat(ex.getMessage()).contains("Error deleting Attachment").contains("fk");
-        verify(assetRepository, times(1)).existsById(ATTACHMENT_ID);
-        verify(assetRepository, times(1)).deleteById(ATTACHMENT_ID);
-        verifyNoMoreInteractions(assetRepository);
-        verifyNoInteractions(messageRepository);
+        assertThat(ex.getMessage()).contains("Error deleting Asset").contains("fk");
+        verify(assetRepository, times(1)).findById(ATTACHMENT_ID);
+        verify(messageRepository, times(1)).findById(10L);
+        verify(mockMessage, times(1)).removeAttachment(ATTACHMENT_ID);
+        verify(messageRepository, times(1)).save(mockMessage);
+        verifyNoMoreInteractions(assetRepository, messageRepository);
     }
 }

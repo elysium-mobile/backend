@@ -6,9 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import pe.edu.upc.soft.work.platform.profile.performance.application.internal.outboundservices.acl.ExternalIamServiceFromProfilePerformance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.Performance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeletePerformanceCommand;
+import pe.edu.upc.soft.work.platform.profile.performance.domain.model.events.PerformanceRegisteredEvent;
+import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.CommentEmployeeRepository;
 import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.PerformanceRepository;
 import pe.edu.upc.soft.work.platform.profile.performance.test.fixtures.ProfilePerformanceCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
@@ -37,6 +40,11 @@ class PerformanceCommandServiceImplTest {
     @Mock
     private ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+    @Mock
+    private CommentEmployeeRepository commentEmployeeRepository;
+
     @InjectMocks
     private PerformanceCommandServiceImpl service;
 
@@ -45,8 +53,7 @@ class PerformanceCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = ProfilePerformanceCommandFixtures.validCreatePerformanceCommand();
-        when(externalIamServiceFromProfilePerformance.existsEmployeeProfileById(
-                ProfilePerformanceCommandFixtures.VALID_EMPLOYEE_PROFILE_ID)).thenReturn(true);
+        when(externalIamServiceFromProfilePerformance.existsEmployeeProfileById(any())).thenReturn(true);
         when(performanceRepository.save(any(Performance.class))).thenAnswer(inv -> {
             Performance p = inv.getArgument(0);
             ReflectionTestUtils.setId(p, PERFORMANCE_ID);
@@ -58,10 +65,9 @@ class PerformanceCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(PERFORMANCE_ID);
-        verify(externalIamServiceFromProfilePerformance, times(1))
-                .existsEmployeeProfileById(ProfilePerformanceCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
+        verify(eventPublisher, times(1)).publishEvent(any(PerformanceRegisteredEvent.class));
         verify(performanceRepository, times(1)).save(any(Performance.class));
-        verifyNoMoreInteractions(externalIamServiceFromProfilePerformance, performanceRepository);
+        verifyNoMoreInteractions(externalIamServiceFromProfilePerformance, performanceRepository, eventPublisher);
     }
 
     @Test
@@ -87,16 +93,17 @@ class PerformanceCommandServiceImplTest {
         // Arrange
         var command = ProfilePerformanceCommandFixtures.validCreatePerformanceCommand();
         when(externalIamServiceFromProfilePerformance.existsEmployeeProfileById(
-                ProfilePerformanceCommandFixtures.VALID_EMPLOYEE_PROFILE_ID)).thenReturn(true);
+            ProfilePerformanceCommandFixtures.VALID_EMPLOYEE_PROFILE_ID)).thenReturn(true);
         when(performanceRepository.save(any(Performance.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating Performance").contains("db");
         verify(externalIamServiceFromProfilePerformance, times(1))
-                .existsEmployeeProfileById(ProfilePerformanceCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
+            .existsEmployeeProfileById(ProfilePerformanceCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
+        verify(eventPublisher, times(1)).publishEvent(any(PerformanceRegisteredEvent.class));
         verify(performanceRepository, times(1)).save(any(Performance.class));
-        verifyNoMoreInteractions(externalIamServiceFromProfilePerformance, performanceRepository);
+        verifyNoMoreInteractions(externalIamServiceFromProfilePerformance, performanceRepository, eventPublisher);
     }
 
     @Test

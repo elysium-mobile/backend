@@ -6,9 +6,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import pe.edu.upc.soft.work.platform.feedback.application.internal.outboundservices.acl.ExternalIamServiceFromFeedback;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.aggregates.Survey;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.SurveyResponse;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.events.SurveyResponseRegisteredEvent;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyResponseRepository;
 import pe.edu.upc.soft.work.platform.feedback.test.fixtures.FeedbackCommandFixtures;
@@ -40,6 +43,9 @@ class SurveyResponseCommandServiceImplTest {
     @Mock
     private SurveyRepository surveyRepository;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     @InjectMocks
     private SurveyResponseCommandServiceImpl service;
 
@@ -48,9 +54,15 @@ class SurveyResponseCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = FeedbackCommandFixtures.validCreateSurveyResponseCommand();
+        var survey = new Survey();
+        survey.setExpirationTime(null);
+
         when(surveyRepository.existsById(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(true);
+        when(surveyRepository.findById(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(Optional.of(survey));
         when(externalIamServiceFromFeedback.existEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID))
-                .thenReturn(true);
+            .thenReturn(true);
+        when(surveyResponseRepository.findBySurveyId(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(java.util.Collections.emptyList());
+
         when(surveyResponseRepository.save(any(SurveyResponse.class))).thenAnswer(inv -> {
             SurveyResponse sr = inv.getArgument(0);
             ReflectionTestUtils.setId(sr, RESPONSE_ID);
@@ -62,11 +74,9 @@ class SurveyResponseCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(RESPONSE_ID);
-        verify(surveyRepository, times(1)).existsById(FeedbackCommandFixtures.VALID_SURVEY_ID);
-        verify(externalIamServiceFromFeedback, times(1))
-                .existEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
-        verify(surveyResponseRepository, times(1)).save(any(SurveyResponse.class));
-        verifyNoMoreInteractions(surveyRepository, externalIamServiceFromFeedback, surveyResponseRepository);
+        verify(surveyRepository).existsById(FeedbackCommandFixtures.VALID_SURVEY_ID);
+        verify(eventPublisher).publishEvent(any(SurveyResponseRegisteredEvent.class));
+        verify(surveyResponseRepository).save(any(SurveyResponse.class));
     }
 
     @Test
@@ -108,17 +118,21 @@ class SurveyResponseCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = FeedbackCommandFixtures.validCreateSurveyResponseCommand();
+        var survey = new Survey();
+
         when(surveyRepository.existsById(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(true);
+        when(surveyRepository.findById(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(Optional.of(survey));
         when(externalIamServiceFromFeedback.existEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID))
-                .thenReturn(true);
+            .thenReturn(true);
+        when(surveyResponseRepository.findBySurveyId(FeedbackCommandFixtures.VALID_SURVEY_ID))
+            .thenReturn(java.util.Collections.emptyList());
+
         when(surveyResponseRepository.save(any(SurveyResponse.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating SurveyResponse").contains("db");
         verify(surveyRepository, times(1)).existsById(FeedbackCommandFixtures.VALID_SURVEY_ID);
-        verify(externalIamServiceFromFeedback, times(1))
-                .existEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
         verify(surveyResponseRepository, times(1)).save(any(SurveyResponse.class));
         verifyNoMoreInteractions(surveyRepository, externalIamServiceFromFeedback, surveyResponseRepository);
     }

@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateAssetCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -16,6 +17,7 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.File
 @DiscriminatorColumn(name = "file_type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Asset extends AuditableAbstractAggregateRoot<Asset> {
 
+    @Setter
     @Getter
     @Column(name = "message_id", nullable = false)
     private Long messageId;

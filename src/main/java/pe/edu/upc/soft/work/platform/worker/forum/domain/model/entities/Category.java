@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Thread;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateCategoryCommand;
@@ -29,6 +30,7 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
     @Column(name = "threads", nullable = true)
     private List<Thread> threads;
 
+    @Setter
     @Getter
     @Column(name = "forum_id", nullable = false)
     private Long forumId;

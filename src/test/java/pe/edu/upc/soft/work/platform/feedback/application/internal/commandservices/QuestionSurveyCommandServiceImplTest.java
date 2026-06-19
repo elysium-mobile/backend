@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteQuestionSurveyCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.QuestionSurvey;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.QuestionSurveyRepository;
+import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
 import pe.edu.upc.soft.work.platform.feedback.test.fixtures.FeedbackCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
@@ -32,6 +33,9 @@ class QuestionSurveyCommandServiceImplTest {
     @Mock
     private QuestionSurveyRepository questionsurveyRepository;
 
+    @Mock
+    private SurveyRepository surveyRepository;
+
     @InjectMocks
     private QuestionSurveyCommandServiceImpl service;
 
@@ -40,6 +44,9 @@ class QuestionSurveyCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = FeedbackCommandFixtures.validCreateQuestionSurveyCommand();
+
+        when(surveyRepository.existsById(command.surveyId())).thenReturn(true);
+
         when(questionsurveyRepository.save(any(QuestionSurvey.class))).thenAnswer(inv -> {
             QuestionSurvey q = inv.getArgument(0);
             ReflectionTestUtils.setId(q, QS_ID);
@@ -51,6 +58,7 @@ class QuestionSurveyCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(QS_ID);
+        verify(surveyRepository, times(1)).existsById(command.surveyId());
         verify(questionsurveyRepository, times(1)).save(any(QuestionSurvey.class));
         verifyNoMoreInteractions(questionsurveyRepository);
     }

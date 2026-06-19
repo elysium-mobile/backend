@@ -6,8 +6,13 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.aggregates.Membership;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.aggregates.Payment;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeletePaymentCommand;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Order;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.events.PaymentRegisteredEvent;
+import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.OrderRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.PaymentRepository;
 import pe.edu.upc.soft.work.platform.payment.service.test.fixtures.PaymentCommandFixtures;
@@ -37,6 +42,11 @@ class PaymentCommandServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+    @Mock
+    private MembershipRepository membershipRepository;
+
     @InjectMocks
     private PaymentCommandServiceImpl service;
 
@@ -45,7 +55,14 @@ class PaymentCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = PaymentCommandFixtures.validCreatePaymentCommand();
-        when(orderRepository.existsById(PaymentCommandFixtures.VALID_ORDER_ID)).thenReturn(true);
+        var order = new Order();
+        ReflectionTestUtils.setId(order, command.orderId());
+        order.setMembershipId(1L);
+        var membership = new Membership();
+        ReflectionTestUtils.setId(membership, 1L);
+        when(orderRepository.existsById(command.orderId())).thenReturn(true);
+        when(orderRepository.findById(command.orderId())).thenReturn(Optional.of(order));
+        when(membershipRepository.findById(1L)).thenReturn(Optional.of(membership));
         when(paymentRepository.save(any(Payment.class))).thenAnswer(inv -> {
             Payment p = inv.getArgument(0);
             ReflectionTestUtils.setId(p, PAYMENT_ID);
@@ -57,9 +74,13 @@ class PaymentCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(PAYMENT_ID);
-        verify(orderRepository, times(1)).existsById(PaymentCommandFixtures.VALID_ORDER_ID);
+        verify(eventPublisher, times(2)).publishEvent(any());
+        verify(orderRepository, times(1)).existsById(command.orderId());
+        verify(orderRepository, times(1)).findById(command.orderId());
         verify(paymentRepository, times(1)).save(any(Payment.class));
-        verifyNoMoreInteractions(orderRepository, paymentRepository);
+        verify(membershipRepository, times(1)).findById(1L);
+        verify(membershipRepository, times(1)).save(any(Membership.class));
+        verifyNoMoreInteractions(orderRepository, paymentRepository, membershipRepository, eventPublisher);
     }
 
     @Test
@@ -82,15 +103,21 @@ class PaymentCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = PaymentCommandFixtures.validCreatePaymentCommand();
-        when(orderRepository.existsById(PaymentCommandFixtures.VALID_ORDER_ID)).thenReturn(true);
+        var order = new Order();
+        order.setMembershipId(1L);
+
+        when(orderRepository.existsById(command.orderId())).thenReturn(true);
+        when(orderRepository.findById(command.orderId())).thenReturn(Optional.of(order));
         when(paymentRepository.save(any(Payment.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating Payment").contains("db");
-        verify(orderRepository, times(1)).existsById(PaymentCommandFixtures.VALID_ORDER_ID);
+        verify(eventPublisher, times(1)).publishEvent(any(PaymentRegisteredEvent.class));
+        verify(orderRepository, times(1)).existsById(command.orderId());
+        verify(orderRepository, times(1)).findById(command.orderId());
         verify(paymentRepository, times(1)).save(any(Payment.class));
-        verifyNoMoreInteractions(orderRepository, paymentRepository);
+        verifyNoMoreInteractions(orderRepository, paymentRepository, eventPublisher, membershipRepository);
     }
 
     @Test

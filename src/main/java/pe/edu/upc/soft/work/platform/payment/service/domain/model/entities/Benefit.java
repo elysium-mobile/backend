@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateBenefitCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateBenefitCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -23,6 +24,7 @@ public class Benefit extends AuditableAbstractAggregateRoot<Benefit> {
     @Column(name = "description", nullable = false)
     private String description;
 
+    @Setter
     @Getter
     @Column(name = "membership_plan_id", nullable = false)
     private Long membershipPlanId;

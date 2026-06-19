@@ -72,6 +72,7 @@ class UserAccountCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = IamCommandFixtures.createUserAccountCommandFrom(USER_ID, UserInputFixture.valid());
+        when(userAccountRepository.findByEmail(command.email())).thenReturn(Optional.empty());
         when(userAccountRepository.save(any(UserAccount.class))).thenAnswer(inv -> {
             UserAccount ua = inv.getArgument(0);
             ReflectionTestUtils.setId(ua, ACCOUNT_ID);
@@ -83,10 +84,11 @@ class UserAccountCommandServiceImplTest {
 
         // Assert
         assertThat(id).isEqualTo(ACCOUNT_ID);
+        verify(userAccountRepository).findByEmail(command.email());
         verify(userAccountRepository).save(any(UserAccount.class));
         verifyNoMoreInteractions(userAccountRepository);
         verifyNoInteractions(employeeProfileRepository, rrhhProfileRepository,
-                hashingService, tokenService, userRepository);
+            hashingService, tokenService, userRepository);
     }
 
     @Test
@@ -94,11 +96,13 @@ class UserAccountCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = IamCommandFixtures.createUserAccountCommandFrom(USER_ID, UserInputFixture.valid());
+        when(userAccountRepository.findByEmail(command.email())).thenReturn(Optional.empty());
         when(userAccountRepository.save(any(UserAccount.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error saving user account").contains("db");
+        verify(userAccountRepository).findByEmail(command.email());
         verify(userAccountRepository).save(any(UserAccount.class));
         verifyNoMoreInteractions(userAccountRepository);
     }

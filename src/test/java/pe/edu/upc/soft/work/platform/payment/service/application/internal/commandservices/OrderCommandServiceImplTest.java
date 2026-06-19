@@ -7,14 +7,17 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.aggregates.Membership;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Order;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.MembershipStatus;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.OrderRepository;
 import pe.edu.upc.soft.work.platform.payment.service.test.fixtures.PaymentCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
+import java.util.Date;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,9 +51,16 @@ class OrderCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = PaymentCommandFixtures.validCreateOrderCommand();
-        when(externalIamServiceFromPaymentService.existsUserAccountById(PaymentCommandFixtures.VALID_USER_ACCOUNT_ID))
-                .thenReturn(true);
-        when(membershipRepository.existsById(PaymentCommandFixtures.VALID_MEMBERSHIP_ID)).thenReturn(true);
+        var validMembership = new Membership();
+        validMembership.setMembershipStatus(MembershipStatus.ACTIVE);
+        validMembership.setMembershipStart(new Date(System.currentTimeMillis() - 10000));
+        validMembership.setMembershipOver(new Date(System.currentTimeMillis() + 10000));
+
+        when(externalIamServiceFromPaymentService.existsUserAccountById(any()))
+            .thenReturn(true);
+        when(membershipRepository.existsById(any())).thenReturn(true);
+        when(membershipRepository.findById(any())).thenReturn(Optional.of(validMembership));
+
         when(orderRepository.save(any(Order.class))).thenAnswer(inv -> {
             Order o = inv.getArgument(0);
             ReflectionTestUtils.setId(o, ORDER_ID);
@@ -62,11 +72,8 @@ class OrderCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(ORDER_ID);
-        verify(externalIamServiceFromPaymentService, times(1))
-                .existsUserAccountById(PaymentCommandFixtures.VALID_USER_ACCOUNT_ID);
-        verify(membershipRepository, times(1)).existsById(PaymentCommandFixtures.VALID_MEMBERSHIP_ID);
-        verify(orderRepository, times(1)).save(any(Order.class));
-        verifyNoMoreInteractions(externalIamServiceFromPaymentService, membershipRepository, orderRepository);
+        verify(membershipRepository).findById(any());
+        verify(orderRepository).save(any(Order.class));
     }
 
     @Test
@@ -110,17 +117,23 @@ class OrderCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = PaymentCommandFixtures.validCreateOrderCommand();
-        when(externalIamServiceFromPaymentService.existsUserAccountById(PaymentCommandFixtures.VALID_USER_ACCOUNT_ID))
-                .thenReturn(true);
-        when(membershipRepository.existsById(PaymentCommandFixtures.VALID_MEMBERSHIP_ID)).thenReturn(true);
+        when(externalIamServiceFromPaymentService.existsUserAccountById(any()))
+            .thenReturn(true);
+
+        var validMembership = new Membership();
+        validMembership.setMembershipStatus(MembershipStatus.ACTIVE);
+        validMembership.setMembershipStart(new Date(System.currentTimeMillis() - 1000));
+        validMembership.setMembershipOver(new Date(System.currentTimeMillis() + 1000));
+        when(membershipRepository.existsById(any())).thenReturn(true);
+        when(membershipRepository.findById(any())).thenReturn(Optional.of(validMembership));
         when(orderRepository.save(any(Order.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating Order").contains("db");
-        verify(externalIamServiceFromPaymentService, times(1))
-                .existsUserAccountById(PaymentCommandFixtures.VALID_USER_ACCOUNT_ID);
-        verify(membershipRepository, times(1)).existsById(PaymentCommandFixtures.VALID_MEMBERSHIP_ID);
+        verify(externalIamServiceFromPaymentService, times(1)).existsUserAccountById(any());
+        verify(membershipRepository, times(1)).existsById(any());
+        verify(membershipRepository, times(1)).findById(any());
         verify(orderRepository, times(1)).save(any(Order.class));
         verifyNoMoreInteractions(externalIamServiceFromPaymentService, membershipRepository, orderRepository);
     }

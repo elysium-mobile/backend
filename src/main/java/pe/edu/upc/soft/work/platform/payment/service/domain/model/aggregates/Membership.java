@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.payment.service.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateMembershipCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateMembershipCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -17,12 +18,15 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.M
 @Table(name="memberships")
 public class Membership extends AuditableAbstractAggregateRoot<Membership> {
 
+    @Setter
     @Getter
     @Column(name = "membership_start", nullable = false)
     private Date membershipStart;
+    @Setter
     @Getter
     @Column(name = "membership_over", nullable = false)
     private Date membershipOver;
+    @Setter
     @Getter
     @Enumerated(EnumType.STRING)
     @Column(name = "membership_status", nullable = false, length = 20)

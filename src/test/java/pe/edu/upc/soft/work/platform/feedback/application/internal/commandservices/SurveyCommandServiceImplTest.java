@@ -6,8 +6,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.aggregates.Survey;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurveyCommand;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.events.SurveyCreatedEvent;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
 import pe.edu.upc.soft.work.platform.feedback.test.fixtures.FeedbackCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
@@ -32,6 +34,10 @@ class SurveyCommandServiceImplTest {
     @Mock
     private SurveyRepository surveyRepository;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
+
     @InjectMocks
     private SurveyCommandServiceImpl service;
 
@@ -52,6 +58,7 @@ class SurveyCommandServiceImplTest {
         // Assert
         assertThat(resultId).isEqualTo(SURVEY_ID);
         verify(surveyRepository, times(1)).save(any(Survey.class));
+        verify(eventPublisher, times(1)).publishEvent(any(SurveyCreatedEvent.class));
         verifyNoMoreInteractions(surveyRepository);
     }
 

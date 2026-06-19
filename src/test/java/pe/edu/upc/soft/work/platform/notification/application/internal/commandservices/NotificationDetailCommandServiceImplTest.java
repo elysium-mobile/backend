@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.DeleteNotificationDetailCommand;
 import pe.edu.upc.soft.work.platform.notification.domain.model.entities.NotificationDetail;
 import pe.edu.upc.soft.work.platform.notification.infrastructure.persistence.jpa.repositories.NotificationDetailRepository;
+import pe.edu.upc.soft.work.platform.notification.infrastructure.persistence.jpa.repositories.NotificationRepository;
 import pe.edu.upc.soft.work.platform.notification.test.fixtures.NotificationCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
@@ -32,6 +33,9 @@ class NotificationDetailCommandServiceImplTest {
     @Mock
     private NotificationDetailRepository notificationDetailRepository;
 
+    @Mock
+    private NotificationRepository notificationRepository;
+
     @InjectMocks
     private NotificationDetailCommandServiceImpl service;
 
@@ -40,6 +44,7 @@ class NotificationDetailCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = NotificationCommandFixtures.validCreateNotificationDetailCommand();
+        when(notificationRepository.existsById(command.notificationId())).thenReturn(true);
         when(notificationDetailRepository.save(any(NotificationDetail.class))).thenAnswer(inv -> {
             NotificationDetail nd = inv.getArgument(0);
             ReflectionTestUtils.setId(nd, DETAIL_ID);
@@ -51,8 +56,9 @@ class NotificationDetailCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(DETAIL_ID);
+        verify(notificationRepository).existsById(command.notificationId());
         verify(notificationDetailRepository, times(1)).save(any(NotificationDetail.class));
-        verifyNoMoreInteractions(notificationDetailRepository);
+        verifyNoMoreInteractions(notificationDetailRepository, notificationRepository);
     }
 
     @Test
@@ -60,13 +66,16 @@ class NotificationDetailCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = NotificationCommandFixtures.validCreateNotificationDetailCommand();
+
+        when(notificationRepository.existsById(command.notificationId())).thenReturn(true);
         when(notificationDetailRepository.save(any(NotificationDetail.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error saving notification detail").contains("db");
+        verify(notificationRepository, times(1)).existsById(command.notificationId());
         verify(notificationDetailRepository, times(1)).save(any(NotificationDetail.class));
-        verifyNoMoreInteractions(notificationDetailRepository);
+        verifyNoMoreInteractions(notificationDetailRepository, notificationRepository);
     }
 
     @Test

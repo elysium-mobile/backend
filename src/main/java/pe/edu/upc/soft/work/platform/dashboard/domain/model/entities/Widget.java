@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.Getter;
+import lombok.Setter;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateWidgetCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateWidgetCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -23,6 +24,7 @@ public class Widget extends AuditableAbstractAggregateRoot<Widget> {
     @Column(name = "refresh_period", nullable = false)
     private Integer refreshPeriod;
 
+    @Setter
     @Getter
     @Column(name = "dashboard_id", nullable = false)
     private Long dashboardId;

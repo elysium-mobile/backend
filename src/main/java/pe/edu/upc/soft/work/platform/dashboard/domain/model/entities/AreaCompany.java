@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.dashboard.domain.model.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.UpdateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -29,6 +30,7 @@ public class AreaCompany extends AuditableAbstractAggregateRoot<AreaCompany> {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UnitOfWork> unitOfWorkList;
 
+    @Setter
     @Getter
     @Column(name = "company_id", nullable = false)
     private Long companyId;

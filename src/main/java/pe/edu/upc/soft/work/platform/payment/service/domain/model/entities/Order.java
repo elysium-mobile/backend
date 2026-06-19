@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.payment.service.domain.model.entities;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateOrderCommand;
 import pe.edu.upc.soft.work.platform.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
@@ -25,6 +26,8 @@ public class Order extends AuditableAbstractAggregateRoot<Order> {
     @Getter
     @Column(name = "amount", nullable = false)
     private Integer amount;
+
+    @Setter
     @Getter
     @Column(name = "membership_id", nullable = false)
     private Long membershipId;

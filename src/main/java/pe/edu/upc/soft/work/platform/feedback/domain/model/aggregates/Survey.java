@@ -2,6 +2,7 @@ package pe.edu.upc.soft.work.platform.feedback.domain.model.aggregates;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurveyCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.valueObjects.TargetType;
@@ -28,6 +29,7 @@ public class Survey extends AuditableAbstractAggregateRoot<Survey> {
     @Column(name ="target_type", nullable = false)
     private TargetType targetType;
 
+    @Setter
     @Getter
     private Date expirationTime;
 

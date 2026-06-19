@@ -47,8 +47,7 @@ public class ForumAssembler {
                                                             attachment.getName(),
                                                             attachment.getUrl(),
                                                             attachment.getFileSize(),
-                                                            attachment.getFileType(),
-                                                        attachment.isViewable(), attachment.isReadable()
+                                                            attachment.getFileType()
                                                     ))
                                                     .toList();
                                             return new MessageResponse(

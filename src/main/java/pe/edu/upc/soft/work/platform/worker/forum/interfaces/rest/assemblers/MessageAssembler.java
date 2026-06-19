@@ -41,8 +41,7 @@ public class MessageAssembler {
                         attachment.getName(),
                         attachment.getUrl(),
                         attachment.getFileSize(),
-                        attachment.getFileType(),
-                    attachment.isViewable(), attachment.isReadable()
+                        attachment.getFileType()
                 ))
                 .toList();
 

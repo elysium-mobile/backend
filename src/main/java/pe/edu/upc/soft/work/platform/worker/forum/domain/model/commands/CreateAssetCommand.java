@@ -9,14 +9,16 @@ import java.util.Objects;
  */
 public record CreateAssetCommand(Long messageId, String name, String url, String fileSize, FileType fileType) {
 
+    public CreateAssetCommand(Long messageId, String name, FileType fileType) {
+        this(messageId, name, null, null, fileType);
+    }
+
     /**
      * Constructor with validation
      */
     public CreateAssetCommand {
         Objects.requireNonNull(messageId, "[CreateAttachmentCommand] messageId must not be null");
         Objects.requireNonNull(name, "[CreateAttachmentCommand] name must not be null");
-        Objects.requireNonNull(url, "[CreateAttachmentCommand] url must not be null");
-        Objects.requireNonNull(fileSize, "[CreateAttachmentCommand] fileSize must not be null");
         Objects.requireNonNull(fileType, "[CreateAttachmentCommand] fileType must not be null");
     }
 }

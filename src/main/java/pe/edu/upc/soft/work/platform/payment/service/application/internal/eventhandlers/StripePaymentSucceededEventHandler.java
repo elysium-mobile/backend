@@ -11,6 +11,7 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.events.Members
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.events.PaymentRegisteredEvent;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.events.StripePaymentSucceededEvent;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.MembershipStatus;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.PaymentStatus;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.OrderRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.PaymentRepository;
@@ -72,7 +73,10 @@ public class StripePaymentSucceededEventHandler {
         var createPaymentCommand = new CreatePaymentCommand(
                 order.getId(),
                 event.getStripePaymentIntentId(),
-                new Date());
+                new Date(),
+                PaymentStatus.SUCCEEDED,
+            "card"
+            );
         var payment = new Payment(createPaymentCommand);
         paymentRepository.save(payment);
         eventPublisher.publishEvent(new PaymentRegisteredEvent(this, payment.getId(), payment.getOrderId()));

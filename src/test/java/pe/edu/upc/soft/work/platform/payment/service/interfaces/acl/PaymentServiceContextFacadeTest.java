@@ -115,7 +115,10 @@ class PaymentServiceContextFacadeTest {
         Long result = facade.createPayment(
                 PaymentCommandFixtures.VALID_ORDER_ID,
                 PaymentCommandFixtures.VALID_TRANSACTION_ID,
-                PaymentCommandFixtures.VALID_PAYMENT_DATE);
+                PaymentCommandFixtures.VALID_PAYMENT_DATE,
+                PaymentCommandFixtures.VALID_PAYMENT_STATUS,
+            PaymentCommandFixtures.VALID_METHOD
+        );
 
         // Assert
         assertThat(result).isEqualTo(77L);
@@ -134,7 +137,10 @@ class PaymentServiceContextFacadeTest {
         Long result = facade.createPayment(
                 PaymentCommandFixtures.VALID_ORDER_ID,
                 PaymentCommandFixtures.VALID_TRANSACTION_ID,
-                PaymentCommandFixtures.VALID_PAYMENT_DATE);
+                PaymentCommandFixtures.VALID_PAYMENT_DATE,
+            PaymentCommandFixtures.VALID_PAYMENT_STATUS,
+            PaymentCommandFixtures.VALID_METHOD
+            );
 
         // Assert
         assertThat(result).isEqualTo(0L);

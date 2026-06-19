@@ -22,7 +22,10 @@ class PaymentAssemblerTest {
         var request = new CreatePaymentRequest(
                 PaymentCommandFixtures.VALID_ORDER_ID,
                 PaymentCommandFixtures.VALID_TRANSACTION_ID,
-                PaymentCommandFixtures.VALID_PAYMENT_DATE);
+                PaymentCommandFixtures.VALID_PAYMENT_DATE,
+                PaymentCommandFixtures.VALID_PAYMENT_STATUS.toString(),
+                PaymentCommandFixtures.VALID_METHOD
+            );
 
         // Act
         CreatePaymentCommand command = PaymentAssembler.toCommandFromRequest(request);
@@ -40,7 +43,9 @@ class PaymentAssemblerTest {
         var request = new UpdatePaymentRequest(
                 PaymentCommandFixtures.VALID_ORDER_ID,
                 PaymentCommandFixtures.VALID_TRANSACTION_ID,
-                PaymentCommandFixtures.VALID_PAYMENT_DATE);
+                PaymentCommandFixtures.VALID_PAYMENT_DATE,
+            PaymentCommandFixtures.VALID_PAYMENT_STATUS.toString(),
+            PaymentCommandFixtures.VALID_METHOD);
 
         // Act
         UpdatePaymentCommand command = PaymentAssembler.toCommandFromRequest(51L, request);
@@ -50,6 +55,7 @@ class PaymentAssemblerTest {
         assertThat(command.orderId()).isEqualTo(PaymentCommandFixtures.VALID_ORDER_ID);
         assertThat(command.transactionId()).isEqualTo(PaymentCommandFixtures.VALID_TRANSACTION_ID);
         assertThat(command.paymentDate()).isEqualTo(PaymentCommandFixtures.VALID_PAYMENT_DATE);
+        assertThat(command.paymentMethod()).isEqualTo(PaymentCommandFixtures.VALID_METHOD);
     }
 
     @Test
@@ -67,5 +73,7 @@ class PaymentAssemblerTest {
         assertThat(response.orderId()).isEqualTo(PaymentCommandFixtures.VALID_ORDER_ID);
         assertThat(response.transactionId()).isEqualTo(PaymentCommandFixtures.VALID_TRANSACTION_ID);
         assertThat(response.paymentDate()).isEqualTo(PaymentCommandFixtures.VALID_PAYMENT_DATE);
+        assertThat(response.paymentMethod()).isEqualTo(PaymentCommandFixtures.VALID_METHOD);
+
     }
 }

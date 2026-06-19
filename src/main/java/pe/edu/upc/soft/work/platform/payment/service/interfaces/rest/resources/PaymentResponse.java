@@ -9,5 +9,7 @@ public record PaymentResponse(
         Long paymentId,
         Long orderId,
         String transactionId,
-        Date paymentDate
+        String paymentStatus,
+        Date paymentDate,
+        String paymentMethod
 ) {}

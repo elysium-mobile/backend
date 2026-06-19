@@ -106,7 +106,7 @@ resource "aws_instance" "app_server" {
               apt-get install docker.io docker-compose -y
               systemctl start docker
               systemctl enable docker
-              mkdir -p /home/ubuntu/app
+              usermod -aG docker ubuntu
               EOF
 
   tags = { Name = "ElysiumAppServer-Dev" }

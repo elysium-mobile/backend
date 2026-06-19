@@ -39,3 +39,7 @@ build/
 /tfplan
 /terraform.tfstate.backup
 /.terraform.tfstate.lock.info
+/infrastructure.tfplan
+
+### SSH ###
+/.ssh/

@@ -1,5 +1,5 @@
 terraform {
-  required_version = "1.15.6"
+  required_version = "1.15.5"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -52,7 +52,7 @@ resource "aws_key_pair" "deployer" {
 # 3. Security
 resource "aws_security_group" "app_sg" {
   name        = "app-sg"
-  description = "Allow traffic HTTP (8092) y SSH (22)"
+  description = "Allow traffic HTTP (8080) y SSH (22)"
   vpc_id      = aws_vpc.app_vpc.id
 
   ingress {
@@ -63,8 +63,8 @@ resource "aws_security_group" "app_sg" {
   }
 
   ingress {
-    from_port   = 8092
-    to_port     = 8092
+    from_port   = 8080
+    to_port     = 8080
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -106,6 +106,7 @@ resource "aws_instance" "app_server" {
               apt-get install docker.io docker-compose -y
               systemctl start docker
               systemctl enable docker
+              mkdir -p /home/ubuntu/app
               EOF
 
   tags = { Name = "ElysiumAppServer-Dev" }

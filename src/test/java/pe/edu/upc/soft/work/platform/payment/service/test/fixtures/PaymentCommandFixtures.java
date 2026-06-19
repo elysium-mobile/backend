@@ -11,6 +11,7 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.Updat
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdatePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.MembershipStatus;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.PaymentStatus;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.UserAccountId;
 
 import java.util.Date;
@@ -29,6 +30,7 @@ public final class PaymentCommandFixtures {
     public static final Date VALID_MEMBERSHIP_OVER = new Date(1_800_000_000_000L);
     public static final MembershipStatus VALID_MEMBERSHIP_STATUS = MembershipStatus.ACTIVE;
 
+
     public static final String VALID_PLAN_NAME = "Gold";
     public static final Integer VALID_PLAN_PRICE = 99;
 
@@ -41,6 +43,11 @@ public final class PaymentCommandFixtures {
     public static final Date VALID_PAYMENT_DATE = new Date(1_750_000_000_000L);
 
     public static final Long VALID_MEMBERSHIP_PLAN_ID =6L;
+
+    public static final String VALID_METHOD ="Card";
+
+    public static final PaymentStatus VALID_PAYMENT_STATUS =PaymentStatus.SUCCEEDED;
+
 
     private PaymentCommandFixtures() {
         throw new AssertionError("PaymentCommandFixtures is a utility class and must not be instantiated.");
@@ -86,10 +93,10 @@ public final class PaymentCommandFixtures {
 
     // ---------- Payment ----------
     public static CreatePaymentCommand validCreatePaymentCommand() {
-        return new CreatePaymentCommand(VALID_ORDER_ID, VALID_TRANSACTION_ID, VALID_PAYMENT_DATE);
+        return new CreatePaymentCommand(VALID_ORDER_ID, VALID_TRANSACTION_ID, VALID_PAYMENT_DATE,VALID_PAYMENT_STATUS,VALID_METHOD);
     }
 
     public static UpdatePaymentCommand updatePaymentCommand(Long paymentId) {
-        return new UpdatePaymentCommand(paymentId, VALID_ORDER_ID, VALID_TRANSACTION_ID, VALID_PAYMENT_DATE);
+        return new UpdatePaymentCommand(paymentId, VALID_ORDER_ID, VALID_TRANSACTION_ID, VALID_PAYMENT_DATE,VALID_PAYMENT_STATUS,VALID_METHOD);
     }
 }

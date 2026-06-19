@@ -20,5 +20,15 @@ public record UpdatePaymentRequest(
         @NotNull
         @NotBlank
         @JsonProperty("paymentDate")
-        Date paymentDate
+        Date paymentDate,
+
+        @NotNull
+        @NotBlank
+        @JsonProperty("paymentStatus")
+        String paymentStatus,
+
+        @NotNull
+        @NotBlank
+        @JsonProperty("paymentMethod")
+        String paymentMethod
 ) {}

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreatePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetMembershipByIdQuery;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetPaymentByIdQuery;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.PaymentStatus;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.MembershipQueryService;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.PaymentCommandService;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.PaymentQueryService;
@@ -79,8 +80,8 @@ public class PaymentServiceContextFacade {
      * @param paymentDate   the date of the payment
      * @return the ID of the created payment, or 0L if creation failed
      */
-    public Long createPayment(Long orderId, String transactionId, Date paymentDate) {
-        var command = new CreatePaymentCommand(orderId, transactionId, paymentDate);
+    public Long createPayment(Long orderId, String transactionId, Date paymentDate, PaymentStatus paymentStatus, String paymentMethod) {
+        var command = new CreatePaymentCommand(orderId, transactionId, paymentDate, paymentStatus,paymentMethod);
         var paymentId = this.paymentCommandService.handle(command);
         if (Objects.isNull(paymentId)) {
             return 0L;

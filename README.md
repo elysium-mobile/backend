@@ -51,6 +51,11 @@ spring.datasource.password=your_password
 mvn spring-boot:run
 ```
 
+### Ejecutar API de Stripe de manera local 
+```bash
+stripe listen --forward-to localhost:8092/api/v1/stripe/webhook
+```
+
 ---
 
 ## Documentación de la API

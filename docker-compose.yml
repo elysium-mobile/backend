@@ -18,6 +18,8 @@ services:
     container_name: spring-app
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/softwork
       SPRING_DATASOURCE_USERNAME: postgres
@@ -25,6 +27,8 @@ services:
       SPRING_PROFILES_ACTIVE: prod
       AUTHORIZATION_JWT_SECRET: "un_secreto_seguro_de_al_menos_256_bits_para_firmar_tokens_12345"
       AUTHORIZATION_JWT_EXPIRATION_DAYS: 7
+      API_HOST:
+      PORT: 8080
     depends_on:
       - db
 

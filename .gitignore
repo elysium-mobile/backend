@@ -31,3 +31,15 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Terraform ###
+/.terraform.lock.hcl
+/.terraform/
+/terraform.tfstate
+/tfplan
+/terraform.tfstate.backup
+/.terraform.tfstate.lock.info
+/infrastructure.tfplan
+
+### SSH ###
+/.ssh/

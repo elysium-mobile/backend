@@ -10,14 +10,26 @@ import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.reposito
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling User commands.
+ */
 @Service
 public class UserCommandServiceImpl implements UserCommandService {
     private final UserRepository userRepository;
 
+    /**
+     * Constructor for UserCommandServiceImpl.
+     * @param userRepository the repository for User persistence
+     */
     public UserCommandServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Handles the creation of a User.
+     * @param command the command to create a User
+     * @return the generated ID of the new User
+     */
     @Override
     public Long handle(CreateUserCommand command) {
 
@@ -34,6 +46,11 @@ public class UserCommandServiceImpl implements UserCommandService {
 
     }
 
+    /**
+     * Handles the update of an existing User.
+     * @param command the command to update a User
+     * @return the updated User as an Optional
+     */
     @Override
     public Optional<User> handle(UpdateUserCommand command) {
         var userId = command.userId();
@@ -51,6 +68,10 @@ public class UserCommandServiceImpl implements UserCommandService {
         }
     }
 
+    /**
+     * Handles the deletion of a User.
+     * @param command the command to delete a User
+     */
     @Override
     public void handle(DeleteUserCommand command) {
         if(!userRepository.existsById(command.userId())) {

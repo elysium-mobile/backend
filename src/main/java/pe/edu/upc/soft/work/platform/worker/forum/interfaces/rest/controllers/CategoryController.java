@@ -25,6 +25,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing Categories in the system.
+ * Provides endpoints for creating, retrieving, updating, deleting Categories,
+ * and managing associated threads.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/categories", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,11 +39,22 @@ public class CategoryController {
     private final CategoryCommandService categoryCommandService;
     private final CategoryQueryService categoryQueryService;
 
+    /**
+     * Constructor for CategoryController.
+     * Initializes the command and query services for handling Category operations.
+     * @param categoryCommandService Service for handling commands related to Categories
+     * @param categoryQueryService   Service for handling queries related to Categories
+     */
     public CategoryController(CategoryCommandService categoryCommandService, CategoryQueryService categoryQueryService) {
         this.categoryCommandService = categoryCommandService;
         this.categoryQueryService = categoryQueryService;
     }
 
+    /**
+     * Endpoint for creating a new Category.
+     * @param request Request object containing the details of the Category to be created
+     * @return ResponseEntity containing the created CategoryResponse and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new Category", description = "Create a new Category in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Category created successfully",
@@ -66,6 +82,10 @@ public class CategoryController {
         return new ResponseEntity<>(categoryResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all Categories.
+     * @return ResponseEntity containing a list of CategoryResponse objects
+     */
     @Operation(summary = "Get all Categories", description = "Retrieve a list of all Categories in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Categories retrieved successfully",
@@ -84,6 +104,11 @@ public class CategoryController {
         return ResponseEntity.ok(categoryResponses);
     }
 
+    /**
+     * Endpoint for retrieving a specific Category by ID.
+     * @param id ID of the Category to be retrieved
+     * @return ResponseEntity containing the CategoryResponse if found
+     */
     @Operation(summary = "Get Category by ID", description = "Retrieve a Category by its unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Category retrieved successfully",
@@ -104,6 +129,12 @@ public class CategoryController {
         return ResponseEntity.ok(categoryResponse);
     }
 
+    /**
+     * Endpoint for updating an existing Category by ID.
+     * @param id ID of the Category to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated CategoryResponse if successful
+     */
     @Operation(summary = "Update Category information", description = "Update the information of an existing Category")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Category updated successfully",
@@ -123,6 +154,11 @@ public class CategoryController {
         return ResponseEntity.ok(categoryResponse);
     }
 
+    /**
+     * Endpoint for deleting a Category by ID.
+     * @param id ID of the Category to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete Category by ID", description = "Delete a Category by its unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Category deleted successfully", content = @Content),
@@ -135,6 +171,12 @@ public class CategoryController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Endpoint for adding a Thread to a Category.
+     * @param categoryId ID of the Category
+     * @param request Request object containing the Thread details
+     * @return ResponseEntity containing the updated CategoryResponse
+     */
     @Operation(summary = "Add Thread to Category", description = "Add a Thread to a Category by their unique identifiers")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Thread added to Category successfully",

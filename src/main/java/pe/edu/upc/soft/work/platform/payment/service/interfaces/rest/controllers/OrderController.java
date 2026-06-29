@@ -27,6 +27,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing Orders in the system.
+ * Provides endpoints for creating, retrieving, updating, and deleting Orders.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/orders", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,11 +40,22 @@ public class OrderController {
     private final OrderCommandService orderCommandService;
     private final OrderQueryService orderQueryService;
 
+    /**
+     * Constructor for OrderController.
+     * Initializes the command and query services for handling Order operations.
+     * @param orderCommandService Service for handling commands related to Orders
+     * @param orderQueryService   Service for handling queries related to Orders
+     */
     public OrderController(OrderCommandService orderCommandService, OrderQueryService orderQueryService){
         this.orderCommandService = orderCommandService;
         this.orderQueryService = orderQueryService;
     }
 
+    /**
+     * Endpoint for creating a new Order.
+     * @param request Request object containing the details of the Order to be created
+     * @return ResponseEntity containing the created OrderResponse and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new Order", description = "Create a new Order in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Order created successfully",
@@ -70,6 +85,10 @@ public class OrderController {
         return new ResponseEntity<>(orderResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all Orders.
+     * @return ResponseEntity containing a list of OrderResponse objects
+     */
     @Operation(summary = "Get all Orders", description = "Retrieve a list of all Orders in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Orders retrieved successfully",
@@ -88,6 +107,11 @@ public class OrderController {
         return ResponseEntity.ok(orderResponses);
     }
 
+    /**
+     * Endpoint for retrieving a specific Order by ID.
+     * @param id ID of the Order to be retrieved
+     * @return ResponseEntity containing the OrderResponse if found
+     */
     @Operation(summary = "Get Order by ID", description = "Retrieve a Order by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order retrieved successfully",
@@ -108,6 +132,12 @@ public class OrderController {
         return ResponseEntity.ok(orderResponse);
     }
 
+    /**
+     * Endpoint for updating an existing Order by ID.
+     * @param id ID of the Order to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated OrderResponse if successful
+     */
     @Operation(summary = "Update Order information", description = "Update the information of an existing Order")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Order updated successfully",
@@ -128,6 +158,11 @@ public class OrderController {
         return ResponseEntity.ok(orderResponse);
     }
 
+    /**
+     * Endpoint for deleting an Order by ID.
+     * @param id ID of the Order to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete Order by ID", description = "Delete a Order by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Order deleted successfully", content = @Content),
@@ -140,6 +175,11 @@ public class OrderController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Endpoint for retrieving Orders associated with a specific User Account.
+     * @param userAccountId ID of the User Account
+     * @return ResponseEntity containing a list of OrderResponse objects
+     */
     @Operation(summary = "Get Orders by User Account ID", description = "Retrieve a list of Orders associated with a specific User Account ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Orders retrieved successfully",

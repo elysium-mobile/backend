@@ -20,6 +20,9 @@ import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.reposito
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling UserAccount commands.
+ */
 @Service
 public class UserAccountCommandServiceImpl implements UserAccountCommandService {
 
@@ -31,6 +34,16 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
     private final UserRepository userRepository;
     private final ApplicationEventPublisher eventPublisher;
 
+    /**
+     * Constructor for UserAccountCommandServiceImpl.
+     * @param userAccountRepository     the repository for UserAccount persistence
+     * @param employeeProfileRepository the repository for EmployeeProfile persistence
+     * @param rrhhProfileRepository     the repository for RRHHProfile persistence
+     * @param hashingService            the service for password hashing
+     * @param tokenService              the service for token management
+     * @param userRepository            the repository for User persistence
+     * @param eventPublisher            the application event publisher
+     */
     public UserAccountCommandServiceImpl(UserAccountRepository userAccountRepository,
                                          EmployeeProfileRepository employeeProfileRepository,
                                          RRHHProfileRepository rrhhProfileRepository,
@@ -48,6 +61,11 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
 
     }
 
+    /**
+     * Handles the creation of a UserAccount and publishes a creation event.
+     * @param command the command to create a UserAccount
+     * @return the generated ID of the new UserAccount
+     */
     @Override
     public Long handle(CreateUserAccountCommand command) {
         if (userAccountRepository.findByEmail(command.email()).isPresent()) {
@@ -70,6 +88,11 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
 
     }
 
+    /**
+     * Handles the update of an existing UserAccount.
+     * @param command the command to update a UserAccount
+     * @return the updated UserAccount as an Optional
+     */
     @Override
     public Optional<UserAccount> handle(UpdateUserAccountCommand command) {
         var accountId = command.userAccountId();
@@ -83,6 +106,10 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
         }
     }
 
+    /**
+     * Handles the deletion of a UserAccount.
+     * @param command the command to delete a UserAccount
+     */
     @Override
     public void handle(DeleteUserAccountCommand command) {
         var accountId = command.userAccountId();
@@ -95,6 +122,11 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
         }
     }
 
+    /**
+     * Handles the user sign-in process, verifying credentials and generating an access token.
+     * @param command the command containing sign-in credentials
+     * @return an Optional containing a pair of UserAccount and authentication token
+     */
     @Transactional
     @Override
     public Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command) {

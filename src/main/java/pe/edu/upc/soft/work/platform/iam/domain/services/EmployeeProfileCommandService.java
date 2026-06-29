@@ -33,7 +33,14 @@ public interface EmployeeProfileCommandService {
     void handle(DeleteEmployeeProfileCommand command);
 
 
+    /**
+     * Handles the sign-up process for a new employee.
+     * This operation orchestrates the creation of a new User,
+     * its corresponding UserAccount, and the associated EmployeeProfile.
+     *
+     * @param command the command containing the sign-up details for the employee
+     * @return an Optional containing the created EmployeeProfile, or an empty Optional if the process failed
+     */
     Optional<EmployeeProfile> handle(EmployeeSignUpCommand command);
 
-//    Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
 }

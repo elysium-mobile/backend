@@ -25,6 +25,10 @@ import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing user accounts in the IAM system.
+ * Provides endpoints for creating, retrieving, updating, and deleting user accounts.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/user_accounts", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,11 +38,22 @@ public class UserAccountController {
     private final UserAccountCommandService userAccountCommandService;
     private final UserAccountQueryService userAccountQueryService;
 
+    /**
+     * Constructor for UserAccountController.
+     * Initializes the command and query services for handling user account operations.
+     * @param userAccountCommandService Service for handling commands related to user accounts
+     * @param userAccountQueryService   Service for handling queries related to user accounts
+     */
     public UserAccountController(UserAccountCommandService userAccountCommandService, UserAccountQueryService userAccountQueryService) {
         this.userAccountCommandService = userAccountCommandService;
         this.userAccountQueryService = userAccountQueryService;
     }
 
+    /**
+     * Endpoint for creating a new user account.
+     * @param request Request object containing the details of the user account to be created
+     * @return ResponseEntity containing the created user account and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new user account", description = "Create a new user account in the system",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Create user account request",
@@ -74,6 +89,10 @@ public class UserAccountController {
         return new ResponseEntity<>(userAccountResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all user accounts.
+     * @return ResponseEntity containing a list of UserAccountResponse objects
+     */
     @Operation(summary = "Get all users accounts", description = "Retrieve a list of all users accounts in the system")
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
@@ -91,6 +110,12 @@ public class UserAccountController {
     }
 
 
+    /**
+     * Endpoint for updating an existing user account.
+     * @param id The unique identifier of the user account
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated UserAccountResponse if successful
+     */
     @Operation(summary = "Update user account information", description = "Update the information of an existing user")
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "User updated successfully",
@@ -110,6 +135,11 @@ public class UserAccountController {
         return ResponseEntity.ok(userAccountResponse);
     }
 
+    /**
+     * Endpoint for deleting a user account by ID.
+     * @param id The unique identifier of the user account to be deleted
+     * @return ResponseEntity indicating the outcome of the deletion
+     */
     @Operation(summary = "Delete user account by ID", description = "Delete a user account by their unique identifier",
             parameters = @io.swagger.v3.oas.annotations.Parameter(name = "userId", description =
                     "The unique identifier of the user account to be deleted", required = true))

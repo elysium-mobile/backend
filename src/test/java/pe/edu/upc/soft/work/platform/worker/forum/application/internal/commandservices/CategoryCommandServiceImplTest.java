@@ -44,7 +44,10 @@ class CategoryCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = WorkerForumCommandFixtures.validCreateCategoryCommand();
+        var forum = mock(Forum.class);
         when(forumRepository.existsById(command.forumId())).thenReturn(true);
+        when(forumRepository.findById(command.forumId())).thenReturn(Optional.of(forum));
+
         when(categoryRepository.save(any(Category.class))).thenAnswer(inv -> {
             Category c = inv.getArgument(0);
             ReflectionTestUtils.setId(c, CATEGORY_ID);
@@ -56,25 +59,29 @@ class CategoryCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(CATEGORY_ID);
-        verify(forumRepository).existsById(command.forumId());
-        verify(categoryRepository).save(any(Category.class));
+        verify(forumRepository, times(1)).existsById(command.forumId());
+        verify(forumRepository, times(1)).findById(command.forumId());
+        verify(categoryRepository, times(1)).save(any(Category.class));
+        verify(forumRepository, times(1)).save(forum);
         verifyNoMoreInteractions(categoryRepository, forumRepository);
     }
 
     @Test
     @DisplayName("handle(CreateCategoryCommand) -> wraps save failure in RuntimeException (AAA)")
     void handleCreateSaveFailure() {
-        // Arrange
         var command = WorkerForumCommandFixtures.validCreateCategoryCommand();
+        var forum = mock(Forum.class);
+
         when(forumRepository.existsById(command.forumId())).thenReturn(true);
+        when(forumRepository.findById(command.forumId())).thenReturn(Optional.of(forum));
         when(categoryRepository.save(any(Category.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating Category").contains("db");
-        verify(forumRepository, times(1)).existsById(command.forumId());
-        verify(categoryRepository, times(1)).save(any(Category.class));
-        verifyNoMoreInteractions(categoryRepository, forumRepository);
+        verify(forumRepository).existsById(command.forumId());
+        verify(forumRepository).findById(command.forumId());
+        verify(categoryRepository).save(any(Category.class));
     }
 
     @Test

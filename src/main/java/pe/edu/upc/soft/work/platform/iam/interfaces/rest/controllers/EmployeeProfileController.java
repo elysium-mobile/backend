@@ -25,6 +25,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing employee profiles in the system.
+ * Provides endpoints for creating, retrieving, and deleting employee profiles.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(path = "/api/v1/employee-profile", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,13 +39,22 @@ public class EmployeeProfileController {
     private final EmployeeProfileCommandService employeeProfileCommandService;
     private final EmployeeProfileQueryService employeeProfileQueryService;
 
+    /**
+     * Constructor for EmployeeProfileController.
+     * Initializes the command and query services for handling employee profile operations.
+     * @param employeeProfileCommandService Service for handling commands related to employee profiles
+     * @param employeeProfileQueryService   Service for handling queries related to employee profiles
+     */
     public EmployeeProfileController(EmployeeProfileCommandService employeeProfileCommandService, EmployeeProfileQueryService employeeProfileQueryService) {
         this.employeeProfileCommandService = employeeProfileCommandService;
         this.employeeProfileQueryService = employeeProfileQueryService;
     }
 
-
-
+    /**
+     * Endpoint for creating a new employee profile.
+     * @param request Request object containing the details of the employee profile to be created
+     * @return ResponseEntity containing the created employee profile and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new employee profile", description = "Create a new employee profile in the system",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Create employee profile request",
@@ -77,6 +90,10 @@ public class EmployeeProfileController {
 
     }
 
+    /**
+     * Endpoint for retrieving all employee profiles.
+     * @return ResponseEntity containing a list of EmployeeProfileResponse objects
+     */
     @Operation(summary = "Get all users", description = "Retrieve a list of all users in the system")
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
@@ -94,6 +111,11 @@ public class EmployeeProfileController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Endpoint for retrieving a specific employee profile by ID.
+     * @param id The unique identifier of the employee profile
+     * @return ResponseEntity containing the EmployeeProfileResponse if found
+     */
     @Operation(summary = "Get user by ID", description = "Retrieve a user by their unique identifier",
             parameters = @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "The unique identifier of the user", required = true))
     @ApiResponses(value ={
@@ -117,6 +139,11 @@ public class EmployeeProfileController {
     }
 
 
+    /**
+     * Endpoint for deleting an employee profile by ID.
+     * @param employeeProfileId The unique identifier of the employee profile to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete user by ID", description = "Delete a user by their unique identifier",
             parameters = @io.swagger.v3.oas.annotations.Parameter(name = "userId", description =
                     "The unique identifier of the user to be deleted", required = true))

@@ -25,6 +25,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing Performances in the system.
+ * Provides endpoints for creating, retrieving, updating, and deleting Performances,
+ * as well as managing employee comments and lookups.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/performances", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,11 +39,22 @@ public class PerformanceController {
     private final PerformanceCommandService performanceCommandService;
     private final PerformanceQueryService performanceQueryService;
 
+    /**
+     * Constructor for PerformanceController.
+     * Initializes the command and query services for handling Performance operations.
+     * @param performanceCommandService Service for handling commands related to Performances
+     * @param performanceQueryService   Service for handling queries related to Performances
+     */
     public PerformanceController(PerformanceCommandService performanceCommandService, PerformanceQueryService performanceQueryService) {
         this.performanceCommandService = performanceCommandService;
         this.performanceQueryService = performanceQueryService;
     }
 
+    /**
+     * Endpoint for creating a new Performance.
+     * @param request Request object containing the details of the Performance to be created
+     * @return ResponseEntity containing the created PerformanceResponse and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new Performance", description = "Create a new Performance in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Performance created successfully", 
@@ -66,6 +82,10 @@ public class PerformanceController {
         return new ResponseEntity<>(performanceResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all Performances.
+     * @return ResponseEntity containing a list of PerformanceResponse objects
+     */
     @Operation(summary = "Get all Performances", description = "Retrieve a list of all Performances in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Performances retrieved successfully",
@@ -84,6 +104,11 @@ public class PerformanceController {
         return ResponseEntity.ok(performanceResponses);
     }
 
+    /**
+     * Endpoint for retrieving a specific Performance by ID.
+     * @param id ID of the Performance to be retrieved
+     * @return ResponseEntity containing the PerformanceResponse if found
+     */
     @Operation(summary = "Get Performance by ID", description = "Retrieve a Performance by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Performance retrieved successfully",
@@ -104,6 +129,12 @@ public class PerformanceController {
         return ResponseEntity.ok(performanceResponse);
     }
 
+    /**
+     * Endpoint for updating an existing Performance by ID.
+     * @param id ID of the Performance to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated PerformanceResponse if successful
+     */
     @Operation(summary = "Update Performance information", description = "Update the information of an existing Performance")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Performance updated successfully",
@@ -123,6 +154,11 @@ public class PerformanceController {
         return ResponseEntity.ok(performanceResponse);
     }
 
+    /**
+     * Endpoint for deleting a Performance by ID.
+     * @param id ID of the Performance to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete Performance by ID", description = "Delete a Performance by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Performance deleted successfully", content = @Content),
@@ -135,6 +171,12 @@ public class PerformanceController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Endpoint for adding a CommentEmployee to a Performance.
+     * @param performanceId ID of the Performance
+     * @param request Request object containing the comment details
+     * @return ResponseEntity containing the updated PerformanceResponse
+     */
     @Operation(summary = "Add CommentEmployee to Performance", description = "Add a CommentEmployee to an existing Performance")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "CommentEmployee added to Performance successfully",
@@ -155,6 +197,11 @@ public class PerformanceController {
         return ResponseEntity.ok(PerformanceAssembler.toResponseFromEntity(performance.get()));
     }
 
+    /**
+     * Endpoint for retrieving a Performance by Employee ID.
+     * @param employeeId ID of the Employee
+     * @return ResponseEntity containing the PerformanceResponse if found
+     */
     @Operation(summary = "Get Performance by Employee ID", description = "Retrieve a Performance by the unique identifier of the associated Employee")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Performance retrieved successfully",

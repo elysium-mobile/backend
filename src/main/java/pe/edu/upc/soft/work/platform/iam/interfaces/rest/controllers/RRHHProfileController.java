@@ -26,6 +26,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing RRHH profiles in the system.
+ * Provides endpoints for creating, retrieving, updating, and deleting RRHH profiles.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/rrhh-profiles", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,11 +39,22 @@ public class RRHHProfileController {
     private final RRHHProfileCommandService rrhhProfileCommandService;
     private final RRHHProfileQueryService rrhhProfileQueryService;
 
+    /**
+     * Constructor for RRHHProfileController.
+     * Initializes the command and query services for handling RRHH profile operations.
+     * @param rrhhProfileCommandService Service for handling commands related to RRHH profiles
+     * @param rrhhProfileQueryService   Service for handling queries related to RRHH profiles
+     */
     public RRHHProfileController(RRHHProfileCommandService rrhhProfileCommandService, RRHHProfileQueryService rrhhProfileQueryService){
         this.rrhhProfileCommandService = rrhhProfileCommandService;
         this.rrhhProfileQueryService = rrhhProfileQueryService;
     }
 
+    /**
+     * Endpoint for creating a new RRHH profile.
+     * @param request Request object containing the details of the RRHH profile to be created
+     * @return ResponseEntity containing the created RRHH profile and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new rrhh profile", description = "Create a new rrhh profile in the system",
             requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     description = "Create rrhhProfile request",
@@ -73,6 +88,10 @@ public class RRHHProfileController {
         return new ResponseEntity<>(rrhhResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all RRHH profiles.
+     * @return ResponseEntity containing a list of RRHHProfileResponse objects
+     */
     @Operation(summary = "Get all RRHHProfiles", description = "Retrieve a list of all RRHHProfile in the system")
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "RRHHProfiles retrieved successfully",
@@ -91,6 +110,11 @@ public class RRHHProfileController {
         return ResponseEntity.ok(rrhhProfileResponse);
     }
 
+    /**
+     * Endpoint for retrieving a specific RRHH profile by ID.
+     * @param id The unique identifier of the RRHH profile
+     * @return ResponseEntity containing the RRHHProfileResponse if found
+     */
     @Operation(summary = "Get RRHHProfile by ID", description = "Retrieve a RRHHProfile by their unique identifier",
             parameters = @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "The unique identifier of the RRHHProfile", required = true))
     @ApiResponses(value ={
@@ -112,6 +136,12 @@ public class RRHHProfileController {
         return ResponseEntity.ok(profilesResponse);
     }
 
+    /**
+     * Endpoint for updating an existing RRHH profile by ID.
+     * @param id The unique identifier of the RRHH profile
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated RRHHProfileResponse if successful
+     */
     @Operation(summary = "Update RRHHProfile information", description = "Update the information of an existing RRHHProfile")
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "RRHHProfile updated successfully",
@@ -132,6 +162,11 @@ public class RRHHProfileController {
         return ResponseEntity.ok(RRHHResponse);
     }
 
+    /**
+     * Endpoint for deleting an RRHH profile by ID.
+     * @param id The unique identifier of the RRHH profile to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete RRHHProfile by ID", description = "Delete a RRHHProfile by their unique identifier",
             parameters = @io.swagger.v3.oas.annotations.Parameter(name = "id", description =
                     "The unique identifier of the RRHHProfile to be deleted", required = true))

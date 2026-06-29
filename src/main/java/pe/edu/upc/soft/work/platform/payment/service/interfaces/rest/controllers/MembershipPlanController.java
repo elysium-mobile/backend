@@ -29,6 +29,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing Membership Plans in the system.
+ * Provides endpoints for creating, retrieving, updating, deleting Membership Plans and managing their benefits.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/memberships-plans", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -39,11 +43,22 @@ public class MembershipPlanController {
     private final MembershipPlanCommandService membershipPlanCommandService;
     private final MembershipPlanQueryService membershipPlanQueryService;
 
+    /**
+     * Constructor for MembershipPlanController.
+     * Initializes the command and query services for handling Membership Plan operations.
+     * @param membershipPlanCommandService Service for handling commands related to Membership Plans
+     * @param membershipPlanQueryService   Service for handling queries related to Membership Plans
+     */
     public MembershipPlanController(MembershipPlanCommandService membershipPlanCommandService, MembershipPlanQueryService membershipPlanQueryService){
         this.membershipPlanCommandService = membershipPlanCommandService;
         this.membershipPlanQueryService = membershipPlanQueryService;
     }
 
+    /**
+     * Endpoint for creating a new Membership Plan.
+     * @param request Request object containing the details of the Membership Plan to be created
+     * @return ResponseEntity containing the created MembershipPlanResponse and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new MembershipPlan", description = "Create a new MembershipPlan in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "MembershipPlan created successfully",
@@ -71,6 +86,10 @@ public class MembershipPlanController {
         return new ResponseEntity<>(membershipPlanResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all Membership Plans.
+     * @return ResponseEntity containing a list of MembershipPlanResponse objects
+     */
     @Operation(summary = "Get all Memberships Plan", description = "Retrieve a list of all Memberships Plan in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Memberships retrieved successfully",
@@ -89,6 +108,11 @@ public class MembershipPlanController {
         return ResponseEntity.ok(membershipResponses);
     }
 
+    /**
+     * Endpoint for retrieving a specific Membership Plan by ID.
+     * @param id ID of the Membership Plan to be retrieved
+     * @return ResponseEntity containing the MembershipPlanResponse if found
+     */
     @Operation(summary = "Get Membership Plan by ID", description = "Retrieve a Membership Plan by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Membership Plan retrieved successfully",
@@ -109,6 +133,12 @@ public class MembershipPlanController {
         return ResponseEntity.ok(membershipResponse);
     }
 
+    /**
+     * Endpoint for updating an existing Membership Plan by ID.
+     * @param id ID of the Membership Plan to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated MembershipPlanResponse if successful
+     */
     @Operation(summary = "Update Membership Plan information", description = "Update the information of an existing Membership Plan")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Membership Plan updated successfully",
@@ -128,6 +158,11 @@ public class MembershipPlanController {
         return ResponseEntity.ok(membershipResponse);
     }
 
+    /**
+     * Endpoint for deleting a Membership Plan by ID.
+     * @param id ID of the Membership Plan to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete Membership Plan by ID", description = "Delete a Membership Plan by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Membership Plan deleted successfully", content = @Content),
@@ -140,6 +175,12 @@ public class MembershipPlanController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Endpoint for adding a Benefit to a Membership Plan.
+     * @param membershipPlanId ID of the Membership Plan
+     * @param request Request object containing the Benefit details
+     * @return ResponseEntity containing the updated MembershipPlanResponse
+     */
     @Operation(summary = "Add a Benefit to a Membership Plan", description = "Add a new Benefit to an existing Membership Plan")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Benefit added to Membership Plan successfully",

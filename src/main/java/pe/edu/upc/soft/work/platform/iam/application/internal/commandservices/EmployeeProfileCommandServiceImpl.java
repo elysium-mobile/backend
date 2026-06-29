@@ -21,6 +21,10 @@ import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentEx
 
 import java.util.Optional;
 
+
+/**
+ * Service implementation for handling EmployeeProfile commands.
+ */
 @Service
 public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommandService {
 
@@ -31,6 +35,15 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
     private final UserRepository userRepository;
     private final ExternalDashboardServiceFromIAM externalDashboardServiceFromIAM;
 
+    /**
+     * Constructor for EmployeeProfileCommandServiceImpl.
+     * @param employeeProfileRepository the repository for EmployeeProfile persistence
+     * @param userAccountRepository the repository for UserAccount persistence
+     * @param hashingService the service for password hashing
+     * @param tokenService the service for token management
+     * @param userRepository the repository for User persistence
+     * @param externalDashboardServiceFromIAM the ACL service for Dashboard context interaction
+     */
     public EmployeeProfileCommandServiceImpl(EmployeeProfileRepository employeeProfileRepository,
                                              UserAccountRepository userAccountRepository,
                                              HashingService hashingService,
@@ -45,6 +58,11 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
         this.externalDashboardServiceFromIAM= externalDashboardServiceFromIAM;
     }
 
+    /**
+     * Handles the creation of an EmployeeProfile.
+     * @param command the command to create an EmployeeProfile
+     * @return the generated ID of the new EmployeeProfile
+     */
     @Override
     public Long handle(CreateEmployeeProfileCommand command) {
         if(!this.userAccountRepository.existsById(command.userAccountId())){
@@ -66,6 +84,11 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
         return employeeProfile.getId();
     }
 
+    /**
+     * Handles the update of an existing EmployeeProfile.
+     * @param command the command to update an EmployeeProfile
+     * @return the updated EmployeeProfile as an Optional
+     */
     @Override
     public Optional<EmployeeProfile> handle(UpdateEmployeeProfileCommand command) {
         var employeeId = command.employeeProfileId();
@@ -79,6 +102,10 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
         }
     }
 
+    /**
+     * Handles the deletion of an EmployeeProfile.
+     * @param command the command to delete an EmployeeProfile
+     */
     @Override
     public void handle(DeleteEmployeeProfileCommand command) {
         if (!employeeProfileRepository.existsById(command.employeeProfileId()))
@@ -90,6 +117,11 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
         }
     }
 
+    /**
+     * Handles the sign-up process for a new employee, creating User, UserAccount and EmployeeProfile.
+     * @param command the command containing sign-up details
+     * @return an Optional containing the created EmployeeProfile
+     */
     @Transactional
     @Override
     public Optional<EmployeeProfile> handle(EmployeeSignUpCommand command) {

@@ -29,10 +29,14 @@ public interface RRHHProfileCommandService {
      */
     void handle(DeleteRRHHProfileCommand command);
 
-
+    /**
+     * Handles the sign-up process for a new RRHH user.
+     * This operation orchestrates the creation of a new User,
+     * its corresponding UserAccount, and the specific RRHHProfile.
+     *
+     * @param command The command containing the details required for the RRHH sign-up.
+     * @return An Optional containing the created RRHHProfile, or an empty Optional if the process failed.
+     */
     Optional<RRHHProfile> handle(RRHHSignUpCommand command);
-
-//    Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
-
 
 }

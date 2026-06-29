@@ -33,12 +33,8 @@ import pe.edu.upc.soft.work.platform.payment.service.infrastructure.stripe.Strip
 import pe.edu.upc.soft.work.platform.payment.service.interfaces.rest.resources.*;
 
 /**
- * StripePaymentController (Enhanced)
- * Comprehensive REST API for Stripe payment operations including:
- *   - Payment checkout creation
- *   - Payment retry for failed payments
- *   - Refund initiation
- *   - Webhook handling for payment events
+ * Controller for managing Stripe payment operations.
+ * Provides endpoints for payment creation, retries, refunds, and webhook event handling.
  */
 @CrossOrigin(origins = "*", methods = {RequestMethod.POST, RequestMethod.GET})
 @RestController
@@ -54,6 +50,14 @@ public class StripePaymentController {
     private final StripeProperties stripeProperties;
     private final ApplicationEventPublisher eventPublisher;
 
+    /**
+     * Constructor for StripePaymentController.
+     * @param paymentGatewayAdapter Service for gateway operations
+     * @param refundService         Service for refund operations
+     * @param paymentRetryService   Service for payment retries
+     * @param stripeProperties      Configuration properties for Stripe
+     * @param eventPublisher        Publisher for domain events
+     */
     public StripePaymentController(PaymentGatewayAdapter paymentGatewayAdapter,
                                    RefundService refundService,
                                    PaymentRetryService paymentRetryService,
@@ -66,6 +70,11 @@ public class StripePaymentController {
         this.eventPublisher = eventPublisher;
     }
 
+    /**
+     * Endpoint for creating a Stripe PaymentIntent.
+     * @param request Request object containing order details
+     * @return ResponseEntity containing the client secret for payment confirmation
+     */
     @Operation(summary = "Create a Stripe PaymentIntent",
             description = "Creates a new Stripe PaymentIntent for an Order and returns the clientSecret for the frontend to confirm payment")
     @ApiResponses(value = {
@@ -86,6 +95,12 @@ public class StripePaymentController {
         return ResponseEntity.ok(new StripeCheckoutResponse(response.clientSecret()));
     }
 
+    /**
+     * Endpoint for retrying a failed payment.
+     * @param paymentId ID of the failed payment
+     * @param request   Request object containing retry details
+     * @return ResponseEntity containing new payment credentials
+     */
     @Operation(summary = "Retry a failed payment",
             description = "Creates a new PaymentIntent to retry a previously failed payment attempt")
     @ApiResponses(value = {
@@ -109,6 +124,12 @@ public class StripePaymentController {
                 response.newTransactionId()));
     }
 
+    /**
+     * Endpoint for initiating a refund.
+     * @param paymentId ID of the payment to refund
+     * @param request   Request object containing refund details
+     * @return ResponseEntity containing refund confirmation details
+     */
     @Operation(summary = "Initiate a refund",
             description = "Creates a refund for a previously succeeded payment (full or partial)")
     @ApiResponses(value = {
@@ -138,6 +159,12 @@ public class StripePaymentController {
                 response.status()));
     }
 
+    /**
+     * Endpoint for processing Stripe webhook events.
+     * @param payload         Webhook event payload
+     * @param stripeSignature Stripe signature header for verification
+     * @return ResponseEntity indicating success or error status
+     */
     @Operation(summary = "Handle Stripe webhooks",
             description = "Receives and processes Stripe webhook events (payment_intent.succeeded, payment_intent.payment_failed, charge.refunded)")
     @ApiResponses(value = {

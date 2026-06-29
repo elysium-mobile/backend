@@ -26,6 +26,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing Forums in the system.
+ * Provides endpoints for creating, retrieving, updating, and deleting Forums,
+ * as well as managing associated categories and filtering by company.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/forums", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -35,11 +40,22 @@ public class ForumController {
     private final ForumCommandService forumCommandService;
     private final ForumQueryService forumQueryService;
 
+    /**
+     * Constructor for ForumController.
+     * Initializes the command and query services for handling Forum operations.
+     * @param forumCommandService Service for handling commands related to Forums
+     * @param forumQueryService   Service for handling queries related to Forums
+     */
     public ForumController(ForumCommandService forumCommandService, ForumQueryService forumQueryService) {
         this.forumCommandService = forumCommandService;
         this.forumQueryService = forumQueryService;
     }
 
+    /**
+     * Endpoint for creating a new Forum.
+     * @param request Request object containing the details of the Forum to be created
+     * @return ResponseEntity containing the created ForumResponse and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new Forum", description = "Create a new Forum in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Forum created successfully", 
@@ -67,6 +83,10 @@ public class ForumController {
         return new ResponseEntity<>(forumResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all Forums.
+     * @return ResponseEntity containing a list of ForumResponse objects
+     */
     @Operation(summary = "Get all Forums", description = "Retrieve a list of all Forums in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Forums retrieved successfully",
@@ -85,6 +105,11 @@ public class ForumController {
         return ResponseEntity.ok(forumResponses);
     }
 
+    /**
+     * Endpoint for retrieving a specific Forum by ID.
+     * @param id ID of the Forum to be retrieved
+     * @return ResponseEntity containing the ForumResponse if found
+     */
     @Operation(summary = "Get Forum by ID", description = "Retrieve a Forum by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Forum retrieved successfully",
@@ -105,6 +130,12 @@ public class ForumController {
         return ResponseEntity.ok(forumResponse);
     }
 
+    /**
+     * Endpoint for updating an existing Forum by ID.
+     * @param id ID of the Forum to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated ForumResponse if successful
+     */
     @Operation(summary = "Update Forum information", description = "Update the information of an existing Forum")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Forum updated successfully",
@@ -124,6 +155,11 @@ public class ForumController {
         return ResponseEntity.ok(forumResponse);
     }
 
+    /**
+     * Endpoint for deleting a Forum by ID.
+     * @param id ID of the Forum to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete Forum by ID", description = "Delete a Forum by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Forum deleted successfully", content = @Content),
@@ -136,6 +172,12 @@ public class ForumController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Endpoint for adding a Category to a Forum.
+     * @param forumId ID of the Forum
+     * @param request Request object containing the Category details
+     * @return ResponseEntity containing the updated ForumResponse
+     */
     @Operation(summary = "Add Category to Forum", description = "Add a Category to an existing Forum")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Category added to Forum successfully",
@@ -156,6 +198,11 @@ public class ForumController {
         return ResponseEntity.ok(forumResponse);
     }
 
+    /**
+     * Endpoint for retrieving Forums by Company ID.
+     * @param companyId ID of the Company
+     * @return ResponseEntity containing a list of ForumResponse objects
+     */
     @Operation(summary = "Get Forums by Company ID", description = "Retrieve a list of Forums associated with a specific Company ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Forums retrieved successfully",

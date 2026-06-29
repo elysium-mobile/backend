@@ -59,6 +59,10 @@ class WidgetAssemblerTest {
         var entity = new Widget(DashboardCommandFixtures.validCreateWidgetCommand());
         ReflectionTestUtils.setId(entity, 44L);
 
+        ReflectionTestUtils.setField(entity, "title", DashboardCommandFixtures.VALID_WIDGET_TITLE);
+        ReflectionTestUtils.setField(entity, "refreshPeriod", DashboardCommandFixtures.VALID_REFRESH_PERIOD);
+        ReflectionTestUtils.setField(entity, "dashboardId", DashboardCommandFixtures.VALID_DASHBOARD_ID);
+
         // Act
         WidgetResponse response = WidgetAssembler.toResponseFromEntity(entity);
 

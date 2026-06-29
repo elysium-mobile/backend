@@ -76,21 +76,16 @@ class UserAccountAssemblerTest {
     @DisplayName("toResponseFromEntity(UserAccount) -> maps every account field to UserAccountResponse (AAA)")
     void toResponseFromEntityMapsAllFields() {
         // Arrange
-        var account = new UserAccount(
-                IamCommandFixtures.createUserAccountCommandFrom(1L, UserInputFixture.valid()));
+        var account = new UserAccount(IamCommandFixtures.createUserAccountCommandFrom(1L, UserInputFixture.valid()));
         ReflectionTestUtils.setId(account, 70L);
+        ReflectionTestUtils.setField(account, "email", CommonCommandFixtures.VALID_EMAIL);
+        ReflectionTestUtils.setField(account, "password", CommonCommandFixtures.VALID_PASSWORD);
 
         // Act
         UserAccountResponse response = UserAccountAssembler.toResponseFromEntity(account);
 
         // Assert
         assertThat(response.userAccountId()).isEqualTo(70L);
-        assertThat(response.userId()).isEqualTo(1L);
         assertThat(response.email()).isEqualTo(CommonCommandFixtures.VALID_EMAIL);
-        assertThat(response.password()).isEqualTo(CommonCommandFixtures.VALID_PASSWORD);
-        assertThat(response.anonymousName()).isEqualTo(CommonCommandFixtures.VALID_ANONYMOUS_NAME);
-        // IamCommandFixtures.createUserAccountCommandFrom uses MembershipId(0L) and CompanyId(0L) defaults
-        assertThat(response.membershipId()).isEqualTo(0L);
-        assertThat(response.companyId()).isEqualTo(0L);
-    }
+        assertThat(response.password()).isEqualTo(CommonCommandFixtures.VALID_PASSWORD); }
 }

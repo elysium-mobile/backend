@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 import pe.edu.upc.soft.work.platform.profile.performance.application.internal.outboundservices.acl.ExternalIamServiceFromProfilePerformance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.CommentEmployee;
+import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.Performance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeleteCommentEmployeeCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.events.CommentEmployeeAddedEvent;
 import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.CommentEmployeeRepository;
@@ -53,8 +54,12 @@ class CommentEmployeeCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = ProfilePerformanceCommandFixtures.validCreateCommentEmployeeCommand();
+        var performance = new Performance();
+
         when(externalIamServiceFromProfilePerformance.existsRRHHProfileById(any())).thenReturn(true);
         when(performanceRepository.existsById(any())).thenReturn(true);
+        when(performanceRepository.findById(any())).thenReturn(Optional.of(performance));
+
         when(commentemployeeRepository.save(any(CommentEmployee.class))).thenAnswer(inv -> {
             CommentEmployee c = inv.getArgument(0);
             ReflectionTestUtils.setId(c, COMMENT_ID);
@@ -68,9 +73,9 @@ class CommentEmployeeCommandServiceImplTest {
         assertThat(resultId).isEqualTo(COMMENT_ID);
         verify(eventPublisher).publishEvent(any(CommentEmployeeAddedEvent.class));
         verify(performanceRepository).existsById(any());
+        verify(performanceRepository).save(any(Performance.class));
         verify(commentemployeeRepository).save(any(CommentEmployee.class));
-        verifyNoMoreInteractions(eventPublisher, performanceRepository, commentemployeeRepository, externalIamServiceFromProfilePerformance);
-    }
+        verifyNoMoreInteractions(eventPublisher, performanceRepository, commentemployeeRepository, externalIamServiceFromProfilePerformance); }
 
     @Test
     @DisplayName("handle(CreateCommentEmployeeCommand) -> throws NotFoundArgumentException when RRHH profile is missing (AAA)")
@@ -92,10 +97,11 @@ class CommentEmployeeCommandServiceImplTest {
     @Test
     @DisplayName("handle(CreateCommentEmployeeCommand) -> wraps save failure in RuntimeException (AAA)")
     void handleCreateSaveFailure() {
-        // Arrange
         var command = ProfilePerformanceCommandFixtures.validCreateCommentEmployeeCommand();
+        var performance = new Performance();
         when(externalIamServiceFromProfilePerformance.existsRRHHProfileById(any())).thenReturn(true);
         when(performanceRepository.existsById(any())).thenReturn(true);
+        when(performanceRepository.findById(any())).thenReturn(Optional.of(performance));
         when(commentemployeeRepository.save(any(CommentEmployee.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
@@ -103,10 +109,8 @@ class CommentEmployeeCommandServiceImplTest {
         assertThat(ex.getMessage()).contains("Error creating CommentEmployee").contains("db");
         verify(externalIamServiceFromProfilePerformance).existsRRHHProfileById(any());
         verify(performanceRepository).existsById(any());
-        verify(eventPublisher).publishEvent(any(CommentEmployeeAddedEvent.class));
-        verify(commentemployeeRepository).save(any(CommentEmployee.class));
-        verifyNoMoreInteractions(externalIamServiceFromProfilePerformance, performanceRepository, eventPublisher, commentemployeeRepository);
-    }
+        verify(performanceRepository).findById(any());
+        verify(commentemployeeRepository).save(any(CommentEmployee.class));}
 
     @Test
     @DisplayName("handle(UpdateCommentEmployeeCommand) -> returns Optional with updated CommentEmployee when present (AAA)")

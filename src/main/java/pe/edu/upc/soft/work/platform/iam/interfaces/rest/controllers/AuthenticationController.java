@@ -17,6 +17,10 @@ import pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers.EmployeeProf
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers.RRHHProfileAssembler;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.*;
 
+/**
+ * Controller for managing authentication and registration processes.
+ * Provides endpoints for user sign-in and employee/RRHH registration.
+ */
 @RestController
 @RequestMapping(value = "/api/v1/authentication", produces = MediaType.APPLICATION_JSON_VALUE)
 @Tag(name = "Authentication", description = "Authentication Endpoints")
@@ -26,6 +30,13 @@ public class AuthenticationController {
     private final RRHHProfileCommandService rrhhProfileCommandService;
     private final UserAccountCommandService userAccountCommandService;
 
+    /**
+     * Constructor for AuthenticationController.
+     * Initializes the services for handling authentication and profile creation.
+     * @param employeeProfileCommandService Service for handling employee profile operations
+     * @param rrhhProfileCommandService     Service for handling RRHH profile operations
+     * @param userAccountCommandService     Service for handling user account operations
+     */
     public AuthenticationController(EmployeeProfileCommandService employeeProfileCommandService,
                                     RRHHProfileCommandService rrhhProfileCommandService,
                                     UserAccountCommandService userAccountCommandService) {
@@ -34,26 +45,11 @@ public class AuthenticationController {
         this.userAccountCommandService = userAccountCommandService;
     }
 
-//    @PostMapping("/sign-in/employee")
-//    public ResponseEntity<AuthenticatedUserAccountResponse> signInEmployee(@RequestBody SignInRequest request) {
-//        var signInCommand = AuthenticationAssembler.toCommandFromRequestSignIn(request);
-//        var authenticatedUserAccount = employeeProfileCommandService.handle(signInCommand);
-//        if (authenticatedUserAccount.isEmpty()) return ResponseEntity.notFound().build();
-//        var response = AuthenticationAssembler.toResponseFromEntityUserAccount(
-//                authenticatedUserAccount.get().getLeft(), authenticatedUserAccount.get().getRight());
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    @PostMapping("/sign-in/rrhh")
-//    public ResponseEntity<AuthenticatedUserAccountResponse> signInRRHH(@RequestBody SignInRequest request) {
-//        var signInCommand = AuthenticationAssembler.toCommandFromRequestSignIn(request);
-//        var authenticatedUserAccount = rrhhProfileCommandService.handle(signInCommand);
-//        if (authenticatedUserAccount.isEmpty()) return ResponseEntity.notFound().build();
-//        var response = AuthenticationAssembler.toResponseFromEntityUserAccount(
-//                authenticatedUserAccount.get().getLeft(), authenticatedUserAccount.get().getRight());
-//        return ResponseEntity.ok(response);
-//    }
-
+    /**
+     * Endpoint for user sign-in.
+     * @param request Request object containing login credentials
+     * @return ResponseEntity containing the authenticated user account and access token
+     */
     @PostMapping("/sign-in")
     public ResponseEntity<AuthenticatedUserAccountResponse> signIn(@RequestBody SignInRequest request) {
         var signInCommand = AuthenticationAssembler.toCommandFromRequestSignIn(request);
@@ -64,6 +60,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Endpoint for employee sign-up.
+     * @param request Request object containing employee registration details
+     * @return ResponseEntity containing the created employee profile
+     */
     @PostMapping("/sign-up/employee")
     public ResponseEntity<EmployeeProfileResponse> signUpEmployee(@RequestBody EmployeeProfileSignUpRequest request) {
         var signUpCommand = AuthenticationAssembler.toCommandFromRequestSignUpEmployeeProfile(request);
@@ -73,6 +74,11 @@ public class AuthenticationController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for RRHH sign-up.
+     * @param request Request object containing RRHH registration details
+     * @return ResponseEntity containing the created RRHH profile
+     */
     @PostMapping("/sign-up/rrhh")
     public ResponseEntity<RRHHProfileResponse> signUpRRHH(@RequestBody RRHHProfileSignUpRequest request) {
         var signUpCommand = AuthenticationAssembler.toCommandFromRequestSignUpRRHHProfile(request);

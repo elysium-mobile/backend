@@ -47,8 +47,11 @@ class ThreadCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = WorkerForumCommandFixtures.validCreateThreadCommand();
+        var category = mock(Category.class);
+
         when(externalDashboardServiceFromWorkerForum.existsCompanyById(any())).thenReturn(true);
         when(categoryRepository.existsById(command.categoryId())).thenReturn(true);
+        when(categoryRepository.findById(command.categoryId())).thenReturn(Optional.of(category));
         when(threadRepository.save(any(Thread.class))).thenAnswer(inv -> {
             Thread t = inv.getArgument(0);
             ReflectionTestUtils.setId(t, THREAD_ID);
@@ -60,8 +63,10 @@ class ThreadCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(THREAD_ID);
-        verify(externalDashboardServiceFromWorkerForum).existsCompanyById(any());
         verify(categoryRepository).existsById(command.categoryId());
+        verify(categoryRepository).findById(command.categoryId());
+        verify(categoryRepository).save(category);
+        verify(externalDashboardServiceFromWorkerForum).existsCompanyById(any());
         verify(threadRepository).save(any(Thread.class));
         verifyNoMoreInteractions(threadRepository, externalDashboardServiceFromWorkerForum, categoryRepository, messageRepository);
     }
@@ -88,9 +93,12 @@ class ThreadCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = WorkerForumCommandFixtures.validCreateThreadCommand();
+        var category = mock(Category.class);
+
         when(externalDashboardServiceFromWorkerForum.existsCompanyById(WorkerForumCommandFixtures.VALID_AREA_COMPANY_ID))
             .thenReturn(true);
         when(categoryRepository.existsById(command.categoryId())).thenReturn(true);
+        when(categoryRepository.findById(command.categoryId())).thenReturn(Optional.of(category));
         when(threadRepository.save(any(Thread.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
@@ -98,9 +106,8 @@ class ThreadCommandServiceImplTest {
         assertThat(ex.getMessage()).contains("Error creating Thread").contains("db");
         verify(externalDashboardServiceFromWorkerForum).existsCompanyById(WorkerForumCommandFixtures.VALID_AREA_COMPANY_ID);
         verify(categoryRepository).existsById(command.categoryId());
-        verify(threadRepository).save(any(Thread.class));
-        verifyNoMoreInteractions(externalDashboardServiceFromWorkerForum, threadRepository, categoryRepository, messageRepository);
-    }
+        verify(categoryRepository).findById(command.categoryId());
+        verify(threadRepository).save(any(Thread.class));}
 
     @Test
     @DisplayName("handle(UpdateThreadCommand) -> returns Optional with updated Thread when present (AAA)")

@@ -25,6 +25,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing Benefits in the system.
+ * Provides endpoints for creating, retrieving, updating, and deleting Benefits.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/benefits", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -34,11 +38,22 @@ public class BenefitController {
     private final BenefitCommandService benefitCommandService;
     private final BenefitQueryService benefitQueryService;
 
+    /**
+     * Constructor for BenefitController.
+     * Initializes the command and query services for handling Benefit operations.
+     * @param benefitCommandService Service for handling commands related to Benefits
+     * @param benefitQueryService   Service for handling queries related to Benefits
+     */
     public BenefitController(BenefitCommandService benefitCommandService, BenefitQueryService benefitQueryService){
         this.benefitCommandService = benefitCommandService;
         this.benefitQueryService = benefitQueryService;
     }
 
+    /**
+     * Endpoint for creating a new Benefit.
+     * @param request Request object containing the details of the Benefit to be created
+     * @return ResponseEntity containing the created BenefitResponse and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new Benefit", description = "Create a new Benefit in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Benefit created successfully",
@@ -66,6 +81,10 @@ public class BenefitController {
         return new ResponseEntity<>(benefitResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all Benefits.
+     * @return ResponseEntity containing a list of BenefitResponse objects
+     */
     @Operation(summary = "Get all Benefits", description = "Retrieve a list of all Benefits in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Benefits retrieved successfully",
@@ -84,6 +103,11 @@ public class BenefitController {
         return ResponseEntity.ok(benefitResponses);
     }
 
+    /**
+     * Endpoint for retrieving a specific Benefit by ID.
+     * @param id ID of the Benefit to be retrieved
+     * @return ResponseEntity containing the BenefitResponse if found
+     */
     @Operation(summary = "Get Benefits by ID", description = "Retrieve a Benefits by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Benefits retrieved successfully",
@@ -103,6 +127,12 @@ public class BenefitController {
         return ResponseEntity.ok(benefitResponse);
     }
 
+    /**
+     * Endpoint for updating an existing Benefit by ID.
+     * @param id ID of the Benefit to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated BenefitResponse if successful
+     */
     @Operation(summary = "Update Benefit information", description = "Update the information of an existing Benefit")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Benefit updated successfully",
@@ -122,6 +152,11 @@ public class BenefitController {
         return ResponseEntity.ok(benefitResponse);
     }
 
+    /**
+     * Endpoint for deleting a Benefit by ID.
+     * @param id ID of the Benefit to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete Benefit by ID", description = "Delete a Benefit by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Benefit deleted successfully", content = @Content),

@@ -27,6 +27,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+
+/**
+ * Controller for managing Assets in the system.
+ * Provides endpoints for uploading files (assets), retrieving, updating, and deleting asset records.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/assets", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,11 +41,25 @@ public class AssetController {
     private final AssetCommandService assetCommandService;
     private final AssetQueryService assetQueryService;
 
+    /**
+     * Constructor for AssetController.
+     * Initializes the command and query services for handling Asset operations.
+     * @param assetCommandService Service for handling commands related to Assets
+     * @param assetQueryService   Service for handling queries related to Assets
+     */
     public AssetController(AssetCommandService assetCommandService, AssetQueryService assetQueryService) {
         this.assetCommandService = assetCommandService;
         this.assetQueryService = assetQueryService;
     }
 
+    /**
+     * Endpoint for creating a new Asset by uploading a file.
+     * @param messageId ID of the message associated with the asset
+     * @param name      Name of the asset
+     * @param fileType  Type of the file (e.g., IMAGE, DOCUMENT)
+     * @param file      The file content to upload
+     * @return ResponseEntity containing the created AssetResponse and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new Asset", description = "Upload a file to Cloudinary and register the Asset")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Asset created successfully",
@@ -71,6 +90,10 @@ public class AssetController {
         return new ResponseEntity<>(AssetAssembler.toResponseFromEntity(attachment.get()), HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all Assets.
+     * @return ResponseEntity containing a list of AssetResponse objects
+     */
     @Operation(summary = "Get all Asset", description = "Retrieve a list of all Asset in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Asset retrieved successfully",
@@ -89,6 +112,11 @@ public class AssetController {
         return ResponseEntity.ok(attachmentResponses);
     }
 
+    /**
+     * Endpoint for retrieving a specific Asset by ID.
+     * @param id ID of the Asset to be retrieved
+     * @return ResponseEntity containing the AssetResponse if found
+     */
     @Operation(summary = "Get Asset by ID", description = "Retrieve an Asset by its unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Asset retrieved successfully",
@@ -109,6 +137,12 @@ public class AssetController {
         return ResponseEntity.ok(attachmentResponse);
     }
 
+    /**
+     * Endpoint for updating an existing Asset by ID.
+     * @param id ID of the Asset to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated AssetResponse if successful
+     */
     @Operation(summary = "Update Asset information", description = "Update the information of an existing Asset")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Asset updated successfully",
@@ -128,6 +162,11 @@ public class AssetController {
         return ResponseEntity.ok(attachmentResponse);
     }
 
+    /**
+     * Endpoint for deleting an Asset by ID.
+     * @param id ID of the Asset to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete Asset by ID", description = "Delete an Asset by its unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Asset deleted successfully", content = @Content),

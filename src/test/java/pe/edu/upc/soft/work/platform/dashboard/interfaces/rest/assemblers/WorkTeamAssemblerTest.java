@@ -58,6 +58,9 @@ class WorkTeamAssemblerTest {
         // Arrange
         var entity = new WorkTeam(DashboardCommandFixtures.validCreateWorkTeamCommand());
         ReflectionTestUtils.setId(entity, 55L);
+        ReflectionTestUtils.setField(entity, "teamName", DashboardCommandFixtures.VALID_TEAM_NAME);
+        ReflectionTestUtils.setField(entity, "leaderOfTeam", DashboardCommandFixtures.VALID_TEAM_LEADER);
+        ReflectionTestUtils.setField(entity, "unitOfWorkId", DashboardCommandFixtures.VALID_UNIT_OF_WORK_ID);
 
         // Act
         WorkTeamResponse response = WorkTeamAssembler.toResponseFromEntity(entity);

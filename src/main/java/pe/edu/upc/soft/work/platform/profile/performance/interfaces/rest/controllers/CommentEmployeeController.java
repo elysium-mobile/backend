@@ -24,6 +24,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing Comment Employees in the system.
+ * Provides endpoints for creating, retrieving, updating, and deleting Comment Employees.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/commentemployees", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,11 +37,22 @@ public class CommentEmployeeController {
     private final CommentEmployeeCommandService commentemployeeCommandService;
     private final CommentEmployeeQueryService commentemployeeQueryService;
 
+    /**
+     * Constructor for CommentEmployeeController.
+     * Initializes the command and query services for handling Comment Employee operations.
+     * @param commentemployeeCommandService Service for handling commands related to Comment Employees
+     * @param commentemployeeQueryService   Service for handling queries related to Comment Employees
+     */
     public CommentEmployeeController(CommentEmployeeCommandService commentemployeeCommandService, CommentEmployeeQueryService commentemployeeQueryService) {
         this.commentemployeeCommandService = commentemployeeCommandService;
         this.commentemployeeQueryService = commentemployeeQueryService;
     }
 
+    /**
+     * Endpoint for creating a new Comment Employee.
+     * @param request Request object containing the details of the Comment Employee to be created
+     * @return ResponseEntity containing the created CommentEmployeeResponse and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new CommentEmployee", description = "Create a new CommentEmployee in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "CommentEmployee created successfully", 
@@ -65,6 +80,10 @@ public class CommentEmployeeController {
         return new ResponseEntity<>(commentemployeeResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all Comment Employees.
+     * @return ResponseEntity containing a list of CommentEmployeeResponse objects
+     */
     @Operation(summary = "Get all CommentEmployees", description = "Retrieve a list of all CommentEmployees in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "CommentEmployees retrieved successfully",
@@ -83,6 +102,11 @@ public class CommentEmployeeController {
         return ResponseEntity.ok(commentemployeeResponses);
     }
 
+    /**
+     * Endpoint for retrieving a specific Comment Employee by ID.
+     * @param id ID of the Comment Employee to be retrieved
+     * @return ResponseEntity containing the CommentEmployeeResponse if found
+     */
     @Operation(summary = "Get CommentEmployee by ID", description = "Retrieve a CommentEmployee by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "CommentEmployee retrieved successfully",
@@ -103,6 +127,12 @@ public class CommentEmployeeController {
         return ResponseEntity.ok(commentemployeeResponse);
     }
 
+    /**
+     * Endpoint for updating an existing Comment Employee by ID.
+     * @param id ID of the Comment Employee to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated CommentEmployeeResponse if successful
+     */
     @Operation(summary = "Update CommentEmployee information", description = "Update the information of an existing CommentEmployee")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "CommentEmployee updated successfully",
@@ -122,6 +152,11 @@ public class CommentEmployeeController {
         return ResponseEntity.ok(commentemployeeResponse);
     }
 
+    /**
+     * Endpoint for deleting a Comment Employee by ID.
+     * @param id ID of the Comment Employee to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete CommentEmployee by ID", description = "Delete a CommentEmployee by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "CommentEmployee deleted successfully", content = @Content),

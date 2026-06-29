@@ -24,6 +24,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing Reports in the system.
+ * Provides endpoints for creating, retrieving, updating, and deleting Reports,
+ * as well as filtering them by user account.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/reports", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,6 +38,12 @@ public class ReportController{
     private final ReportCommandService reportCommandService;
     private final ReportQueryService reportQueryService;
 
+    /**
+     * Constructor for ReportController.
+     * Initializes the command and query services for handling Report operations.
+     * @param reportCommandService Service for handling commands related to Reports
+     * @param reportQueryService   Service for handling queries related to Reports
+     */
     public ReportController(ReportCommandService reportCommandService,
                             ReportQueryService reportQueryService){
         this.reportCommandService = reportCommandService;
@@ -40,6 +51,11 @@ public class ReportController{
     }
 
 
+    /**
+     * Endpoint for creating a new Report.
+     * @param request Request object containing the details of the Report to be created
+     * @return ResponseEntity containing the created ReportResponse and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new Report", description = "Create a new Report in the system")
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Report created successfully",
@@ -66,6 +82,10 @@ public class ReportController{
     }
 
 
+    /**
+     * Endpoint for retrieving all Reports.
+     * @return ResponseEntity containing a list of ReportResponse objects
+     */
     @Operation(summary = "Get all Reports", description = "Retrieve a list of all Reports in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Reports retrieved successfully",
@@ -84,8 +104,11 @@ public class ReportController{
         return ResponseEntity.ok(reportResponses);
     }
 
-
-
+    /**
+     * Endpoint for retrieving a specific Report by ID.
+     * @param id ID of the Report to be retrieved
+     * @return ResponseEntity containing the ReportResponse if found
+     */
     @Operation(summary = "Get Report by ID", description = "Retrieve a Report by its unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Report retrieved successfully",
@@ -106,7 +129,12 @@ public class ReportController{
         return ResponseEntity.ok(reportResponse);
     }
 
-
+    /**
+     * Endpoint for updating an existing Report by ID.
+     * @param id ID of the Report to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated ReportResponse if successful
+     */
     @Operation(summary = "Update Report by ID", description = "Update a Report by its unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Report updated successfully",
@@ -126,6 +154,11 @@ public class ReportController{
         return ResponseEntity.ok(reportResponse);
     }
 
+    /**
+     * Endpoint for deleting a Report by ID.
+     * @param id ID of the Report to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete Report by ID", description = "Delete a Report by its unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Report deleted successfully", content = @io.swagger.v3.oas.annotations.media.Content),
@@ -138,7 +171,11 @@ public class ReportController{
         return ResponseEntity.noContent().build();
     }
 
-
+    /**
+     * Endpoint for retrieving Reports by User Account ID.
+     * @param userAccountId ID of the User Account
+     * @return ResponseEntity containing a list of ReportResponse objects
+     */
     @Operation(summary = "Get Reports by User Account ID", description = "Retrieve a list of Reports associated with a specific User Account ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Reports retrieved successfully",

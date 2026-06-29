@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.SurveyResponse;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.valueObjects.EmployeeProfileId;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.CreateSurveyResponseRequest;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.SurveyResponseResponse;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.UpdateSurveyResponseRequest;
@@ -67,6 +68,11 @@ class SurveyResponseAssemblerTest {
         // Arrange
         var entity = new SurveyResponse(FeedbackCommandFixtures.validCreateSurveyResponseCommand());
         ReflectionTestUtils.setId(entity, 31L);
+        ReflectionTestUtils.setField(entity, "surveyId", FeedbackCommandFixtures.VALID_SURVEY_ID);
+        ReflectionTestUtils.setField(entity, "employeeProfileId", new EmployeeProfileId(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID));
+        ReflectionTestUtils.setField(entity, "submittedAt", FeedbackCommandFixtures.VALID_SUBMITTED_AT);
+        ReflectionTestUtils.setField(entity, "commentary", FeedbackCommandFixtures.VALID_COMMENTARY);
+        ReflectionTestUtils.setField(entity, "cause", FeedbackCommandFixtures.VALID_CAUSE);
 
         // Act
         SurveyResponseResponse response = SurveyResponseAssembler.toResponseFromEntity(entity);

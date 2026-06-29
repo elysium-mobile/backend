@@ -46,7 +46,9 @@ class BenefitCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = PaymentCommandFixtures.validCreateBenefitCommand();
+        var membershipPlan = new MembershipPlan();
         when(membershipPlanRepository.existsById(command.membershipPlanId())).thenReturn(true);
+        when(membershipPlanRepository.findById(command.membershipPlanId())).thenReturn(Optional.of(membershipPlan));
         when(benefitRepository.save(any(Benefit.class))).thenAnswer(inv -> {
             Benefit b = inv.getArgument(0);
             ReflectionTestUtils.setId(b, BENEFIT_ID);
@@ -59,7 +61,9 @@ class BenefitCommandServiceImplTest {
         // Assert
         assertThat(resultId).isEqualTo(BENEFIT_ID);
         verify(membershipPlanRepository, times(1)).existsById(command.membershipPlanId());
+        verify(membershipPlanRepository, times(1)).findById(command.membershipPlanId());
         verify(benefitRepository, times(1)).save(any(Benefit.class));
+        verify(membershipPlanRepository, times(1)).save(any(MembershipPlan.class));
         verifyNoMoreInteractions(membershipPlanRepository, benefitRepository);
     }
 
@@ -68,13 +72,16 @@ class BenefitCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = PaymentCommandFixtures.validCreateBenefitCommand();
+        var membershipPlan = new MembershipPlan();
         when(membershipPlanRepository.existsById(command.membershipPlanId())).thenReturn(true);
+        when(membershipPlanRepository.findById(command.membershipPlanId())).thenReturn(Optional.of(membershipPlan));
         when(benefitRepository.save(any(Benefit.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating Benefit").contains("db");
         verify(membershipPlanRepository).existsById(command.membershipPlanId());
+        verify(membershipPlanRepository).findById(command.membershipPlanId());
         verify(benefitRepository).save(any(Benefit.class));
     }
 

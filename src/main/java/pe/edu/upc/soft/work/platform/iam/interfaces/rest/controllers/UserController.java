@@ -24,6 +24,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+
+/**
+ * Controller for managing Users in the IAM system.
+ * Provides endpoints for creating, retrieving, updating, and deleting users.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/users", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,11 +38,22 @@ public class UserController {
     private final UserCommandService userCommandService;
     private final UserQueryService userQueryService;
 
+  /**
+   * Constructor for UserController.
+   * Initializes the command and query services for handling User operations.
+   * @param userCommandService Service for handling commands related to Users
+   * @param userQueryService   Service for handling queries related to Users
+   */
     public UserController(UserCommandService userCommandService, UserQueryService userQueryService) {
         this.userCommandService = userCommandService;
         this.userQueryService = userQueryService;
     }
 
+  /**
+   * Endpoint for creating a new user.
+   * @param request Request object containing the details of the user to be created
+   * @return ResponseEntity containing the created UserResponse and the appropriate HTTP status code
+   */
     @Operation(summary = "Create a new user", description = "Create a new user in the system",
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
             description = "Create user request",
@@ -70,6 +86,10 @@ public class UserController {
         return new ResponseEntity<>(userResponse, HttpStatus.CREATED);
     }
 
+  /**
+   * Endpoint for retrieving all users.
+   * @return ResponseEntity containing a list of UserResponse objects
+   */
     @Operation(summary = "Get all users", description = "Retrieve a list of all users in the system")
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
@@ -88,6 +108,11 @@ public class UserController {
         return ResponseEntity.ok(userResponses);
     }
 
+  /**
+   * Endpoint for retrieving a specific user by ID.
+   * @param id The unique identifier of the user
+   * @return ResponseEntity containing the UserResponse if found
+   */
     @Operation(summary = "Get user by ID", description = "Retrieve a user by their unique identifier",
     parameters = @io.swagger.v3.oas.annotations.Parameter(name = "id", description = "The unique identifier of the user", required = true))
     @ApiResponses(value ={
@@ -110,6 +135,12 @@ public class UserController {
     }
 
 
+  /**
+   * Endpoint for updating an existing user by ID.
+   * @param id The unique identifier of the user
+   * @param request Request object containing the updated details
+   * @return ResponseEntity containing the updated UserResponse if successful
+   */
     @Operation(summary = "Update user information", description = "Update the information of an existing user",
     requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(
         description = "User data for update", required = true,
@@ -135,6 +166,11 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
+  /**
+   * Endpoint for deleting a user by ID.
+   * @param userId The unique identifier of the user to be deleted
+   * @return ResponseEntity with no content if deleted successfully
+   */
     @Operation(summary = "Delete user by ID", description = "Delete a user by their unique identifier",
     parameters = @io.swagger.v3.oas.annotations.Parameter(name = "userId", description =
             "The unique identifier of the user to be deleted", required = true))

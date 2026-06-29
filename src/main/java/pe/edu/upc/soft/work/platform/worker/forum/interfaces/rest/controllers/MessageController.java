@@ -27,6 +27,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing Messages in the system.
+ * Provides endpoints for creating, retrieving, updating, and deleting Messages,
+ * as well as managing associated assets and filtering by thread or user account.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/messages", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -36,11 +41,22 @@ public class MessageController {
     private final MessageCommandService messageCommandService;
     private final MessageQueryService messageQueryService;
 
+    /**
+     * Constructor for MessageController.
+     * Initializes the command and query services for handling Message operations.
+     * @param messageCommandService Service for handling commands related to Messages
+     * @param messageQueryService   Service for handling queries related to Messages
+     */
     public MessageController(MessageCommandService messageCommandService, MessageQueryService messageQueryService) {
         this.messageCommandService = messageCommandService;
         this.messageQueryService = messageQueryService;
     }
 
+    /**
+     * Endpoint for creating a new Message.
+     * @param request Request object containing the details of the Message to be created
+     * @return ResponseEntity containing the created MessageResponse and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new Message", description = "Create a new Message in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Message created successfully", 
@@ -68,6 +84,10 @@ public class MessageController {
         return new ResponseEntity<>(messageResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all Messages.
+     * @return ResponseEntity containing a list of MessageResponse objects
+     */
     @Operation(summary = "Get all Messages", description = "Retrieve a list of all Messages in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Messages retrieved successfully",
@@ -86,6 +106,11 @@ public class MessageController {
         return ResponseEntity.ok(messageResponses);
     }
 
+    /**
+     * Endpoint for retrieving a specific Message by ID.
+     * @param id ID of the Message to be retrieved
+     * @return ResponseEntity containing the MessageResponse if found
+     */
     @Operation(summary = "Get Message by ID", description = "Retrieve a Message by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Message retrieved successfully",
@@ -106,6 +131,12 @@ public class MessageController {
         return ResponseEntity.ok(messageResponse);
     }
 
+    /**
+     * Endpoint for updating an existing Message by ID.
+     * @param id ID of the Message to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated MessageResponse if successful
+     */
     @Operation(summary = "Update Message information", description = "Update the information of an existing Message")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Message updated successfully",
@@ -125,6 +156,11 @@ public class MessageController {
         return ResponseEntity.ok(messageResponse);
     }
 
+    /**
+     * Endpoint for deleting a Message by ID.
+     * @param id ID of the Message to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete Message by ID", description = "Delete a Message by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Message deleted successfully", content = @Content),
@@ -137,6 +173,12 @@ public class MessageController {
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Endpoint for adding an Asset to a Message.
+     * @param messageId ID of the Message
+     * @param request Request object containing the Asset details
+     * @return ResponseEntity containing the updated MessageResponse
+     */
     @Operation(summary = "Add Asset to Message", description = "Add an Asset to an existing Message")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Asset added successfully",
@@ -158,6 +200,11 @@ public class MessageController {
         return ResponseEntity.ok(messageResponse);
     }
 
+    /**
+     * Endpoint for retrieving Messages by Thread ID.
+     * @param threadId ID of the Thread
+     * @return ResponseEntity containing a list of MessageResponse objects
+     */
     @Operation(summary = "Get Messages by Thread ID", description = "Retrieve a list of Messages associated with a specific Thread ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Messages retrieved successfully",
@@ -180,6 +227,11 @@ public class MessageController {
         return ResponseEntity.ok(messageResponses);
     }
 
+    /**
+     * Endpoint for retrieving Messages by User Account ID.
+     * @param userAccountId ID of the User Account
+     * @return ResponseEntity containing a list of MessageResponse objects
+     */
     @Operation(summary = "Get Messages by User Account ID", description = "Retrieve a list of Messages associated with a specific User Account ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Messages retrieved successfully",

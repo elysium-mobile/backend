@@ -55,7 +55,14 @@ class DashboardAssemblerTest {
     @DisplayName("toResponseFromEntity(Dashboard) -> maps id and ruc to DashboardResponse (AAA)")
     void toResponseFromEntityMapsAllFields() {
         // Arrange
-        var dashboard = new Dashboard(DashboardCommandFixtures.validCreateDashboardCommand());
+        var command = new CreateDashboardCommand(
+            DashboardCommandFixtures.VALID_RUC,
+            DashboardCommandFixtures.VALID_TITLE,
+            DashboardCommandFixtures.VALID_DESCRIPTION,
+            0L,
+            new ArrayList<>()
+        );
+        var dashboard = new Dashboard(command);
         ReflectionTestUtils.setId(dashboard, 5L);
         ReflectionTestUtils.setField(dashboard, "widgets", new ArrayList<>());
 

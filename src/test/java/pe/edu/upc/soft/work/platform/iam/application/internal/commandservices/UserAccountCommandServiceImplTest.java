@@ -7,6 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.tokens.TokenService;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
@@ -53,6 +54,8 @@ class UserAccountCommandServiceImplTest {
     private TokenService tokenService;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private UserAccountCommandServiceImpl service;
@@ -76,6 +79,7 @@ class UserAccountCommandServiceImplTest {
         when(userAccountRepository.save(any(UserAccount.class))).thenAnswer(inv -> {
             UserAccount ua = inv.getArgument(0);
             ReflectionTestUtils.setId(ua, ACCOUNT_ID);
+            ReflectionTestUtils.setField(ua, "userId", USER_ID);
             return ua;
         });
 

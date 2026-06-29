@@ -24,6 +24,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Controller for managing Surveys in the system.
+ * Provides endpoints for creating, retrieving, updating, and deleting Surveys.
+ */
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @RequestMapping(value = "/api/v1/surveys", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,11 +37,22 @@ public class SurveyController {
     private final SurveyCommandService surveyCommandService;
     private final SurveyQueryService surveyQueryService;
 
+    /**
+     * Constructor for SurveyController.
+     * Initializes the command and query services for handling Survey operations.
+     * @param surveyCommandService Service for handling commands related to Surveys
+     * @param surveyQueryService   Service for handling queries related to Surveys
+     */
     public SurveyController(SurveyCommandService surveyCommandService, SurveyQueryService surveyQueryService) {
         this.surveyCommandService = surveyCommandService;
         this.surveyQueryService = surveyQueryService;
     }
 
+    /**
+     * Endpoint for creating a new Survey.
+     * @param request Request object containing the details of the Survey to be created
+     * @return ResponseEntity containing the created Survey and the appropriate HTTP status code
+     */
     @Operation(summary = "Create a new Survey", description = "Create a new Survey in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Survey created successfully", 
@@ -65,6 +80,10 @@ public class SurveyController {
         return new ResponseEntity<>(surveyResponse, HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for retrieving all Surveys.
+     * @return ResponseEntity containing a list of SurveyResponse objects
+     */
     @Operation(summary = "Get all Surveys", description = "Retrieve a list of all Surveys in the system")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Surveys retrieved successfully",
@@ -83,6 +102,11 @@ public class SurveyController {
         return ResponseEntity.ok(surveyResponses);
     }
 
+    /**
+     * Endpoint for retrieving a specific Survey by its ID.
+     * @param id ID of the Survey to be retrieved
+     * @return ResponseEntity containing the SurveyResponse if found
+     */
     @Operation(summary = "Get Survey by ID", description = "Retrieve a Survey by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Survey retrieved successfully",
@@ -103,6 +127,12 @@ public class SurveyController {
         return ResponseEntity.ok(surveyResponse);
     }
 
+    /**
+     * Endpoint for updating an existing Survey by its ID.
+     * @param id ID of the Survey to be updated
+     * @param request Request object containing the updated details
+     * @return ResponseEntity containing the updated SurveyResponse if successful
+     */
     @Operation(summary = "Update Survey information", description = "Update the information of an existing Survey")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Survey updated successfully",
@@ -122,6 +152,11 @@ public class SurveyController {
         return ResponseEntity.ok(surveyResponse);
     }
 
+    /**
+     * Endpoint for deleting an existing Survey by its ID.
+     * @param id ID of the Survey to be deleted
+     * @return ResponseEntity with no content if deleted successfully
+     */
     @Operation(summary = "Delete Survey by ID", description = "Delete a Survey by their unique identifier")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Survey deleted successfully", content = @Content),

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Company;
+import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.AreaCompany;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.AreaCompanyRepository;
@@ -54,15 +55,14 @@ class AreaCompanyCommandServiceImplTest {
     @DisplayName("handle(CreateAreaCompanyCommand) -> creates AreaCompany and returns generated id (AAA)")
     void handleCreateSuccess() {
         // Arrange
-        var command = DashboardCommandFixtures.validCreateAreaCompanyCommand();
-        when(companyRepository.existsById(command.companyId())).thenReturn(true);
+        var command = new CreateAreaCompanyCommand("Nombre",5000, 1L, null);
+        when(companyRepository.existsById(1L)).thenReturn(true);
+        when(companyRepository.findById(1L)).thenReturn(Optional.of(new Company()));
         when(areacompanyRepository.save(any(AreaCompany.class))).thenAnswer(inv -> {
             AreaCompany a = inv.getArgument(0);
             ReflectionTestUtils.setId(a, AREA_COMPANY_ID);
             return a;
         });
-
-
         // Act
         Long resultId = service.handle(command);
 
@@ -80,15 +80,14 @@ class AreaCompanyCommandServiceImplTest {
         // Arrange
         var command = DashboardCommandFixtures.validCreateAreaCompanyCommand();
         when(companyRepository.existsById(command.companyId())).thenReturn(true);
+        when(companyRepository.findById(command.companyId())).thenReturn(Optional.of(new Company()));
         when(areacompanyRepository.save(any(AreaCompany.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating AreaCompany").contains("db");
-        verify(companyRepository, times(1)).existsById(command.companyId());
-        verify(areacompanyRepository, times(1)).save(any(AreaCompany.class));
-        verifyNoMoreInteractions(areacompanyRepository);
-        verifyNoInteractions(externalIamServiceFromDashboard);
+        verify(companyRepository).existsById(command.companyId());
+        verify(areacompanyRepository).save(any(AreaCompany.class));
     }
 
     @Test

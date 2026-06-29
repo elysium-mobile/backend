@@ -34,6 +34,12 @@ public interface UserAccountCommandService {
      */
     void handle(DeleteUserAccountCommand command);
 
+    /**
+     * Handles the user sign-in process, verifying credentials and generating an access token.
+     *
+     * @param command the command containing the sign-in credentials (email and password)
+     * @return an Optional containing an ImmutablePair with the authenticated UserAccount
+     *         and the generated access token, or an empty Optional if authentication fails
+     */
     Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
-
 }

@@ -19,6 +19,9 @@ import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentEx
 
 import java.util.Optional;
 
+/**
+ * Service implementation for handling RRHHProfile commands.
+ */
 @Service
 public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService {
 
@@ -28,6 +31,14 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
     private final TokenService tokenService;
     private final UserRepository userRepository;
 
+    /**
+     * Constructor for RRHHProfileCommandServiceImpl.
+     * @param rrhhProfileRepository the repository for RRHHProfile persistence
+     * @param userAccountRepository the repository for UserAccount persistence
+     * @param hashingService the service for password hashing
+     * @param tokenService the service for token management
+     * @param userRepository the repository for User persistence
+     */
     public RRHHProfileCommandServiceImpl(RRHHProfileRepository rrhhProfileRepository,
                                          UserAccountRepository userAccountRepository,
                                          HashingService hashingService,
@@ -40,6 +51,11 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
         this.userRepository = userRepository;
     }
 
+    /**
+     * Handles the creation of an RRHHProfile.
+     * @param command the command to create an RRHHProfile
+     * @return the generated ID of the new RRHHProfile
+     */
     @Override
     public Long handle(CreateRRHHProfileCommand command) {
         if (!userAccountRepository.existsById(command.userAccountId())){
@@ -57,6 +73,11 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
         return rrhhProfile.getId();
     }
 
+    /**
+     * Handles the update of an existing RRHHProfile.
+     * @param command the command to update an RRHHProfile
+     * @return the updated RRHHProfile as an Optional
+     */
     @Override
     public Optional<RRHHProfile> handle(UpdateRRHHProfileCommand command) {
         var rrhhId = command.RRHHProfileId();
@@ -70,6 +91,10 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
         }
     }
 
+    /**
+     * Handles the deletion of an RRHHProfile.
+     * @param command the command to delete an RRHHProfile
+     */
     @Override
     public void handle(DeleteRRHHProfileCommand command) {
         if (!rrhhProfileRepository.existsById(command.rrhhProfileId())) {
@@ -84,6 +109,11 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
     }
 
 
+    /**
+     * Handles the sign-up process for a new RRHH user, creating User, UserAccount and RRHHProfile.
+     * @param command the command containing RRHH sign-up details
+     * @return an Optional containing the created RRHHProfile
+     */
     @Transactional
     @Override
     public Optional<RRHHProfile> handle(RRHHSignUpCommand command) {

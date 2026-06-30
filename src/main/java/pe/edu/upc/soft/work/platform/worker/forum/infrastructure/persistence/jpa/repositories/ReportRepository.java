@@ -13,4 +13,6 @@ import java.util.List;
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
   List<Report> findByUserAccountId(Long userAccountId);
+
+  List<Report> findByAreaCompanyIdAreaCompanyIdIn(List<Long> areaIds);
 }

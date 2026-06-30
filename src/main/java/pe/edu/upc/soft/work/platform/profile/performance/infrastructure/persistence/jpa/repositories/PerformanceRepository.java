@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.Performance;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,4 +14,6 @@ import java.util.Optional;
 public interface PerformanceRepository extends JpaRepository<Performance, Long> {
 
     Optional<Performance> findByEmployeeProfileId(Long employeeId);
+
+    List<Performance> findByEmployeeProfileIdEmployeeProfileIdIn(List<Long> ids);
 }

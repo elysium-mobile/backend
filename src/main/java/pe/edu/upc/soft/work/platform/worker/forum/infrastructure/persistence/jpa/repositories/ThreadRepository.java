@@ -13,4 +13,6 @@ import java.util.List;
 public interface ThreadRepository extends JpaRepository<Thread, Long> {
 
   List<Thread> findByAreaCompanyId(Long areaCompanyId);
+
+  List<Thread> findByAreaCompanyIdAreaCompanyIdIn(List<Long> areaIds);
 }

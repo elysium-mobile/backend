@@ -155,11 +155,11 @@ VALUES
     (3, 7, 199, 2, NOW(), NOW());
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO payments (id, order_id, transaction_id, payment_date, created_at, updated_at)
+INSERT INTO payments (id, order_id, transaction_id, payment_date, payment_status, payment_method, created_at, updated_at)
 VALUES
-    (1, 1, 'TXN-2024-001', '2024-01-05', NOW(), NOW()),
-    (2, 2, 'TXN-2024-002', '2024-03-07', NOW(), NOW()),
-    (3, 3, 'TXN-2024-003', '2024-06-10', NOW(), NOW());
+    (1, 1, 'TXN-2024-001', '2024-01-05 10:00:00', 'SUCCEEDED', 'CREDIT_CARD', NOW(), NOW()),
+    (2, 2, 'TXN-2024-002', '2024-03-07 14:30:00', 'PENDING', 'PAYPAL', NOW(), NOW()),
+    (3, 3, 'TXN-2024-003', '2024-06-10 09:15:00', 'FAILED', 'BANK_TRANSFER', NOW(), NOW());
 ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO forums (id, title, description, company_id, created_at, updated_at)
@@ -304,6 +304,17 @@ VALUES
     (5, 3, 4, NOW(), 'Los valores se viven en el día a día del equipo.',                         'Cultura',                NOW(), NOW());
 ON CONFLICT (id) DO NOTHING;
 
+INSERT INTO reports (id, reason, description, user_account_id, report_date, area_company_id, created_at, updated_at)
+VALUES
+    (1, 'Comportamiento inapropiado',  'Comentarios fuera de lugar durante la reunión diaria del equipo.',           3, '2024-02-10', 1, NOW(), NOW()),
+    (2, 'Falla de seguridad',          'Se detectó una credencial expuesta en un commit del repositorio.',           7, '2024-02-18', 1, NOW(), NOW()),
+    (3, 'Incumplimiento de entrega',   'El módulo de QA no fue entregado en la fecha pactada del sprint.',           3, '2024-03-01', 2, NOW(), NOW()),
+    (4, 'Conflicto entre compañeros',  'Desacuerdo recurrente entre miembros del equipo de producto.',               4, '2024-03-05', 3, NOW(), NOW()),
+    (5, 'Uso indebido de recursos',    'Uso de licencias de software fuera del alcance autorizado.',                 5, '2024-03-12', 4, NOW(), NOW()),
+    (6, 'Retraso reiterado',           'Llegadas tarde constantes a las ceremonias ágiles del equipo de datos.',     6, '2024-03-20', 4, NOW(), NOW()),
+    (7, 'Reporte de bug crítico',      'Caída del pipeline de CI/CD afectando despliegues en producción.',           1, '2024-03-22', 1, NOW(), NOW()),
+    (8, 'Falta de comunicación',       'El equipo de QA no fue informado de cambios en el alcance del sprint.',      2, '2024-03-25', 2, NOW(), NOW());
+
 SELECT setval('users_id_seq',               (SELECT MAX(id) FROM users));
 SELECT setval('companies_id_seq',           (SELECT MAX(id) FROM companies));
 SELECT setval('memberships_id_seq',         (SELECT MAX(id) FROM memberships));
@@ -332,3 +343,4 @@ SELECT setval('surveys_id_seq',             (SELECT MAX(id) FROM surveys));
 SELECT setval('questions_surveys_id_seq',    (SELECT MAX(id) FROM questions_surveys));
 SELECT setval('answers_id_seq',             (SELECT MAX(id) FROM answers));
 SELECT setval('survey_responses_id_seq',    (SELECT MAX(id) FROM survey_responses));
+SELECT setval('reports_id_seq', (SELECT MAX(id) FROM reports));

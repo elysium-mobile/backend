@@ -5,7 +5,16 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    github = {
+      source  = "integrations/github"
+      version = "~> 6.0"
+    }
   }
+}
+
+# Configuración del proveedor de GitHub
+provider "github" {
+  owner = "elysium-mobile"
 }
 
 provider "aws" {
@@ -25,11 +34,20 @@ resource "aws_internet_gateway" "app_igw" {
   vpc_id = aws_vpc.app_vpc.id
 }
 
+# Subnet A - us-east-2a
 resource "aws_subnet" "app_subnet" {
   vpc_id                  = aws_vpc.app_vpc.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
   availability_zone       = "us-east-2a"
+}
+
+# Subnet B - us-east-2b (Requerida por el ALB)
+resource "aws_subnet" "app_subnet_b" {
+  vpc_id                  = aws_vpc.app_vpc.id
+  cidr_block              = "10.0.2.0/24"
+  map_public_ip_on_launch = true
+  availability_zone       = "us-east-2b"
 }
 
 resource "aws_route_table" "app_route_table" {
@@ -45,6 +63,11 @@ resource "aws_route_table_association" "app_route_assoc" {
   route_table_id = aws_route_table.app_route_table.id
 }
 
+resource "aws_route_table_association" "app_route_assoc_b" {
+  subnet_id      = aws_subnet.app_subnet_b.id
+  route_table_id = aws_route_table.app_route_table.id
+}
+
 # =====================================
 # 2. SSH Configuration
 # =====================================
@@ -54,14 +77,44 @@ resource "aws_key_pair" "deployer" {
 }
 
 # =====================================
-# 3. Security Group
+# 3. Security Groups
 # =====================================
-resource "aws_security_group" "app_sg" {
-  name        = "app-sg"
-  description = "Allow traffic HTTP 8080 and SSH 22 - Solo IP Peru"
+
+# SG del Load Balancer (Tráfico Público)
+resource "aws_security_group" "lb_sg" {
+  name        = "alb-sg"
+  description = "Permitir HTTP y HTTPS publico hacia el ALB"
   vpc_id      = aws_vpc.app_vpc.id
 
-  # SSH
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# SG de la EC2 (Protegida detrás del ALB)
+resource "aws_security_group" "app_sg" {
+  name        = "app-sg"
+  description = "Allow traffic from ALB and SSH"
+  vpc_id      = aws_vpc.app_vpc.id
+
+  # SSH habilitado para despliegues de GitHub Actions
   ingress {
     from_port   = 22
     to_port     = 22
@@ -69,12 +122,12 @@ resource "aws_security_group" "app_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # API
+  # Solo acepta tráfico web si pasa a través del Load Balancer
   ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.lb_sg.id]
   }
 
   egress {
@@ -115,7 +168,7 @@ resource "aws_iam_instance_profile" "app_ssm_profile" {
 }
 
 # =====================================
-# 5. EC2 Instance (con Elastic IP + SSM)
+# 5. EC2 Instance
 # =====================================
 data "aws_ami" "ubuntu" {
   most_recent = true
@@ -154,74 +207,88 @@ resource "aws_instance" "app_server" {
 
               mkdir -p /home/ubuntu/app
               chown -R ubuntu:ubuntu /home/ubuntu/app
-
-              cat > /home/ubuntu/app/.env << 'ENVEOF'
-              PORT=8080
-              JWT_SECRET=un_secreto_seguro_de_al_menos_256_bits_para_firmar_tokens_12345
-              JWT_EXPIRATION_DAYS=7
-              ENVEOF
-
-              chmod 644 /home/ubuntu/app/.env
-              chown ubuntu:ubuntu /home/ubuntu/app/.env
-
-              cat > /home/ubuntu/app/update-api-host.sh << 'SCRIPT'
-              #!/bin/bash
-              API_HOST=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
-              echo "API_HOST=$API_HOST" >> /home/ubuntu/app/.env
-              docker-compose up -d
-              SCRIPT
-
-              chmod +x /home/ubuntu/app/update-api-host.sh
-
-              cat > /etc/systemd/system/spring-app.service << 'SERVICE'
-              [Unit]
-              Description=Spring Boot App with Docker Compose
-              After=network.target
-
-              [Service]
-              Type=oneshot
-              RemainAfterExit=yes
-              ExecStart=/usr/bin/docker-compose up -d
-              ExecStop=/usr/bin/docker-compose down
-              Restart=always
-
-              [Install]
-              WantedBy=multi-user.target
-              SERVICE
-
-              systemctl enable spring-app
               EOF
 
   tags = { Name = "ElysiumAppServer-Prod" }
 }
 
 # =====================================
-# 6. Elastic IP
+# 6. Application Load Balancer (ALB)
 # =====================================
-resource "aws_eip" "app_eip" {
-  domain   = "vpc"
-  instance = aws_instance.app_server.id
+resource "aws_lb" "app_alb" {
+  name               = "elysium-alb"
+  internal           = false
+  load_balancer_type = "application"
+  security_groups    = [aws_security_group.lb_sg.id]
+  subnets            = [aws_subnet.app_subnet.id, aws_subnet.app_subnet_b.id]
+}
+
+# Target Group apuntando al Nginx (Puerto 80) de la EC2
+resource "aws_lb_target_group" "app_tg" {
+  name        = "elysium-tg"
+  port        = 80
+  protocol    = "HTTP"
+  vpc_id      = aws_vpc.app_vpc.id
+  target_type = "instance"
+
+  health_check {
+    path                = "/"
+    port                = "80"
+    protocol            = "HTTP"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
+
+# Vinculación dinámica de la instancia con el Target Group
+resource "aws_lb_target_group_attachment" "app_tg_attach" {
+  target_group_arn = aws_lb_target_group.app_tg.arn
+  target_id        = aws_instance.app_server.id
+  port             = 80
+}
+
+# Listener HTTP que recibe las peticiones externas
+resource "aws_lb_listener" "http_listener" {
+  load_balancer_arn = aws_lb.app_alb.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.app_tg.arn
+  }
 }
 
 # =====================================
-# 7. Outputs
+# 7. Github Actions
 # =====================================
-output "public_ip" {
-  value       = aws_eip.app_eip.public_ip
-  description = "Elastic IP fija de tu EC2 (no cambia)"
+resource "github_actions_secret" "update_ec2_host" {
+  repository       = "backend"
+  secret_name      = "EC2_HOST"
+  plaintext_value  = aws_instance.app_server.public_ip
 }
 
-output "public_dns" {
-  value       = aws_eip.app_eip.public_dns
-  description = "DNS público de tu EC2"
+# =====================================
+# 8. Outputs
+# =====================================
+output "alb_dns_name" {
+  value       = aws_lb.app_alb.dns_name
+  description = "ESTE URL NUNCA CAMBIA. Registrar este valor como CNAME en DonDominio"
 }
 
-output "api_url" {
-  value       = "http://${aws_eip.app_eip.public_ip}:8080"
-  description = "URL completa de tu API Spring Boot"
+output "ec2_public_dns" {
+  value       = aws_instance.app_server.public_dns
+  description = "Copiar este valor y pégalo en la variable EC2_HOST de GitHub cada vez que recrees la infraestructura"
 }
 
 output "ssm_note" {
-  value       = "Puedes acceder por Session Manager: AWS Console → EC2 → Instances → Select app_server → Session Manager → Open session"
+  value       = "Se puede acceder por Session Manager: AWS Console → EC2 → Instances → Select app_server → Session Manager → Open session"
   description = "Nota de acceso sin SSH"
+}
+
+output "ec2_public_ip" {
+  value       = aws_instance.app_server.public_ip
+  description = "IP publica numerica de la EC2"
 }

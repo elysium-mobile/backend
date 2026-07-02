@@ -207,6 +207,42 @@ resource "aws_instance" "app_server" {
 
               mkdir -p /home/ubuntu/app
               chown -R ubuntu:ubuntu /home/ubuntu/app
+
+              cat > /home/ubuntu/app/.env << 'ENVEOF'
+              PORT=8080
+              JWT_SECRET=un_secreto_seguro_de_al_menos_256_bits_para_firmar_tokens_12345
+              JWT_EXPIRATION_DAYS=7
+              ENVEOF
+
+              chmod 644 /home/ubuntu/app/.env
+              chown ubuntu:ubuntu /home/ubuntu/app/.env
+
+              cat > /home/ubuntu/app/update-api-host.sh << 'SCRIPT'
+              #!/bin/bash
+              API_HOST=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
+              echo "API_HOST=$API_HOST" >> /home/ubuntu/app/.env
+              docker-compose up -d
+              SCRIPT
+
+              chmod +x /home/ubuntu/app/update-api-host.sh
+
+              cat > /etc/systemd/system/spring-app.service << 'SERVICE'
+              [Unit]
+              Description=Spring Boot App with Docker Compose
+              After=network.target
+
+              [Service]
+              Type=oneshot
+              RemainAfterExit=yes
+              ExecStart=/usr/bin/docker-compose up -d
+              ExecStop=/usr/bin/docker-compose down
+              Restart=always
+
+              [Install]
+              WantedBy=multi-user.target
+              SERVICE
+
+              systemctl enable spring-app
               EOF
 
   tags = { Name = "ElysiumAppServer-Prod" }
@@ -265,9 +301,9 @@ resource "aws_lb_listener" "http_listener" {
 # 7. Github Actions
 # =====================================
 resource "github_actions_secret" "update_ec2_host" {
-  repository       = "backend"
-  secret_name      = "EC2_HOST"
-  plaintext_value  = aws_instance.app_server.public_ip
+  repository      = "backend"
+  secret_name     = "EC2_HOST"
+  plaintext_value = aws_instance.app_server.public_ip
 }
 
 # =====================================

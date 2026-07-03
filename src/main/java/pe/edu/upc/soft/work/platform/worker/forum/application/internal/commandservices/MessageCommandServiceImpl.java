@@ -66,12 +66,12 @@ public class MessageCommandServiceImpl implements MessageCommandService {
         }
         var message = new Message(command);
         var thread = threadRepository.findById(command.threadId()).get();
-        eventPublisher.publishEvent(new MessagePostedEvent(this, message.getId(), null, message.getUserAccountId()));
         try {
             thread.addMessage(message);
             thread.incrementMessageCount();
             messageRepository.save(message);
             threadRepository.save(thread);
+            eventPublisher.publishEvent(new MessagePostedEvent(this, message.getId(), null, message.getUserAccountId()));
 
         } catch (Exception e) {
             throw new RuntimeException("Error creating Message: " + e.getMessage(), e);

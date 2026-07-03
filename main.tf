@@ -1,5 +1,5 @@
 terraform {
-  required_version = "1.15.5"
+  required_version = "1.15.7"
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -86,6 +86,7 @@ resource "aws_security_group" "lb_sg" {
   description = "Permitir HTTP y HTTPS publico hacia el ALB"
   vpc_id      = aws_vpc.app_vpc.id
 
+  # El mundo exterior accede al ALB por el puerto estándar 80
   ingress {
     from_port   = 80
     to_port     = 80
@@ -122,10 +123,10 @@ resource "aws_security_group" "app_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  # Solo acepta tráfico web si pasa a través del Load Balancer
+  # Solo acepta tráfico web directo al puerto de tu Spring Boot (8080) si viene del ALB
   ingress {
-    from_port       = 80
-    to_port         = 80
+    from_port       = 8080
+    to_port         = 8080
     protocol        = "tcp"
     security_groups = [aws_security_group.lb_sg.id]
   }
@@ -181,7 +182,7 @@ data "aws_ami" "ubuntu" {
 
 resource "aws_instance" "app_server" {
   ami                    = data.aws_ami.ubuntu.id
-  instance_type          = "t2.micro"
+  instance_type          = "t3.small"
   subnet_id              = aws_subnet.app_subnet.id
   vpc_security_group_ids = [aws_security_group.app_sg.id]
   key_name               = aws_key_pair.deployer.key_name
@@ -193,57 +194,7 @@ resource "aws_instance" "app_server" {
     delete_on_termination = true
   }
 
-  user_data = <<-EOF
-              #!/bin/bash
-              apt-get update -y
-              curl -fsSL https://get.docker.com | sh
-
-              curl -SL https://github.com/docker/compose/releases/download/v2.29.0/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
-              chmod +x /usr/local/bin/docker-compose
-
-              systemctl start docker
-              systemctl enable docker
-              usermod -aG docker ubuntu
-
-              mkdir -p /home/ubuntu/app
-              chown -R ubuntu:ubuntu /home/ubuntu/app
-
-              cat > /home/ubuntu/app/.env << 'ENVEOF'
-              PORT=8080
-              JWT_SECRET=un_secreto_seguro_de_al_menos_256_bits_para_firmar_tokens_12345
-              JWT_EXPIRATION_DAYS=7
-              ENVEOF
-
-              chmod 644 /home/ubuntu/app/.env
-              chown ubuntu:ubuntu /home/ubuntu/app/.env
-
-              cat > /home/ubuntu/app/update-api-host.sh << 'SCRIPT'
-              #!/bin/bash
-              API_HOST=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
-              echo "API_HOST=$API_HOST" >> /home/ubuntu/app/.env
-              docker-compose up -d
-              SCRIPT
-
-              chmod +x /home/ubuntu/app/update-api-host.sh
-
-              cat > /etc/systemd/system/spring-app.service << 'SERVICE'
-              [Unit]
-              Description=Spring Boot App with Docker Compose
-              After=network.target
-
-              [Service]
-              Type=oneshot
-              RemainAfterExit=yes
-              ExecStart=/usr/bin/docker-compose up -d
-              ExecStop=/usr/bin/docker-compose down
-              Restart=always
-
-              [Install]
-              WantedBy=multi-user.target
-              SERVICE
-
-              systemctl enable spring-app
-              EOF
+  user_data = file("${path.module}/template/user_data.sh")
 
   tags = { Name = "ElysiumAppServer-Prod" }
 }
@@ -259,17 +210,17 @@ resource "aws_lb" "app_alb" {
   subnets            = [aws_subnet.app_subnet.id, aws_subnet.app_subnet_b.id]
 }
 
-# Target Group apuntando al Nginx (Puerto 80) de la EC2
+# Target Group apuntando directamente al puerto de Spring Boot (8080)
 resource "aws_lb_target_group" "app_tg" {
   name        = "elysium-tg"
-  port        = 80
+  port        = 8080
   protocol    = "HTTP"
   vpc_id      = aws_vpc.app_vpc.id
   target_type = "instance"
 
   health_check {
-    path                = "/"
-    port                = "80"
+    path                = "/"    # Ruta raíz de tu API para verificar el estado de salud
+    port                = "8080" # Corregido para que valide el puerto real
     protocol            = "HTTP"
     interval            = 30
     timeout             = 5
@@ -278,17 +229,17 @@ resource "aws_lb_target_group" "app_tg" {
   }
 }
 
-# Vinculación dinámica de la instancia con el Target Group
+# Vinculación de la instancia con el Target Group en el puerto correcto
 resource "aws_lb_target_group_attachment" "app_tg_attach" {
   target_group_arn = aws_lb_target_group.app_tg.arn
   target_id        = aws_instance.app_server.id
-  port             = 80
+  port             = 8080
 }
 
-# Listener HTTP que recibe las peticiones externas
+# Listener HTTP externo que escucha las peticiones en el puerto estándar 80
 resource "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_lb.app_alb.arn
-  port              = "80"
+  port              = "80" # El tráfico público llega al ALB en el puerto 80
   protocol          = "HTTP"
 
   default_action {

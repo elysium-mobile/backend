@@ -43,3 +43,7 @@ build/
 
 ### SSH ###
 /.ssh/
+/template/
+
+### Variable Environments ###
+/.env

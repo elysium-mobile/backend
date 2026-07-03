@@ -30,17 +30,36 @@ jobs:
           script: |
             cd /home/ubuntu/app
             
-            echo "🔄 Updating API_HOST..."
+            echo "🔐 Granting execution permissions to scripts..."
+            chmod +x update-api-host.sh
+            
+            echo "📝 Generating fresh production .env file..."
+            echo "SPRING_PROFILES_ACTIVE=prod" > .env
+            echo "PORT=8080" >> .env
+            
+            echo "API_HOST=${{ secrets.API_HOST }}" >> .env
+            
+            echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" >> .env
+            echo "SPRING_DATASOURCE_USERNAME=${{ secrets.PROD_DB_USER }}" >> .env
+            echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.PROD_DB_PASSWORD }}" >> .env
+            
+            echo "JWT_SECRET=${{ secrets.PROD_JWT_SECRET }}" >> .env
+            echo "CLOUDINARY_URL=${{ secrets.PROD_CLOUDINARY_URL }}" >> .env
+            echo "STRIPE_SECRET_KEY=${{ secrets.PROD_STRIPE_SECRET_KEY }}" >> .env
+            echo "STRIPE_WEBHOOK_SECRET=${{ secrets.PROD_STRIPE_WEBHOOK_SECRET }}" >> .env
+            echo "GOOGLE_GENAI_API_KEY=${{ secrets.PROD_GOOGLE_GENAI_API_KEY }}" >> .env
+            
+            echo "🔄 Calculating AWS IP Host..."
             ./update-api-host.sh
             
             echo "🛑 Stopping old containers..."
-            docker compose down --remove-orphans
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml down --remove-orphans
             
             echo "🔨 Building new image..."
-            docker compose build
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml build
             
             echo "🚀 Starting new containers..."
-            docker compose up -d
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
             
             echo "🧹 Cleaning up old images..."
             docker image prune -f
@@ -49,7 +68,7 @@ jobs:
             docker container prune -f
             
             echo "✅ Verifying deployment..."
-            docker compose ps
+            docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
             
             echo "💾 Disk usage:"
             docker system df

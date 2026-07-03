@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.shared.interfaces.rest.handlers;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.persistence.PersistenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,13 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     /**
+     * Snake_case translator, reusing Jackson's SNAKE_CASE strategy so that
+     * dynamic field-error keys match the DTO {@code @JsonNaming} configuration.
+     */
+    private static final PropertyNamingStrategies.NamingBase SNAKE_CASE =
+            (PropertyNamingStrategies.NamingBase) PropertyNamingStrategies.SNAKE_CASE;
+
+    /**
      * Handles validation exceptions.
      *
      * @param ex the MethodArgumentNotValidException
@@ -36,7 +44,7 @@ public class GlobalExceptionHandler {
 
         Map<String, String> errors = new LinkedHashMap<>();
         ex.getBindingResult().getFieldErrors()
-                .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
+                .forEach(err -> errors.put(SNAKE_CASE.translate(err.getField()), err.getDefaultMessage()));
 
         var response = new BadRequestResponse(
                 HttpStatus.BAD_REQUEST.value(), HttpStatus.BAD_REQUEST.getReasonPhrase(),

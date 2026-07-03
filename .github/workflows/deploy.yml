@@ -30,10 +30,10 @@ jobs:
           script: |
             cd /home/ubuntu/app
             
-            echo "🔐 Granting execution permissions to scripts..."
+            echo "Granting execution permissions to scripts..."
             chmod +x update-api-host.sh
             
-            echo "📝 Generating fresh production .env file..."
+            echo "Generating fresh production .env file..."
             echo "SPRING_PROFILES_ACTIVE=prod" > .env
             echo "PORT=8080" >> .env
             
@@ -49,28 +49,28 @@ jobs:
             echo "STRIPE_WEBHOOK_SECRET=${{ secrets.PROD_STRIPE_WEBHOOK_SECRET }}" >> .env
             echo "GOOGLE_GENAI_API_KEY=${{ secrets.PROD_GOOGLE_GENAI_API_KEY }}" >> .env
             
-            echo "🔄 Calculating AWS IP Host..."
+            echo "Calculating AWS IP Host..."
             ./update-api-host.sh
             
-            echo "🛑 Stopping old containers..."
+            echo "Stopping old containers..."
             docker compose -f docker-compose.yml -f docker-compose.prod.yml down --remove-orphans
             
-            echo "🔨 Building new image..."
+            echo "Building new image..."
             docker compose -f docker-compose.yml -f docker-compose.prod.yml build
             
-            echo "🚀 Starting new containers..."
+            echo "Starting new containers..."
             docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
             
-            echo "🧹 Cleaning up old images..."
+            echo "Cleaning up old images..."
             docker image prune -f
             
-            echo "🧹 Cleaning up stopped containers..."
+            echo "Cleaning up stopped containers..."
             docker container prune -f
             
-            echo "✅ Verifying deployment..."
+            echo "Verifying deployment..."
             docker compose -f docker-compose.yml -f docker-compose.prod.yml ps
             
-            echo "💾 Disk usage:"
+            echo "Disk usage:"
             docker system df
             
-            echo "✅ Deploy completed successfully!"
+            echo "Deploy completed successfully!"

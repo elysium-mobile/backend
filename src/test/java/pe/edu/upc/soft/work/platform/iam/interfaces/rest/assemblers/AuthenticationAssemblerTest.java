@@ -109,7 +109,7 @@ class AuthenticationAssemblerTest {
 
         // Assert
         assertThat(response.id()).isEqualTo(42L);
-        assertThat(response.gmail()).isEqualTo(CommonCommandFixtures.VALID_EMAIL);
+        assertThat(response.email()).isEqualTo(CommonCommandFixtures.VALID_EMAIL);
         assertThat(response.token()).isEqualTo("token-xyz");
     }
 }

@@ -1,5 +1,7 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources;
 
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.WorkTeam;
 
 import java.util.List;
@@ -10,6 +12,7 @@ import java.util.List;
  * @param name  the name of the UnitOfWork
  * @param workTeamList  the list of WorkTeams associated with this UnitOfWork
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UnitOfWorkResponse(
         Long unitOfWorkId,
         String name,

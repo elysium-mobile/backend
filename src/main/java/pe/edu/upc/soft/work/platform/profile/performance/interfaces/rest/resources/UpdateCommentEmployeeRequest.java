@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.profile.performance.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.valueobjects.RRHHProfileId;
@@ -10,6 +11,7 @@ import java.util.Date;
 /**
  * Request object for updating an existing CommentEmployee.
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UpdateCommentEmployeeRequest(
         @NotNull
         @NotBlank
@@ -19,10 +21,8 @@ public record UpdateCommentEmployeeRequest(
         String content,
         @NotNull
         @NotBlank
-        @JsonProperty("rrhhProfileId")
         Long rrhhProfileId,
         @NotNull
         @NotBlank
-        @JsonProperty("performanceId")
         Long performanceId
 ) {}

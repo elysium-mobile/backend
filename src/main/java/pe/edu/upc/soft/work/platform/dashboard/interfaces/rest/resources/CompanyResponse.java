@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserAccountResponse;
 
@@ -10,8 +11,9 @@ import java.util.List;
 /**
  * Response object representing a Company in the system.
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CompanyResponse(
-        @JsonProperty("comapany_id")Long companyId,
+        Long companyId,
         String name,
         String RUC,
         String contactEmail,

@@ -1,15 +1,16 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.validation.constraints.NotNull;
 
 /**
  *  Request body for adding an employee to a company.
  * @param employeeId the ID of the employee to be added to the company
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record AddEmployeeToCompanyRequest(
         @NotNull
-        @JsonProperty("employeeId")
         Long employeeId
 ) {
 }

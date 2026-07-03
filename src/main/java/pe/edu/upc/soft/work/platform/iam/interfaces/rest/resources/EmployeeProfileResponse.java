@@ -1,7 +1,8 @@
 package pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import java.util.Date;
 
 /**
@@ -12,23 +13,19 @@ import java.util.Date;
  * @param workOfTeamId the unique identifier of the work team the employee belongs to
  * @param UserAccountId the unique identifier of the user account associated with the employee
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record EmployeeProfileResponse(
 
         Long employeeProfileId,
 
-        @JsonProperty("dateStart")
         Date starStart,
 
-        @JsonProperty("position")
         String position,
 
-        @JsonProperty("salary")
         Integer salary,
 
-        @JsonProperty("work_of_team_id")
         Long workOfTeamId,
 
-        @JsonProperty("user_account_id")
         Long UserAccountId
 
 ) {

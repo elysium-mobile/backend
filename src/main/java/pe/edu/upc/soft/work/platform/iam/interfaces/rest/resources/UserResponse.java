@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+
 
 /**
  * Response object representing a user in the system.
@@ -10,15 +12,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param phoneNumber the phone number of the user
  * @param dni the national identity card number of the user
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UserResponse (
         Long userId,
-        @JsonProperty("name")
         String name,
-        @JsonProperty("lastName")
         String lastName,
-        @JsonProperty("phoneNumber")
         String phoneNumber,
-        @JsonProperty("dni")
         String dni
 ) {
 }

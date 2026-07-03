@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,20 +11,18 @@ import jakarta.validation.constraints.NotNull;
  * @param statusHierarchy the status hierarchy of the RRHH profile
  * @param userAccountId the ID of the associated user account
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CreateRRHHProfileRequest(
         @NotNull
         @NotBlank
-        @JsonProperty("rrhh_department")
         String RRHHDepartment,
 
         @NotNull
         @NotBlank
-        @JsonProperty("status_hierarchy")
         String statusHierarchy,
 
         @NotNull
         @NotBlank
-        @JsonProperty("user_account_id")
         Long userAccountId
 ) {
 }

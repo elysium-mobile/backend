@@ -1,6 +1,8 @@
 package pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+
 
 /**
  * RRHHProfileResponse record to represent RRHH profile data in API responses.
@@ -8,17 +10,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @param statusHierarchy the status hierarchy of the RRHH profile
  * @param userAccountId the unique identifier of the user account associated with the RRHH profile
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record RRHHProfileResponse(
 
         Long rrhhProfileId,
 
-        @JsonProperty("rrhh_department")
         String RRHHDepartment,
 
-        @JsonProperty("status_hierarchy")
         String statusHierarchy,
 
-        @JsonProperty("user_account_id")
         Long userAccountId
 
 ) {

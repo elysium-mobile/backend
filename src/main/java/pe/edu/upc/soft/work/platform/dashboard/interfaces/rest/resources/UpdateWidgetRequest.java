@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
  * @param refreshPeriod the new refresh period of the widget
  * @param dashboardId   the new dashboard ID of the widget
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UpdateWidgetRequest(
         @NotNull
         @NotBlank
@@ -17,12 +19,10 @@ public record UpdateWidgetRequest(
 
         @NotNull
         @NotBlank
-        @JsonProperty("refreshPeriod")
         Integer refreshPeriod,
 
         @NotNull
         @NotBlank
-        @JsonProperty("dashboardId")
         Long dashboardId
 
 ) {

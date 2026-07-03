@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,17 +11,16 @@ import jakarta.validation.constraints.NotNull;
  * @param annualBudget  the new annual budget of the AreaCompany
  * @param companyId     the ID of the company to which the AreaCompany belongs
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UpdateAreaCompanyRequest(
         @NotNull
         @NotBlank
         String name,
         @NotNull
         @NotBlank
-        @JsonProperty("annualBudget")
         Integer annualBudget,
         @NotNull
         @NotBlank
-        @JsonProperty("companyId")
         Long companyId
 ) {
 }

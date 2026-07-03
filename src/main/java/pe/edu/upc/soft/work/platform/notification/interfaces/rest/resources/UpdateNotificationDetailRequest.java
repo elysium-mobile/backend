@@ -1,23 +1,22 @@
 package pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UpdateNotificationDetailRequest(
         @NotNull
         @NotBlank
-        @JsonProperty("title")
         String title,
 
         @NotNull
         @NotBlank
-        @JsonProperty("content")
         String content,
 
         @NotNull
         @NotBlank
-        @JsonProperty("notificationId")
         Long notificationId
 
 ) {

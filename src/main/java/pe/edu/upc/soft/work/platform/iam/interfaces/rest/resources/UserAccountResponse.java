@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -11,26 +12,21 @@ import jakarta.validation.constraints.NotNull;
  * @param password the password associated with the user account
  * @param anonymousName the anonymous name associated with the user account
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UserAccountResponse(
 
         Long userAccountId,
 
-        @JsonProperty("userId")
         Long userId,
 
-        @JsonProperty("email")
         String email,
 
-        @JsonProperty("password")
         String password,
 
-        @JsonProperty("anonymousName")
         String anonymousName,
 
-        @JsonProperty("membershipId")
         Long membershipId,
 
-        @JsonProperty("companyId")
         Long companyId
 
 ) {

@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,25 +13,22 @@ import jakarta.validation.constraints.NotNull;
  * @param phoneNumber the phone number of the user to be created
  * @param dni the dni of the user to be created
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CreateUserRequest(
         @NotNull
         @NotBlank
-        @JsonProperty("name")
         String name,
 
         @NotNull
         @NotBlank
-        @JsonProperty("lastName")
         String lastName,
 
         @NotNull
         @NotBlank
-        @JsonProperty("phoneNumber")
         String phoneNumber,
 
         @NotNull
         @NotBlank
         @Min(0)
-        @JsonProperty("dni")
         String dni
 ){}

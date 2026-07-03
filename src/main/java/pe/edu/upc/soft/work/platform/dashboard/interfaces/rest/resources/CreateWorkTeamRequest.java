@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,20 +11,18 @@ import jakarta.validation.constraints.NotNull;
  * @param leaderOfTeam  the name of the leader of the work team
  * @param unitOfWorkId  the ID of the unit of work to which the work team will be assigned
  */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CreateWorkTeamRequest(
 
         @NotNull
         @NotBlank
-        @JsonProperty("teamName")
         String teamName,
         @NotNull
         @NotBlank
-        @JsonProperty("leaderOfTeam")
         String leaderOfTeam,
 
         @NotNull
         @NotBlank
-        @JsonProperty("unitOfWorkId")
         Long unitOfWorkId
 
 ) {

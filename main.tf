@@ -68,6 +68,11 @@ resource "aws_route_table_association" "app_route_assoc_b" {
   route_table_id = aws_route_table.app_route_table.id
 }
 
+variable "acm_certificate_arn" {
+  type        = string
+  description = "ARN del certificado SSL emitido por AWS Certificate Manager"
+}
+
 # =====================================
 # 2. SSH Configuration
 # =====================================
@@ -239,8 +244,29 @@ resource "aws_lb_target_group_attachment" "app_tg_attach" {
 # Listener HTTP externo que escucha las peticiones en el puerto estándar 80
 resource "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_lb.app_alb.arn
-  port              = "80" # El tráfico público llega al ALB en el puerto 80
+  port              = "80"
   protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+    #
+  }
+}
+
+# Listener HTTPS
+resource "aws_lb_listener" "https_listener" {
+  load_balancer_arn = aws_lb.app_alb.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
+
+  certificate_arn = var.acm_certificate_arn
 
   default_action {
     type             = "forward"
@@ -252,9 +278,9 @@ resource "aws_lb_listener" "http_listener" {
 # 7. Github Actions
 # =====================================
 resource "github_actions_secret" "update_ec2_host" {
-  repository      = "backend"
-  secret_name     = "EC2_HOST"
-  plaintext_value = aws_instance.app_server.public_ip
+  repository  = "backend"
+  secret_name = "EC2_HOST"
+  value       = aws_instance.app_server.public_ip
 }
 
 # =====================================

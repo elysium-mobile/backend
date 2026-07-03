@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.iam.infrastructure.authorization.sfs.confi
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -97,9 +98,10 @@ public class WebSecurityConfiguration {
         http.cors(corsConfigurer ->
                 corsConfigurer.configurationSource(request -> {
                     var cors = new CorsConfiguration();
-                    cors.setAllowedOrigins(List.of("*"));
+                    cors.setAllowedOriginPatterns(List.of("*"));
                     cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
                     cors.setAllowedHeaders(List.of("*"));
+                    cors.setAllowCredentials(true);
                     return cors;
                 }));
         http.csrf(AbstractHttpConfigurer::disable)
@@ -109,6 +111,7 @@ public class WebSecurityConfiguration {
                         customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                                 .requestMatchers("/api/v1/authentication/**", "/v3/api-docs/**",
                                         "/swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**")
                                 .permitAll()

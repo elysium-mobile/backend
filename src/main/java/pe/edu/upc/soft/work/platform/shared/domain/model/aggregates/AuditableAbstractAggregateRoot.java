@@ -29,7 +29,6 @@ public abstract class AuditableAbstractAggregateRoot<T extends AbstractAggregate
      */
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;
 
     /**
@@ -37,6 +36,5 @@ public abstract class AuditableAbstractAggregateRoot<T extends AbstractAggregate
      */
     @LastModifiedDate
     @Column(nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime updatedAt;
 }

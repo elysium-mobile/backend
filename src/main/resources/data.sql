@@ -8,20 +8,17 @@ VALUES
     (6, 'Sofia',    'Vargas',    '923456781', '67890123', NOW(), NOW()),
     (7, 'Diego',    'Chavez',    '998877665', '78901234', NOW(), NOW()),
     (8, 'Valeria',  'Mendoza',   '911223344', '89012345', NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO companies (id, name, ruc, contact_email, contact_phone, created_at, updated_at)
 VALUES
     (1, 'TechCorp SAC',      '20123456781', 'contacto@techcorp.pe',   '014567890', NOW(), NOW()),
     (2, 'InnovatePeru SRL',  '20987654322', 'info@innovateperu.com',  '016789012', NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO memberships (id, membership_start, membership_over, membership_status, created_at, updated_at)
 VALUES
     (1, '2024-01-01', '2025-01-01', 'ACTIVE',  NOW(), NOW()),
     (2, '2024-03-01', '2025-03-01', 'ACTIVE',  NOW(), NOW()),
     (3, '2024-06-01', '2024-12-01', 'PENDING', NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO user_accounts (id, user_id, email, password, anonymous_name, membership_id, company_id, created_at, updated_at)
 VALUES
@@ -33,7 +30,6 @@ VALUES
     (6, 6, 'sofia.vargas@innovateperu.com', '$2b$10$DHJ.WSyOHmpQhdb18AHjhOW1Grd2/9Bj1Wk0c0yQS19B8WrxUVoPm', 'SofiVar', 2, 2, NOW(), NOW()),
     (7, 7, 'diego.chavez@techcorp.pe',      '$2b$10$p4E/MlKYu7UEfAzS2rWWwuu/V.3x2FhBMYneeQTXxHU7agepT7/Mu', 'DiegoC',  1, 1, NOW(), NOW()),
     (8, 8, 'valeria.mendoza@techcorp.pe',   '$2b$10$Pw013KINvswjsdyz9d1uTuoJ2wcpdZUg9CyV3iDNMlsLRhfEbbtYK', 'ValMen',  3, 1, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
 
 INSERT INTO companies_employees (company_id, employees_id)
 VALUES
@@ -51,19 +47,19 @@ VALUES
     (6, '2023-06-01', 'DevOps Engineer',    5000, 2, 6, NOW(), NOW()),
     (7, '2021-09-01', 'Tech Lead',          7000, 1, 7, NOW(), NOW()),
     (8, '2024-01-15', 'Junior Developer',   2800, 1, 8, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO rrhh_profiles (id, rrhh_department, status_hierarchy, user_account_id, created_at, updated_at)
 VALUES
     (1, 'Recursos Humanos', 'Senior HR Manager', 1, NOW(), NOW()),
     (2, 'Recursos Humanos', 'HR Coordinator',    4, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO dashboards (id, ruc, company_id, title, description, created_at, updated_at)
 VALUES
     (1, '20123456781', 1, 'Dashboard TechCorp',     'Panel principal de métricas de TechCorp SAC',     NOW(), NOW()),
     (2, '20987654322', 2, 'Dashboard InnovatePeru', 'Panel principal de métricas de InnovatePeru SRL', NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO widgets (id, title, refresh_period, dashboard_id, created_at, updated_at)
 VALUES
@@ -71,13 +67,13 @@ VALUES
     (2, 'Tickets Pendientes',       15, 1, NOW(), NOW()),
     (3, 'Ventas del Mes',           60, 2, NOW(), NOW()),
     (4, 'NPS Score',                60, 2, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO dashboards_widgets (dashboard_id, widgets_id)
 VALUES
     (1, 1), (1, 2),
     (2, 3), (2, 4);
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO area_companies (id, name, annual_budget, company_id, created_at, updated_at)
 VALUES
@@ -85,13 +81,13 @@ VALUES
     (2, 'Control de Calidad',     80000,  1, NOW(), NOW()),
     (3, 'Producto e Innovación',  150000, 2, NOW(), NOW()),
     (4, 'Data & Analytics',       120000, 2, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO companies_area_company_lists (company_id, area_company_list_id)
 VALUES
     (1, 1), (1, 2),
     (2, 3), (2, 4);
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO unit_of_works (id, name, created_at, updated_at)
 VALUES
@@ -100,7 +96,7 @@ VALUES
     (3, 'Sprint QA Q1',       NOW(), NOW()),
     (4, 'Roadmap Producto',   NOW(), NOW()),
     (5, 'Pipeline Analytics', NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO area_company_unit_of_work_lists (area_company_id, unit_of_work_list_id)
 VALUES
@@ -108,7 +104,7 @@ VALUES
     (2, 3),
     (3, 4),
     (4, 5);
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO work_teams (id, team_name, leader_of_team, unit_of_work_id, created_at, updated_at)
 VALUES
@@ -117,19 +113,19 @@ VALUES
     (3, 'Team QA',      'Jorge Quispe',   3, NOW(), NOW()),
     (4, 'Team Product', 'Ana Torres',     4, NOW(), NOW()),
     (5, 'Team Data',    'Luis Mamani',    5, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO unit_of_work_work_team_lists (unit_of_work_id, work_team_list_id)
 VALUES
     (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO membership_plans (id, plan_name, price, membership_id, created_at, updated_at)
 VALUES
     (1, 'Plan Básico',      49,  1, NOW(), NOW()),
     (2, 'Plan Profesional', 99,  2, NOW(), NOW()),
     (3, 'Plan Enterprise',  199, 2, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO benefits (id, title, description, membership_plan_id, created_at, updated_at)
 VALUES
@@ -139,34 +135,34 @@ VALUES
     (4, 'Encuestas Ilimitadas',    'Creación y respuesta ilimitada de encuestas',  2, NOW(), NOW()),
     (5, 'Reportes Avanzados',      'Exportación de métricas y performance',        3, NOW(), NOW()),
     (6, 'Soporte Prioritario',     'Canal de soporte dedicado 24/7',              3, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO membership_plans_benefits (membership_plan_id, benefits_id)
 VALUES
     (1, 1), (1, 2),
     (2, 3), (2, 4),
     (3, 5), (3, 6);
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO orders (id, user_account_id, amount, membership_id, created_at, updated_at)
 VALUES
     (1, 1, 49,  1, NOW(), NOW()),
     (2, 4, 99,  2, NOW(), NOW()),
     (3, 7, 199, 2, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO payments (id, order_id, transaction_id, payment_date, payment_status, payment_method, created_at, updated_at)
 VALUES
     (1, 1, 'TXN-2024-001', '2024-01-05 10:00:00', 'SUCCEEDED', 'CREDIT_CARD', NOW(), NOW()),
     (2, 2, 'TXN-2024-002', '2024-03-07 14:30:00', 'PENDING', 'PAYPAL', NOW(), NOW()),
     (3, 3, 'TXN-2024-003', '2024-06-10 09:15:00', 'FAILED', 'BANK_TRANSFER', NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO forums (id, title, description, company_id, created_at, updated_at)
 VALUES
     (1, 'Foro TechCorp',     'Espacio de comunicación para TechCorp SAC',     1, NOW(), NOW()),
     (2, 'Foro InnovatePeru', 'Espacio de comunicación para InnovatePeru SRL', 2, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO categories (id, title, description, forum_id, created_at, updated_at)
 VALUES
@@ -174,13 +170,13 @@ VALUES
     (2, 'Soporte Técnico', 'Dudas y resolución de problemas técnicos', 1, NOW(), NOW()),
     (3, 'General',         'Temas varios de InnovatePeru',             2, NOW(), NOW()),
     (4, 'Proyectos',       'Seguimiento de proyectos activos',         2, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO forums_categories (forum_id, categories_id)
 VALUES
     (1, 1), (1, 2),
     (2, 3), (2, 4);
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO threads (id, title, area_company_id, last_message, category_id, message_count, created_at, updated_at)
 VALUES
@@ -188,12 +184,12 @@ VALUES
     (2, 'Error en pipeline de CI/CD',         1, NOW(), 2, 1, NOW(), NOW()),
     (3, 'Kickoff Roadmap Producto 2024',      3, NOW(), 3, 3, NOW(), NOW()),
     (4, 'Resultados del sprint de Analytics', 4, NOW(), 4, 2, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO categories_threads (category_id, threads_id)
 VALUES
     (1, 1), (2, 2), (3, 3), (4, 4);
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO messages (id, user_account_id, content_message, thread_id, created_at, updated_at)
 VALUES
@@ -204,7 +200,7 @@ VALUES
     (5, 5, 'Confirmado, estoy coordinando con el equipo de data.',                         3, NOW(), NOW()),
     (6, 6, 'El dashboard de analytics ya refleja los datos del sprint pasado.',            3, NOW(), NOW()),
     (7, 5, 'Los resultados del sprint de analytics superaron el benchmark en un 12%.',     4, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO threads_messages (thread_id, messages_id)
 VALUES
@@ -212,7 +208,7 @@ VALUES
     (2, 3),
     (3, 4), (3, 5), (3, 6),
     (4, 7);
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO assets (id, message_id, name, url, file_size, file_type, created_at, updated_at)
 VALUES
@@ -220,12 +216,12 @@ VALUES
     (2, 7, 'analytics_results.pdf', 'https://storage.softwork.pe/assets/analytics_results.pdf', '1.2MB', 'PDF',   NOW(), NOW()),
     (3, 4, 'roadmap_2024.pdf',      'https://storage.softwork.pe/assets/roadmap_2024.pdf',       '890KB', 'PDF',   NOW(), NOW()),
     (4, 1, 'welcome_video.mp4',     'https://storage.softwork.pe/assets/welcome_video.mp4',      '15MB',  'VIDEO', NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO messages_assets (message_id, assets_id)
 VALUES
     (3, 1), (7, 2), (4, 3), (1, 4);
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO notifications (id, seen, notification_type, user_account_id, created_at, updated_at)
 VALUES
@@ -235,7 +231,7 @@ VALUES
     (4, false, 'SURVEY',  3, NOW(), NOW()),
     (5, false, 'MESSAGE', 5, NOW(), NOW()),
     (6, true,  'PAYMENT', 7, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO notification_details (id, title, content, notification_id, created_at, updated_at)
 VALUES
@@ -245,7 +241,7 @@ VALUES
     (4, 'Nueva encuesta disponible',        'Tienes una encuesta pendiente de responder',          4, NOW(), NOW()),
     (5, 'Nuevo mensaje en Kickoff Roadmap', 'Luis Mamani respondió en el hilo del roadmap',        5, NOW(), NOW()),
     (6, 'Pago procesado Plan Enterprise',   'Tu suscripción al Plan Enterprise está activa',       6, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO performances (id, employee_profile_id, date_time, classification, created_at, updated_at)
 VALUES
@@ -254,7 +250,7 @@ VALUES
     (3, 3, '2024-03-31', 3, NOW(), NOW()),
     (4, 5, '2024-03-31', 4, NOW(), NOW()),
     (5, 7, '2024-03-31', 5, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO comments_employees (id, title, content, rrhh_profile_id, performance_id, created_at, updated_at)
 VALUES
@@ -263,19 +259,19 @@ VALUES
     (3, 'Oportunidad de mejora en testing', 'Jorge debe reforzar sus conocimientos en pruebas E2E.', 1, 3, NOW(), NOW()),
     (4, 'Análisis preciso del negocio',     'Luis entregó insights de alto valor para el equipo.',   2, 4, NOW(), NOW()),
     (5, 'Referente técnico del equipo',     'Diego lidera con el ejemplo en buenas prácticas.',      1, 5, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO performances_comment_employee_lists (performance_id, comment_employee_list_id)
 VALUES
     (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO surveys (id, title, description, target_type, expiration_time, created_at, updated_at)
 VALUES
     (1, 'Satisfacción Laboral Q1 2024', 'Evaluación del clima laboral del primer trimestre', 'AREA_COMPANY', '2024-04-30', NOW(), NOW()),
     (2, 'Evaluación de Sprint',         'Retrospectiva del equipo de desarrollo',            'UNIT_OF_WORK',  '2024-04-15', NOW(), NOW()),
     (3, 'Cultura y Valores',            'Percepción de cultura organizacional',              'TEAM_OF_WORK',  '2024-05-01', NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO questions_surveys (id, text_question, question_type, survey_id, created_at, updated_at)
 VALUES
@@ -284,7 +280,7 @@ VALUES
     (3, '¿Se cumplieron los objetivos del sprint?',                           'MULTIPLE_CHOICE', 2, NOW(), NOW()),
     (4, '¿El equipo contó con los recursos necesarios?',                     'MULTIPLE_CHOICE', 2, NOW(), NOW()),
     (5, '¿Sientes que los valores de la empresa se reflejan en el día a día?','RATING',          3, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO answers (id, value, score_answer, created_at, updated_at)
 VALUES
@@ -293,7 +289,7 @@ VALUES
     (3, 1, 3, NOW(), NOW()),
     (4, 2, 4, NOW(), NOW()),
     (5, 1, 5, NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO survey_responses (id, survey_id, employee_profile_id, submitted_at, commentary, cause, created_at, updated_at)
 VALUES
@@ -302,7 +298,7 @@ VALUES
     (3, 2, 3, NOW(), 'El sprint fue intenso pero logramos todos los objetivos.',                  'Gestión del sprint',     NOW(), NOW()),
     (4, 2, 1, NOW(), 'Faltó tiempo para refactorizar, pero el resultado fue positivo.',           'Deuda técnica',          NOW(), NOW()),
     (5, 3, 4, NOW(), 'Los valores se viven en el día a día del equipo.',                         'Cultura',                NOW(), NOW());
-ON CONFLICT (id) DO NOTHING;
+
 
 INSERT INTO reports (id, reason, description, user_account_id, report_date, area_company_id, created_at, updated_at)
 VALUES

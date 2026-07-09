@@ -68,9 +68,14 @@ resource "aws_route_table_association" "app_route_assoc_b" {
   route_table_id = aws_route_table.app_route_table.id
 }
 
-variable "acm_certificate_arn" {
-  type        = string
-  description = "ARN del certificado SSL emitido por AWS Certificate Manager"
+resource "aws_acm_certificate" "api_cert" {
+  domain_name       = "api.elysium-mobile.online"
+  validation_method = "DNS"
+
+  tags = {
+    Environment = "production"
+    Project     = "softwork"
+  }
 }
 
 # =====================================
@@ -266,7 +271,7 @@ resource "aws_lb_listener" "https_listener" {
   protocol          = "HTTPS"
   ssl_policy        = "ELBSecurityPolicy-2016-08"
 
-  certificate_arn = var.acm_certificate_arn
+  certificate_arn = aws_acm_certificate.api_cert.arn
 
   default_action {
     type             = "forward"
@@ -304,4 +309,14 @@ output "ssm_note" {
 output "ec2_public_ip" {
   value       = aws_instance.app_server.public_ip
   description = "IP publica numerica de la EC2"
+}
+
+output "acm_validation_host" {
+  description = "Pegar esto en el campo 'Host' de DonDominio"
+  value       = tolist(aws_acm_certificate.api_cert.domain_validation_options)[0].resource_record_name
+}
+
+output "acm_validation_canonical_name" {
+  description = "Pegar esto completo en el campo 'Canonical name' de DonDominio"
+  value       = tolist(aws_acm_certificate.api_cert.domain_validation_options)[0].resource_record_value
 }

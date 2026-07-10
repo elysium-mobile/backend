@@ -38,12 +38,22 @@ public class StripeProperties {
     /**
      * Validates that all required Stripe properties are present and
      * that the environment (test vs. live) is consistent with the
-     * active Spring profile. Fails fast at application startup so
-     * misconfigurations are caught before any payment request arrives.
+     * active Spring profile.
+     *
+     * <p><strong>Rules:</strong>
+     * <ul>
+     *   <li>Missing or blank required fields → hard error (prevents startup).</li>
+     *   <li>{@code sk_live_} key on dev/test profile → hard error (dangerous).</li>
+     *   <li>{@code sk_test_} key on prod profile → warning only (allowed for
+     *       staging/pre‑prod environments that want to exercise the full flow
+     *       without processing real payments).</li>
+     *   <li>URL scheme validation → hard error if not HTTPS or localhost.</li>
+     * </ul>
      */
     @PostConstruct
     public void validate() {
         List<String> errors = new ArrayList<>();
+        List<String> warnings = new ArrayList<>();
 
         if (secretKey == null || secretKey.isBlank()) {
             errors.add("stripe.secret-key is required");
@@ -62,8 +72,6 @@ public class StripeProperties {
             errors.add("stripe.cancel-url must use HTTPS (or http://localhost for development)");
         }
 
-        // Environment key validation: dev/test profiles must use sk_test_ keys,
-        // and production profile must use sk_live_ keys.
         String activeProfile = System.getProperty("spring.profiles.active", "dev");
         if (secretKey != null) {
             boolean isTestKey = secretKey.startsWith("sk_test_");
@@ -76,9 +84,13 @@ public class StripeProperties {
                     + "Use a test key (sk_test_...) for development.");
             }
             if (isProdProfile && isTestKey) {
-                errors.add("stripe.secret-key is a TEST key but the active profile is '" + activeProfile + "'. "
-                    + "Use a live key (sk_live_...) for production.");
+                warnings.add("stripe.secret-key is a TEST key but the active profile is '" + activeProfile + "'. "
+                    + "Payments will NOT be real. Switch to a live key (sk_live_...) when ready for production.");
             }
+        }
+
+        for (String warning : warnings) {
+            LOGGER.warn("[StripeProperties] {}", warning);
         }
 
         if (!errors.isEmpty()) {

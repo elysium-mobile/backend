@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
@@ -17,6 +18,7 @@ import java.util.Optional;
  * Service implementation for handling Company commands.
  */
 @Service
+@Transactional
 public class CompanyCommandServiceImpl implements CompanyCommandService {
     private final CompanyRepository companyRepository;
     private final ApplicationEventPublisher eventPublisher;

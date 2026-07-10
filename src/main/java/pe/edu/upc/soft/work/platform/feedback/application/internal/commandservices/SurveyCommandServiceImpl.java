@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.aggregates.Survey;
@@ -16,6 +17,7 @@ import java.util.Optional;
  * Services implementation for handling Survey commands
  */
 @Service
+@Transactional
 public class SurveyCommandServiceImpl implements SurveyCommandService {
     private final SurveyRepository surveyRepository;
     private final ApplicationEventPublisher eventPublisher;

@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.notification.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.notification.application.internal.outboundservices.acl.ExternalIamServiceFromNotification;
@@ -15,6 +16,7 @@ import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentEx
 import java.util.Optional;
 
 @Service
+@Transactional
 public class NotificationCommandServiceImpl implements NotificationCommandService {
 
     private final NotificationRepository notificationRepository;
@@ -38,9 +40,9 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
         }
 
         var notification = new Notification(command);
-        eventPublisher.publishEvent(new NotificationCreatedEvent(this, notification.getId(), notification.getUserAccountId(), notification.getNotificationType()));
         try {
             notificationRepository.save(notification);
+            eventPublisher.publishEvent(new NotificationCreatedEvent(this, notification.getId(), notification.getUserAccountId(), notification.getNotificationType()));
         } catch (Exception e) {
             throw new IllegalArgumentException("Error saving notification: %s".formatted(e.getMessage()));
         }
@@ -50,7 +52,9 @@ public class NotificationCommandServiceImpl implements NotificationCommandServic
     @Override
     public Optional<Notification> handle(UpdateNotificationCommand command) {
         var notificationId = command.notificationId();
-        var notificationToUpdate = this.notificationRepository.findById(notificationId).get();
+        var notificationToUpdate = this.notificationRepository.findById(notificationId)
+                .orElseThrow(() -> new NotFoundArgumentException(
+                        String.format("[NotificationCommandServiceImpl] Notification ID: %s not found", notificationId)));
         notificationToUpdate.updateNotification(command);
         try {
             var updatedNotification = notificationRepository.save(notificationToUpdate);

@@ -11,6 +11,7 @@ import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.re
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.DashboardRepository;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.entities.Answer;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.AnswerRepository;
+import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.QuestionSurveyRepository;
 import pe.edu.upc.soft.work.platform.feedback.infrastructure.persistence.jpa.repositories.SurveyRepository;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.Performance;
 import pe.edu.upc.soft.work.platform.profile.performance.infrastructure.persistence.jpa.repositories.PerformanceRepository;
@@ -32,6 +33,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
     private final PerformanceRepository performanceRepository;
     private final SurveyRepository surveyRepository;
     private final AnswerRepository answerRepository;
+    private final QuestionSurveyRepository questionSurveyRepository;
     private final ReportRepository reportRepository;
     private final ThreadRepository threadRepository;
     private final ExternalIamServiceFromDashboard externalIamService;
@@ -43,6 +45,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         PerformanceRepository performanceRepository,
         SurveyRepository surveyRepository,
         AnswerRepository answerRepository,
+        QuestionSurveyRepository questionSurveyRepository,
         ReportRepository reportRepository,
         ThreadRepository threadRepository,
         ExternalIamServiceFromDashboard externalIamService) {
@@ -52,6 +55,7 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         this.performanceRepository = performanceRepository;
         this.surveyRepository = surveyRepository;
         this.answerRepository = answerRepository;
+        this.questionSurveyRepository = questionSurveyRepository;
         this.reportRepository = reportRepository;
         this.threadRepository = threadRepository;
         this.externalIamService = externalIamService;
@@ -130,9 +134,14 @@ public class DashboardQueryServiceImpl implements DashboardQueryService {
         List<Long> surveyIds = surveyRepository.findAll().stream()
             .map(s -> s.getId()).toList();
 
-        List<Answer> answers = surveyIds.isEmpty()
+        List<Long> questionSurveyIds = surveyIds.isEmpty()
             ? List.of()
-            : answerRepository.findByValueIn(surveyIds);
+            : questionSurveyRepository.findBySurveyIdIn(surveyIds).stream()
+                .map(qs -> qs.getId()).toList();
+
+        List<Answer> answers = questionSurveyIds.isEmpty()
+            ? List.of()
+            : answerRepository.findByValueIn(questionSurveyIds);
 
         long total = answers.size();
         long positive = answers.stream()

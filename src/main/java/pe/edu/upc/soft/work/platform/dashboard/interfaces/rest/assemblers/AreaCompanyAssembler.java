@@ -16,7 +16,7 @@ public class AreaCompanyAssembler {
      *  Converts a CreateAreaCompanyRequest to a CreateAreaCompanyCommand.
      */
     public static CreateAreaCompanyCommand toCommandFromRequest(CreateAreaCompanyRequest request){
-        return new CreateAreaCompanyCommand(request.name(),request.annualBudget(),0L, new ArrayList<>());
+        return new CreateAreaCompanyCommand(request.name(),request.annualBudget(),request.companyId(), new ArrayList<>());
     }
 
     /**

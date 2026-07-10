@@ -1,7 +1,9 @@
 package pe.edu.upc.soft.work.platform.iam.domain.model.aggregates;
 
 
+import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
@@ -33,11 +35,13 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
     private String anonymousName;
 
     @Getter
-    @Column(name = "membership_id", nullable = false)
+    @Embedded
+    @AttributeOverride(name = "MembershipId", column = @Column(name = "membership_id", nullable = false))
     private MembershipId membershipId;
 
     @Getter
-    @Column(name = "company_id", nullable = false)
+    @Embedded
+    @AttributeOverride(name = "CompanyId", column = @Column(name = "company_id", nullable = false))
     private CompanyId companyId;
 
     /**
@@ -54,7 +58,7 @@ public class UserAccount extends AuditableAbstractAggregateRoot<UserAccount> {
         this.userId = command.userId();
         this.email = command.email();
         this.password = command.password();
-        this.anonymousName = generateAnonymousName();
+        this.anonymousName = command.anonymousName();
         this.membershipId = command.membershipId();
         this.companyId = command.companyId();
     }

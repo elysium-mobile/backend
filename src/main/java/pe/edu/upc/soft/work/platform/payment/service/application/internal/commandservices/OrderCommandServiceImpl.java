@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.payment.service.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Order;
@@ -19,6 +20,7 @@ import java.util.Optional;
  * Service implementation for handling Order commands
  */
 @Service
+@Transactional
 public class OrderCommandServiceImpl implements OrderCommandService {
     private final OrderRepository orderRepository;
     private final ExternalIamServiceFromPaymentService externalIamServiceFromPaymentService;

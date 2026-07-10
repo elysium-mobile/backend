@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.feedback.application.internal.outboundservices.acl.ExternalIamServiceFromFeedback;
@@ -20,6 +21,7 @@ import java.util.Optional;
  * Service implementation for handling SurveyResponse commands.
  */
 @Service
+@Transactional
 public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandService {
     private final SurveyResponseRepository surveyResponseRepository;
     private final ExternalIamServiceFromFeedback externalIamServiceFromFeedback;

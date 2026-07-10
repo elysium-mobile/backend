@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.notification.application.internal.commandservices;
 
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.notification.application.internal.queryservices.NotificationDetailQueryServiceImpl;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.CreateNotificationDetailCommand;
@@ -14,6 +15,7 @@ import pe.edu.upc.soft.work.platform.notification.infrastructure.persistence.jpa
 import java.util.Optional;
 
 @Service
+@Transactional
 public class NotificationDetailCommandServiceImpl implements NotificationDetailCommandService {
 
     private final NotificationDetailRepository notificationDetailRepository;
@@ -41,7 +43,8 @@ public class NotificationDetailCommandServiceImpl implements NotificationDetailC
     @Override
     public Optional<NotificationDetail> handle(UpdateNotificationDetailCommand command) {
         var notificationDetailId = command.notificationDetailId();
-        var notificationDetailToUpdate = this.notificationDetailRepository.findById(notificationDetailId).get();
+        var notificationDetailToUpdate = this.notificationDetailRepository.findById(notificationDetailId)
+                .orElseThrow(() -> new IllegalArgumentException("Notification detail with id %s not found".formatted(notificationDetailId)));
         notificationDetailToUpdate.updateNotificationDetail(command);
         try {
             var updatedNotificationDetail = notificationDetailRepository.save(notificationDetailToUpdate);

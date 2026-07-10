@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
@@ -21,6 +22,7 @@ import java.util.Optional;
  * Service implementation for handling Message commands
  */
 @Service
+@Transactional
 public class MessageCommandServiceImpl implements MessageCommandService {
     private final MessageRepository messageRepository;
     private final ExternalIamServiceFromWorkerForum externalIamServiceFromWorkerForum;
@@ -65,7 +67,9 @@ public class MessageCommandServiceImpl implements MessageCommandService {
             );
         }
         var message = new Message(command);
-        var thread = threadRepository.findById(command.threadId()).get();
+        var thread = threadRepository.findById(command.threadId())
+                .orElseThrow(() -> new NotFoundArgumentException(
+                        String.format("[MessageCommandServiceImpl] Thread ID: %s not found", command.threadId())));
         try {
             thread.addMessage(message);
             thread.incrementMessageCount();

@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateQuestionSurveyCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteQuestionSurveyCommand;
@@ -15,6 +16,7 @@ import java.util.Optional;
  * Service implementation for handling QuestionSurvey commands
  */
 @Service
+@Transactional
 public class QuestionSurveyCommandServiceImpl implements QuestionSurveyCommandService {
     private final QuestionSurveyRepository questionsurveyRepository;
     private final SurveyRepository surveyRepository;

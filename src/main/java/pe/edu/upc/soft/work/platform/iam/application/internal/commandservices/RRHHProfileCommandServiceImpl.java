@@ -66,7 +66,7 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
     public Long handle(CreateRRHHProfileCommand command) {
         if (!userAccountRepository.existsById(command.userAccountId())){
             throw new NotFoundArgumentException(
-                    String.format("[SurveyResponseCommandServiceImpl] User Account ID: %s not found in the external Feedback service",
+                    String.format("[RRHHProfileCommandServiceImpl] User Account ID: %s not found",
                             command.userAccountId()));
         }
 
@@ -87,7 +87,9 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
     @Override
     public Optional<RRHHProfile> handle(UpdateRRHHProfileCommand command) {
         var rrhhId = command.RRHHProfileId();
-        var rrhhToUpdate = rrhhProfileRepository.findById(rrhhId).get();
+        var rrhhToUpdate = rrhhProfileRepository.findById(rrhhId)
+                .orElseThrow(() -> new NotFoundArgumentException(
+                        String.format("[RRHHProfileCommandServiceImpl] RRHH Profile ID: %s not found", rrhhId)));
         rrhhToUpdate.updateRRHHProfile(command);
         try {
             var updatedRRHHProfile = rrhhProfileRepository.save(rrhhToUpdate);

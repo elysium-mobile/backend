@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.Widget;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.CreateWidgetCommand;
@@ -15,6 +16,7 @@ import java.util.Optional;
  * Service implementation for handling Widget commands.
  */
 @Service
+@Transactional
 public class WidgetCommandServiceImpl implements WidgetCommandService {
     private final WidgetRepository widgetRepository;
     private final DashboardRepository dashboardRepository;

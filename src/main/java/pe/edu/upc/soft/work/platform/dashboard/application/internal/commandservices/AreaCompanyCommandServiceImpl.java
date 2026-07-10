@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddUnitOfWorkToAreaCompanyCommand;
@@ -18,6 +19,7 @@ import java.util.Optional;
  * Service implementation for handling AreaCompany commands.
  */
 @Service
+@Transactional
 public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService {
     private final AreaCompanyRepository areacompanyRepository;
     private final CompanyRepository companyRepository;
@@ -120,7 +122,7 @@ public class AreaCompanyCommandServiceImpl implements AreaCompanyCommandService 
             areaCompany.addUnitOfWork(unitOfWork);
             areacompanyRepository.save(areaCompany);
         }catch (IllegalStateException ex){
-
+            throw new IllegalArgumentException("Domain error while adding UnitOfWork to AreaCompany: " + ex.getMessage());
         }catch (Exception ex){
             throw new RuntimeException("Error adding UnitOfWork to AreaCompany: " + ex.getMessage(), ex);
         }

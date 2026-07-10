@@ -1,6 +1,7 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
 import org.springframework.context.ApplicationEventPublisher;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalIamServiceFromWorkerForum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Report;
@@ -17,6 +18,7 @@ import java.util.Optional;
  * Service implementation for handling Report commands
  */
 @Service
+@Transactional
 public class ReportCommandServiceImpl implements ReportCommandService {
     private final ReportRepository reportRepository;
     private final ExternalIamServiceFromWorkerForum externalIamServiceFromWorkerForum;

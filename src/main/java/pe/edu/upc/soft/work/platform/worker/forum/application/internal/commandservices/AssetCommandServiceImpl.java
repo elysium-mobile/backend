@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
@@ -19,6 +20,7 @@ import java.util.Optional;
  * Service implementation for handling Attachment commands
  */
 @Service
+@Transactional
 public class AssetCommandServiceImpl implements AssetCommandService {
     private final AssetRepository assetRepository;
     private final MessageRepository messageRepository;
@@ -71,9 +73,9 @@ public class AssetCommandServiceImpl implements AssetCommandService {
      */
     @Override
     public Long handle(CreateAssetCommand command) {
-        if (!this.assetRepository.existsById(command.messageId())){
+        if (!this.messageRepository.existsById(command.messageId())){
             throw new NotFoundArgumentException(
-                    String.format("[SurveyResponseCommandServiceImpl] Message ID: %s not found in the external Workers Forum context",
+                    String.format("[AssetCommandServiceImpl] Message ID: %s not found",
                             command.messageId()));
         }
 
@@ -104,9 +106,6 @@ public class AssetCommandServiceImpl implements AssetCommandService {
         var assetToUpdate = assetRepository.findById(assetId)
                 .orElseThrow(() -> new NotFoundArgumentException(
                         String.format("[AssetCommandServiceImpl] Attachment ID: %s not found", assetId)));
-        if (!this.assetRepository.existsById(assetId)) {
-            throw new RuntimeException("Attachment with ID " + assetId + " does not exist.");
-        }
 
         assetToUpdate.updateAsset(
                 command.messageId(),

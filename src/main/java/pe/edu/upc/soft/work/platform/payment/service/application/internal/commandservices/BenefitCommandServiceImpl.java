@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.payment.service.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Benefit;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateBenefitCommand;
@@ -15,6 +16,7 @@ import java.util.Optional;
  * Service implementation for handling Benefit commands.
  */
 @Service
+@Transactional
 public class BenefitCommandServiceImpl implements BenefitCommandService {
     private final BenefitRepository benefitRepository;
     private final MembershipPlanRepository membershipPlanRepository;

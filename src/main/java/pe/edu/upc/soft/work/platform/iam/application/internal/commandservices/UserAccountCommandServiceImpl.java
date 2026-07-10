@@ -102,7 +102,8 @@ public class UserAccountCommandServiceImpl implements UserAccountCommandService 
     @Override
     public Optional<UserAccount> handle(UpdateUserAccountCommand command) {
         var accountId = command.userAccountId();
-        var result = userAccountRepository.findById(accountId).get();
+        var result = userAccountRepository.findById(accountId)
+                .orElseThrow(() -> new IllegalArgumentException("User account with id %s not found".formatted(accountId)));
         result.UpdateUserAccount(command);
         try {
             var updatedAccount = userAccountRepository.save(result);

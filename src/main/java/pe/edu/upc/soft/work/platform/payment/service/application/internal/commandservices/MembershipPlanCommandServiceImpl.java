@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.payment.service.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.AddBenefitToMembershipPlan;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.MembershipPlan;
@@ -17,6 +18,7 @@ import java.util.Optional;
  * Service implementation for handling MembershipPlan commands
  */
 @Service
+@Transactional
 public class MembershipPlanCommandServiceImpl implements MembershipPlanCommandService {
     private final MembershipPlanRepository membershipplanRepository;
     private final MembershipRepository membershipRepository;

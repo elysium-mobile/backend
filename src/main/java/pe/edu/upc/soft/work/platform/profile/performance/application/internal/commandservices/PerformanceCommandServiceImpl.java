@@ -1,8 +1,9 @@
 package pe.edu.upc.soft.work.platform.profile.performance.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.soft.work.platform.payment.service.application.internal.outboundservices.acl.ExternalIamServiceFromPaymentService;
+
 import pe.edu.upc.soft.work.platform.profile.performance.application.internal.outboundservices.acl.ExternalIamServiceFromProfilePerformance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.aggregates.Performance;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.AddCommentEmployeeToPerformanceCommand;
@@ -21,6 +22,7 @@ import java.util.Optional;
  * Service implementation for handling Performance commands
  */
 @Service
+@Transactional
 public class PerformanceCommandServiceImpl implements PerformanceCommandService {
     private final PerformanceRepository performanceRepository;
     private final ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance;
@@ -55,9 +57,9 @@ public class PerformanceCommandServiceImpl implements PerformanceCommandService 
             );
         }
         var performance = new Performance(command);
-        eventPublisher.publishEvent(new PerformanceRegisteredEvent(this, performance.getId(), performance.getEmployeeProfileId(), performance.getClassification()));
         try {
             performanceRepository.save(performance);
+            eventPublisher.publishEvent(new PerformanceRegisteredEvent(this, performance.getId(), performance.getEmployeeProfileId(), performance.getClassification()));
         } catch (Exception e) {
             throw new RuntimeException("Error creating Performance: " + e.getMessage(), e);
         }
@@ -75,7 +77,7 @@ public class PerformanceCommandServiceImpl implements PerformanceCommandService 
         if (!this.performanceRepository.existsById(performanceId)) {
             throw new RuntimeException("Performance with ID " + performanceId + " does not exist.");
         }
-        if(command.classification()<1 || command.classification()>5)
+        if(command.classification() == null || command.classification()<1 || command.classification()>5)
         {
             throw new IllegalArgumentException("Classification must be between 1 and 5, got: " + command.classification());
         }

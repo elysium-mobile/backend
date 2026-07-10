@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.payment.service.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.aggregates.Payment;
@@ -22,6 +23,7 @@ import java.util.Optional;
  * Service implementation for handling Payment commands
  */
 @Service
+@Transactional
 public class PaymentCommandServiceImpl implements PaymentCommandService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
@@ -58,23 +60,17 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
         }
         var order= orderRepository.findById(command.orderId()).get();
         var payment = new Payment(command);
-        eventPublisher.publishEvent(new PaymentRegisteredEvent(this, payment.getId(), payment.getOrderId()));
         try {
             paymentRepository.save(payment);
+            eventPublisher.publishEvent(new PaymentRegisteredEvent(this, payment.getId(), payment.getOrderId()));
             var membership = membershipRepository.findById(order.getMembershipId())
                 .orElseThrow(() -> new NotFoundArgumentException(
                     String.format("[PaymentCommandServiceImpl] Membership ID: %s not found in the Payment context",
                             order.getMembershipId())
                 ));
-            membership.updateMembership(new UpdateMembershipCommand(
-                    membership.getId(),
-                membership.getMembershipPlanId(),
-                membership.getMembershipStart(),
-                membership.getMembershipOver(),
-                membership.getMembershipStatus()
-                ));
+            membership.setMembershipStatus(pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.MembershipStatus.ACTIVE);
             membershipRepository.save(membership);
-            eventPublisher.publishEvent(new MembershipActivatedEvent(this, membership.getId(), membership.getMembershipStatus()));
+            eventPublisher.publishEvent(new MembershipActivatedEvent(this, membership.getId(), pe.edu.upc.soft.work.platform.payment.service.domain.model.valueobjects.MembershipStatus.ACTIVE));
         } catch (Exception e) {
             throw new RuntimeException("Error creating Payment: " + e.getMessage(), e);
         }

@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalDashboardServiceFromWorkerForum;
@@ -16,6 +17,7 @@ import java.util.Optional;
  * Service implementation for handling Thread
  */
 @Service
+@Transactional
 public class ThreadCommandServiceImpl implements ThreadCommandService {
     private final ThreadRepository threadRepository;
     private final CategoryRepository categoryRepository;

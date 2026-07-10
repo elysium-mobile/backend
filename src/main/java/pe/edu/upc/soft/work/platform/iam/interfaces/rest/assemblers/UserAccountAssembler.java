@@ -20,8 +20,8 @@ public class UserAccountAssembler {
     public static CreateUserAccountCommand toCommandFromRequest(CreateUserAccountRequest request) {
         return new CreateUserAccountCommand(
                 request.userId(),
-                request.password(),
                 request.email(),
+                request.password(),
                 request.anonymousName(),
                 new MembershipId(request.membershipId()),
                 new CompanyId(request.companyId())

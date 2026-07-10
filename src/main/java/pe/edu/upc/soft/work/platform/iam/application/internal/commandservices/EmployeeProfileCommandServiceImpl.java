@@ -98,7 +98,9 @@ public class EmployeeProfileCommandServiceImpl implements EmployeeProfileCommand
     @Override
     public Optional<EmployeeProfile> handle(UpdateEmployeeProfileCommand command) {
         var employeeId = command.employeeProfileId();
-        var employeeToUpdate = this.employeeProfileRepository.findById(employeeId).get();
+        var employeeToUpdate = this.employeeProfileRepository.findById(employeeId)
+                .orElseThrow(() -> new NotFoundArgumentException(
+                        String.format("[EmployeeProfileCommandServiceImpl] Employee Profile ID: %s not found", employeeId)));
         employeeToUpdate.updateEmployeeProfile(command);
         try {
             var updatedEmployeeProfile = employeeProfileRepository.save(employeeToUpdate);

@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeletePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.GetPerformanceByIdQuery;
+import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.GetPerformanceByEmployeeProfileIdQuery;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.GetAllPerformanceQuery;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.PerformanceCommandService;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.services.PerformanceQueryService;
@@ -211,7 +212,7 @@ public class PerformanceController {
     })
     @GetMapping("/employee/{employeeId}")
     public ResponseEntity<PerformanceResponse> getPerformanceByEmployeeId(@PathVariable Long employeeId){
-        var getPerformanceByEmployeeIdQuery = new GetPerformanceByIdQuery(employeeId);
+        var getPerformanceByEmployeeIdQuery = new GetPerformanceByEmployeeProfileIdQuery(employeeId);
         var performance = performanceQueryService.handle(getPerformanceByEmployeeIdQuery);
 
         if (performance.isEmpty()) {

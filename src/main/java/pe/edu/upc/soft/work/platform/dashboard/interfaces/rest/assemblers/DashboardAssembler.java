@@ -15,7 +15,7 @@ public class DashboardAssembler {
      * Converts a CreateDashboardRequest to a CreateDashboardCommand.
      */
     public static CreateDashboardCommand toCommandFromRequest(CreateDashboardRequest request) {
-        return new CreateDashboardCommand(request.ruc(), request.title(), request.description(), 0L,new ArrayList<>());
+        return new CreateDashboardCommand(request.ruc(), request.title(), request.description(), request.companyId(), new ArrayList<>());
     }
 
     /**

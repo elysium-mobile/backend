@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
@@ -20,6 +21,7 @@ import java.util.Optional;
  * Service implementation for handling Forum commands
  */
 @Service
+@Transactional
 public class ForumCommandServiceImpl implements ForumCommandService {
     private final ForumRepository forumRepository;
     private final ApplicationEventPublisher eventPublisher;

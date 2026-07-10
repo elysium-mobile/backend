@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.AddWorkTeamToUnitOfWork;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.UnitOfWork;
@@ -16,6 +17,7 @@ import java.util.Optional;
  * Service implementation for handling UnitOfWork commands.
  */
 @Service
+@Transactional
 public class UnitOfWorkCommandServiceImpl implements UnitOfWorkCommandService {
     private final UnitOfWorkRepository unitofworkRepository;
     private final WorkTeamRepository workTeamRepository;

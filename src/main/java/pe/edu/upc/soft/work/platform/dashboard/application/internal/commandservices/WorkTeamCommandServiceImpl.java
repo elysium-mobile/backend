@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.WorkTeam;
@@ -17,10 +18,11 @@ import java.util.Optional;
  * Service implementation for handling WorkTeam commands.
  */
 @Service
+@Transactional
 public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
     private final WorkTeamRepository workteamRepository;
     private final UnitOfWorkRepository unitOfWorkRepository;
-    private ApplicationEventPublisher eventPublisher;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for WorkTeamCommandServiceImpl.
@@ -47,7 +49,7 @@ public class WorkTeamCommandServiceImpl implements WorkTeamCommandService {
         var workteam = new WorkTeam(command);
         try {
             workteamRepository.save(workteam);
-            eventPublisher.publishEvent(new WorkTeamCreatedEvent(this, workteam.getId(), null));
+            eventPublisher.publishEvent(new WorkTeamCreatedEvent(this, workteam.getId(), command.unitOfWorkId()));
         } catch (Exception e) {
             throw new RuntimeException("Error creating WorkTeam: " + e.getMessage(), e);
         }

@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.iam.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.User;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserCommand;
@@ -14,6 +15,7 @@ import java.util.Optional;
  * Service implementation for handling User commands.
  */
 @Service
+@Transactional
 public class UserCommandServiceImpl implements UserCommandService {
     private final UserRepository userRepository;
 

@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.AddThreadToCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities.Category;
@@ -17,6 +18,7 @@ import java.util.Optional;
  * Services implementation for handling Category commands
  */
 @Service
+@Transactional
 public class CategoryCommandServiceImpl implements CategoryCommandService {
     private final CategoryRepository categoryRepository;
     private final ForumRepository forumRepository;

@@ -22,5 +22,8 @@ public record CreateDashboardRequest(
 
         @NotNull
         @NotBlank
-        String ruc
+        String ruc,
+
+        @NotNull
+        Long companyId
 ) {}

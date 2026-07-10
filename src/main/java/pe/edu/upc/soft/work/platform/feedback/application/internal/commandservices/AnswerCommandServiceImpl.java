@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
 import pe.edu.upc.soft.work.platform.feedback.application.internal.outboundservices.acl.ExternalIamServiceFromFeedback;
@@ -16,6 +17,7 @@ import java.util.Optional;
  * Service implementation for handling Answer commands.
  */
 @Service
+@Transactional
 public class AnswerCommandServiceImpl implements AnswerCommandService {
     private final AnswerRepository answerRepository;
     private final ExternalIamServiceFromFeedback externalIamServiceFromFeedback;

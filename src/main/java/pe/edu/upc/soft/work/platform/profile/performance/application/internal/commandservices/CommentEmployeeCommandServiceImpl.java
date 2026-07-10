@@ -1,5 +1,6 @@
 package pe.edu.upc.soft.work.platform.profile.performance.application.internal.commandservices;
 
+import jakarta.transaction.Transactional;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.profile.performance.application.internal.outboundservices.acl.ExternalIamServiceFromProfilePerformance;
@@ -19,6 +20,7 @@ import java.util.Optional;
  * Service implementation for handling CommentEmployee commands, including creation, update, and deletion of CommentEmployee entities.
  */
 @Service
+@Transactional
 public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommandService {
     private final CommentEmployeeRepository commentemployeeRepository;
     private final ExternalIamServiceFromProfilePerformance externalIamServiceFromProfilePerformance;
@@ -57,11 +59,11 @@ public class CommentEmployeeCommandServiceImpl implements CommentEmployeeCommand
 
         var commentemployee = new CommentEmployee(command);
         var performance = performanceRepository.findById(command.performanceId()).orElseThrow(()-> new RuntimeException("Performance with ID" + command.performanceId()+"does not exists"));
-        eventPublisher.publishEvent(new CommentEmployeeAddedEvent(this, commentemployee.getId(),null));
         try {
             commentemployeeRepository.save(commentemployee);
             performance.addCommentEmployee(commentemployee);
             performanceRepository.save(performance);
+            eventPublisher.publishEvent(new CommentEmployeeAddedEvent(this, commentemployee.getId(), command.performanceId()));
         } catch (Exception e) {
             throw new RuntimeException("Error creating CommentEmployee: " + e.getMessage(), e);
         }

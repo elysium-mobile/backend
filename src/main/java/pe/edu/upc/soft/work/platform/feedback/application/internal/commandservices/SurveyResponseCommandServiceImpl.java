@@ -64,7 +64,7 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
             throw new RuntimeException("Cannot submit response: Survey has expired.");
         }
         boolean alreadyAnswered = surveyResponseRepository.findBySurveyId(command.surveyId()).stream()
-            .anyMatch(response -> response.getEmployeeProfileId().equals(command.employeeProfileId().employeeProfileId()));
+            .anyMatch(response -> response.getEmployeeProfileId().equals(command.employeeProfileId()));
         if (alreadyAnswered) {
             throw new RuntimeException("Employee has already submitted a response for this survey.");
         }

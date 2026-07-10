@@ -47,6 +47,8 @@ jobs:
             echo "CLOUDINARY_URL=${{ secrets.PROD_CLOUDINARY_URL }}" >> .env
             echo "STRIPE_SECRET_KEY=${{ secrets.PROD_STRIPE_SECRET_KEY }}" >> .env
             echo "STRIPE_WEBHOOK_SECRET=${{ secrets.PROD_STRIPE_WEBHOOK_SECRET }}" >> .env
+            echo "STRIPE_SUCCESS_URL=${{ secrets.PROD_STRIPE_SUCCESS_URL }}" >> .env
+            echo "STRIPE_CANCEL_URL=${{ secrets.PROD_STRIPE_CANCEL_URL }}" >> .env
             echo "GOOGLE_GENAI_API_KEY=${{ secrets.PROD_GOOGLE_GENAI_API_KEY }}" >> .env
             echo "GOOGLE_CLIENT_ID=${{ secrets.PROD_GOOGLE_CLIENT_ID }}" >> .env
             

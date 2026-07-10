@@ -48,6 +48,7 @@ jobs:
             echo "STRIPE_SECRET_KEY=${{ secrets.PROD_STRIPE_SECRET_KEY }}" >> .env
             echo "STRIPE_WEBHOOK_SECRET=${{ secrets.PROD_STRIPE_WEBHOOK_SECRET }}" >> .env
             echo "GOOGLE_GENAI_API_KEY=${{ secrets.PROD_GOOGLE_GENAI_API_KEY }}" >> .env
+            echo "GOOGLE_CLIENT_ID=${{ secrets.PROD_GOOGLE_CLIENT_ID }}" >> .env
             
             echo "Calculating AWS IP Host..."
             ./update-api-host.sh

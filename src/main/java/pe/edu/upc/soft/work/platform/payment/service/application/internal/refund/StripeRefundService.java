@@ -72,9 +72,17 @@ public class StripeRefundService implements RefundService {
                     payment.getPaymentStatus()));
         }
 
+        var transactionId = payment.getTransactionId();
+        if (transactionId == null || transactionId.isBlank()) {
+            throw new IllegalStateException(
+                String.format("[StripeRefundService] Payment ID: %s has no transactionId. "
+                    + "Cannot initiate refund without a Stripe PaymentIntent reference.",
+                    command.paymentId()));
+        }
+
         try {
             var params = RefundCreateParams.builder()
-                .setPaymentIntent(payment.getTransactionId());
+                .setPaymentIntent(transactionId);
 
             // Set partial refund amount if provided
             if (command.refundAmountCents() != null) {

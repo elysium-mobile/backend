@@ -6,10 +6,16 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 
 /**
  * StripeCheckoutResponse
- * Response body for POST /api/v1/stripe/checkout.
- * Returns the clientSecret that Stripe.js uses to confirm the payment on the frontend.
+ * Response body for POST /api/v1/payments/stripe/checkout.
+ * Returns the hosted Stripe Checkout Session URL that the frontend
+ * should redirect the customer to. The entire payment flow (card
+ * details, confirmation) is handled by Stripe on its hosted page.
+ *
+ * @param checkoutUrl the URL to redirect the customer to Stripe's hosted checkout page
+ * @param sessionId   the Stripe Checkout Session ID (cs_...)
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record StripeCheckoutResponse(
-        String clientSecret
+        String checkoutUrl,
+        String sessionId
 ) {}

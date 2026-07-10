@@ -1,6 +1,6 @@
 package pe.edu.upc.soft.work.platform.payment.service.domain.services;
 
-import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateStripeCheckoutCommand;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateStripeCheckoutSessionCommand;
 
 /**
  * PaymentGatewayAdapter
@@ -10,20 +10,26 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.Creat
 public interface PaymentGatewayAdapter {
 
     /**
-     * Creates a payment intent for the given Order and returns response with clientSecret and transactionId.
-     * This method should be implemented by concrete adapters (e.g., StripePaymentGatewayAdapter).
+     * Creates a Stripe Checkout Session for the given Order and returns the
+     * hosted checkout URL, session ID, and the underlying PaymentIntent ID.
+     * The frontend redirects the customer to checkoutUrl; Stripe handles
+     * the entire payment flow on its hosted page.
      *
-     * @param command the command carrying the Order ID and currency
-     * @return PaymentGatewayResponse containing clientSecret and transactionId
+     * @param command the command carrying the Order ID, currency, and redirect URLs
+     * @return CheckoutSessionResponse containing the hosted checkout URL and identifiers
      */
-    PaymentGatewayResponse createPaymentIntent(CreateStripeCheckoutCommand command);
+    CheckoutSessionResponse createCheckoutSession(CreateStripeCheckoutSessionCommand command);
 
     /**
-     * Response object from payment gateway after creating a payment intent
+     * Response object from the payment gateway after creating a Checkout Session.
+     *
+     * @param checkoutUrl    the hosted Stripe Checkout page URL (frontend redirects here)
+     * @param sessionId      the Stripe Checkout Session ID (cs_...)
+     * @param paymentIntentId the PaymentIntent ID created under the hood by the session
      */
-    record PaymentGatewayResponse(
-            String clientSecret,        // Client secret for frontend to confirm payment
-            String transactionId,       // Gateway's transaction/payment intent ID
-            String paymentMethod        // Type of payment method (e.g., "card", "bank_account")
+    record CheckoutSessionResponse(
+            String checkoutUrl,
+            String sessionId,
+            String paymentIntentId
     ) {}
 }

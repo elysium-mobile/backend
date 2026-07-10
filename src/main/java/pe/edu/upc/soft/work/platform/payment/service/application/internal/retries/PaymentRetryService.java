@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateStripeCheckoutCommand;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateStripeCheckoutSessionCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.RetryPaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdatePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.events.PaymentRetryInitiatedEvent;
@@ -16,7 +16,7 @@ import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentEx
 
 /**
  * PaymentRetryService
- * Handles logic for retrying failed payments by creating a new Stripe PaymentIntent
+ * Handles logic for retrying failed payments by creating a new Stripe Checkout Session
  * and updating the Payment record with the new attempt.
  */
 @Service
@@ -37,11 +37,13 @@ public class PaymentRetryService {
     }
 
     /**
-     * Retries a failed payment by creating a new Stripe PaymentIntent.
-     * Updates the original Payment record with the new transaction ID.
+     * Retries a failed payment by creating a new Stripe Checkout Session.
+     * The customer is redirected to the returned checkout URL to attempt
+     * payment again. The original Payment record is updated with the new
+     * PaymentIntent ID from the session.
      *
      * @param command the retry payment command
-     * @return PaymentRetryResponse with new clientSecret for payment confirmation
+     * @return PaymentRetryResponse with the new checkout URL and transaction ID
      */
     @Transactional
     public PaymentRetryResponse retryPayment(RetryPaymentCommand command) {
@@ -60,22 +62,28 @@ public class PaymentRetryService {
                     payment.getPaymentStatus()));
         }
 
-        // Create a new PaymentIntent through the gateway adapter.
+        // Create a new Checkout Session through the gateway adapter.
         // IMPORTANT: this must use a DIFFERENT idempotency key than the original
-        // checkout (retry-payment-{paymentId}-{uuid}, not checkout-order-{orderId}).
+        // checkout (retry-payment-{paymentId}-{uuid}, not checkout-session-{orderId}).
         // Reusing the checkout key here would make Stripe return the same, already
-        // failed PaymentIntent instead of creating a fresh one to retry with.
+        // failed session instead of creating a fresh one to retry with.
         var idempotencyKey = "retry-payment-" + command.paymentId() + "-" + java.util.UUID.randomUUID();
-        var gatewayCommand = new CreateStripeCheckoutCommand(command.orderId(), command.currency(), idempotencyKey);
-        var gatewayResponse = paymentGatewayAdapter.createPaymentIntent(gatewayCommand);
+        var gatewayCommand = new CreateStripeCheckoutSessionCommand(
+            command.orderId(),
+            command.currency(),
+            idempotencyKey,
+            null,  // Use default successUrl from config
+            null); // Use default cancelUrl from config
+        var gatewayResponse = paymentGatewayAdapter.createCheckoutSession(gatewayCommand);
 
-        LOGGER.info("[PaymentRetryService] New PaymentIntent created: {}", gatewayResponse.transactionId());
+        LOGGER.info("[PaymentRetryService] New Checkout Session created: {} (PaymentIntent: {})",
+            gatewayResponse.sessionId(), gatewayResponse.paymentIntentId());
 
         // Update the Payment with the new transaction ID
         var updateCommand = new UpdatePaymentCommand(
             command.paymentId(),
             command.orderId(),
-            gatewayResponse.transactionId(),
+            gatewayResponse.paymentIntentId(),
             new java.util.Date(),
             PaymentStatus.PENDING,  // Reset to PENDING for retry
             null);  // Clear payment method
@@ -84,20 +92,20 @@ public class PaymentRetryService {
         paymentRepository.save(payment);
 
         LOGGER.info("[PaymentRetryService] Payment updated with new transaction ID: {}",
-            gatewayResponse.transactionId());
+            gatewayResponse.paymentIntentId());
 
         // Publish event for audit trail
         eventPublisher.publishEvent(new PaymentRetryInitiatedEvent(
             this,
             command.paymentId(),
             command.orderId(),
-            gatewayResponse.transactionId(),
+            gatewayResponse.paymentIntentId(),
             command.currency()));
 
         return new PaymentRetryResponse(
             payment.getId(),
-            gatewayResponse.clientSecret(),
-            gatewayResponse.transactionId());
+            gatewayResponse.checkoutUrl(),
+            gatewayResponse.paymentIntentId());
     }
 
     /**
@@ -105,6 +113,6 @@ public class PaymentRetryService {
      */
     public record PaymentRetryResponse(
         Long paymentId,
-        String clientSecret,
+        String checkoutUrl,
         String newTransactionId) {}
 }

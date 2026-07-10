@@ -2,84 +2,48 @@ package pe.edu.upc.soft.work.platform.payment.service.application.internal.comma
 
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
-import com.stripe.model.PaymentIntent;
-import com.stripe.param.PaymentIntentCreateParams;
+import com.stripe.model.checkout.Session;
+import com.stripe.param.checkout.SessionCreateParams;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateStripeCheckoutCommand;
+import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateStripeCheckoutSessionCommand;
+import pe.edu.upc.soft.work.platform.payment.service.domain.services.PaymentGatewayAdapter;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.StripeCheckoutCommandService;
-import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.OrderRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.stripe.StripeProperties;
-import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
+
+import java.util.List;
 
 /**
  * StripeCheckoutCommandServiceImpl
- * Creates a Stripe PaymentIntent for a given Order.
- * The clientSecret returned here is sent to the frontend so that
- * Stripe.js can confirm the payment without the secret key leaving the server.
+ * Creates a Stripe Checkout Session for a given Order and returns
+ * the hosted checkout URL. The frontend redirects the customer to
+ * this URL; Stripe handles the entire payment flow on its hosted page.
+ * <p>
+ * Delegates the actual Stripe API call to {@link PaymentGatewayAdapter},
+ * keeping this service focused on use-case orchestration.
  */
 @Service
 public class StripeCheckoutCommandServiceImpl implements StripeCheckoutCommandService {
 
-    private final OrderRepository orderRepository;
-    private final StripeProperties stripeProperties;
+    private final PaymentGatewayAdapter paymentGatewayAdapter;
 
     /**
      * Constructor for StripeCheckoutCommandServiceImpl.
-     * @param orderRepository  repository to look up the Order being charged
-     * @param stripeProperties configuration properties holding the Stripe secret key
+     * @param paymentGatewayAdapter the adapter that performs the actual Stripe API call
      */
-    public StripeCheckoutCommandServiceImpl(OrderRepository orderRepository,
-                                            StripeProperties stripeProperties) {
-        this.orderRepository = orderRepository;
-        this.stripeProperties = stripeProperties;
+    public StripeCheckoutCommandServiceImpl(PaymentGatewayAdapter paymentGatewayAdapter) {
+        this.paymentGatewayAdapter = paymentGatewayAdapter;
     }
 
     /**
-     * Initialises the Stripe SDK with the secret key once the bean is ready.
-     */
-    @PostConstruct
-    public void initStripe() {
-        Stripe.apiKey = stripeProperties.getSecretKey();
-    }
-
-    /**
-     * Creates a Stripe PaymentIntent and returns the clientSecret.
-     * The Order ID is stored in the PaymentIntent metadata so that the
-     * webhook handler can correlate the confirmation back to the Order.
+     * Creates a Stripe Checkout Session and returns the hosted checkout URL.
      *
-     * @param command the command carrying the Order ID and desired currency
-     * @return Stripe PaymentIntent clientSecret
+     * @param command the command carrying the Order ID, currency, and redirect URLs
+     * @return the hosted Stripe Checkout page URL
      */
     @Override
-    public String handle(CreateStripeCheckoutCommand command) {
-        var order = orderRepository.findById(command.orderId())
-                .orElseThrow(() -> new NotFoundArgumentException(
-                        String.format("[StripeCheckoutCommandServiceImpl] Order ID: %s not found",
-                                command.orderId())));
-
-        var currency = (command.currency() != null && !command.currency().isBlank()) ? command.currency().toLowerCase() : "usd";
-
-        try {
-            var params = PaymentIntentCreateParams.builder()
-                    .setAmount((long) order.getAmount() * 100L)
-                    .setCurrency(currency)
-                    .setAutomaticPaymentMethods(
-                            PaymentIntentCreateParams
-                                .AutomaticPaymentMethods.builder()
-                                    .setEnabled(true)
-                                    .build())
-                    .putMetadata("orderId", String.valueOf(command.orderId()))
-                    .putMetadata("membershipId", String.valueOf(order.getMembershipId()))
-                    .build();
-
-            var paymentIntent = PaymentIntent.create(params);
-            return paymentIntent.getClientSecret();
-
-        } catch (StripeException e) {
-            throw new RuntimeException(
-                    "[StripeCheckoutCommandServiceImpl] Failed to create Stripe PaymentIntent: "
-                            + e.getMessage(), e);
-        }
+    public String handle(CreateStripeCheckoutSessionCommand command) {
+        var response = paymentGatewayAdapter.createCheckoutSession(command);
+        return response.checkoutUrl();
     }
 }

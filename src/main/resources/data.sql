@@ -268,9 +268,9 @@ VALUES
 
 INSERT INTO surveys (id, title, description, target_type, expiration_time, created_at, updated_at)
 VALUES
-    (1, 'Satisfacción Laboral Q1 2024', 'Evaluación del clima laboral del primer trimestre', 'AREA_COMPANY', '2024-04-30', NOW(), NOW()),
-    (2, 'Evaluación de Sprint',         'Retrospectiva del equipo de desarrollo',            'UNIT_OF_WORK',  '2024-04-15', NOW(), NOW()),
-    (3, 'Cultura y Valores',            'Percepción de cultura organizacional',              'TEAM_OF_WORK',  '2024-05-01', NOW(), NOW());
+    (1, 'Satisfacción Laboral Q1 2024', 'Evaluación del clima laboral del primer trimestre', 'AREA_COMPANY', '2028-04-30', NOW(), NOW()),
+    (2, 'Evaluación de Sprint',         'Retrospectiva del equipo de desarrollo',            'UNIT_OF_WORK',  '2028-04-15', NOW(), NOW()),
+    (3, 'Cultura y Valores',            'Percepción de cultura organizacional',              'TEAM_OF_WORK',  '2028-05-01', NOW(), NOW());
 
 
 INSERT INTO questions_surveys (id, text_question, question_type, survey_id, created_at, updated_at)

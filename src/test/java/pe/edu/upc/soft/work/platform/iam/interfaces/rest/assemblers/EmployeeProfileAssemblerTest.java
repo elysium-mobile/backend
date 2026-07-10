@@ -77,7 +77,7 @@ class EmployeeProfileAssemblerTest {
 
         // Assert
         assertThat(response.employeeProfileId()).isEqualTo(77L);
-        assertThat(response.starStart()).isEqualTo(entity.getDateStart());
+        assertThat(response.dateStart()).isEqualTo(entity.getDateStart());
         assertThat(response.position()).isEqualTo("Engineer");
         assertThat(response.salary()).isEqualTo(5000);
         // Existing source-code swap: userAccountId lands in workOfTeamId slot

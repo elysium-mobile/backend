@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * EmployeeProfileResponse record to represent employee profile data in API responses.
- * @param starStart the start date of the employee
+ * @param dateStart the start date of the employee
  * @param position the position of the employee
  * @param salary the salary of the employee
  * @param workOfTeamId the unique identifier of the work team the employee belongs to
@@ -18,7 +18,7 @@ public record EmployeeProfileResponse(
 
         Long employeeProfileId,
 
-        Date starStart,
+        Date dateStart,
 
         String position,
 

@@ -47,7 +47,7 @@ public class Report extends AuditableAbstractAggregateRoot<Report> {
 
     public Report(CreateReportCommand command){
         this.reason = command.reason();
-        this.description = command.reason();
+        this.description = command.description();
         this.userAccountId = command.userAccountId();
         this.reportDate = command.reportDate();
         this.areaCompanyId = command.areaCompanyId();
@@ -55,7 +55,7 @@ public class Report extends AuditableAbstractAggregateRoot<Report> {
 
     public void updateReport(UpdateReportCommand command){
         this.reason = command.reason();
-        this.description = command.reason();
+        this.description = command.description();
         this.userAccountId = command.userAccountId();
         this.reportDate = command.reportDate();
         this.areaCompanyId = command.areaCompanyId();

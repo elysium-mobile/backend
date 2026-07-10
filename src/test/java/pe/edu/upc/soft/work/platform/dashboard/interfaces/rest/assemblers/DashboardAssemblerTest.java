@@ -22,7 +22,7 @@ class DashboardAssemblerTest {
     void toCommandFromCreateRequestMapsRuc() {
         // Arrange
         var request = new CreateDashboardRequest(DashboardCommandFixtures.VALID_TITLE,
-            DashboardCommandFixtures.VALID_DESCRIPTION,DashboardCommandFixtures.VALID_RUC);
+            DashboardCommandFixtures.VALID_DESCRIPTION,DashboardCommandFixtures.VALID_RUC, DashboardCommandFixtures.VALID_COMPANY_ID);
 
         // Act
         CreateDashboardCommand command = DashboardAssembler.toCommandFromRequest(request);

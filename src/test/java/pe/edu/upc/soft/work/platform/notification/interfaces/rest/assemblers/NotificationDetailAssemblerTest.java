@@ -7,6 +7,7 @@ import pe.edu.upc.soft.work.platform.notification.domain.model.commands.UpdateNo
 import pe.edu.upc.soft.work.platform.notification.domain.model.entities.NotificationDetail;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.CreateNotificationDetailRequest;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.NotificationDetailResponse;
+import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.UpdateNotificationDetailRequest;
 import pe.edu.upc.soft.work.platform.notification.test.fixtures.NotificationCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
@@ -32,17 +33,11 @@ class NotificationDetailAssemblerTest {
         assertThat(command.notificationId()).isEqualTo(NotificationCommandFixtures.VALID_NOTIFICATION_ID);
     }
 
-    /**
-     * Reflects the CURRENT behavior of the assembler: the update overload
-     * accepts a {@link CreateNotificationDetailRequest} (not an
-     * UpdateNotificationDetailRequest) as its second parameter.
-     * See risk report.
-     */
     @Test
-    @DisplayName("toCommandFromRequest(Long, CreateNotificationDetailRequest) -> maps id, title and content (AAA)")
+    @DisplayName("toCommandFromRequest(Long, UpdateNotificationDetailRequest) -> maps id, title and content (AAA)")
     void toCommandFromUpdateRequestMapsAllFields() {
         // Arrange
-        var request = new CreateNotificationDetailRequest(
+        var request = new UpdateNotificationDetailRequest(
                 NotificationCommandFixtures.VALID_DETAIL_TITLE,
                 NotificationCommandFixtures.VALID_DETAIL_CONTENT,
             NotificationCommandFixtures.VALID_NOTIFICATION_ID);

@@ -54,13 +54,13 @@ class ExternalIamServiceFromFeedbackTest {
     }
 
     @Test
-    @DisplayName("existEmployeeProfileById(Long) -> returns true when facade confirms existence (AAA)")
-    void existEmployeeProfileByIdReturnsTrue() {
+    @DisplayName("existsEmployeeProfileById(Long) -> returns true when facade confirms existence (AAA)")
+    void existsEmployeeProfileByIdReturnsTrue() {
         // Arrange
         when(iamContextFacade.existsEmployeeProfileById(8L)).thenReturn(true);
 
         // Act
-        boolean result = service.existEmployeeProfileById(8L);
+        boolean result = service.existsEmployeeProfileById(8L);
 
         // Assert
         assertThat(result).isTrue();
@@ -69,13 +69,13 @@ class ExternalIamServiceFromFeedbackTest {
     }
 
     @Test
-    @DisplayName("existEmployeeProfileById(Long) -> returns false when facade reports absence (AAA)")
-    void existEmployeeProfileByIdReturnsFalse() {
+    @DisplayName("existsEmployeeProfileById(Long) -> returns false when facade reports absence (AAA)")
+    void existsEmployeeProfileByIdReturnsFalse() {
         // Arrange
         when(iamContextFacade.existsEmployeeProfileById(8L)).thenReturn(false);
 
         // Act
-        boolean result = service.existEmployeeProfileById(8L);
+        boolean result = service.existsEmployeeProfileById(8L);
 
         // Assert
         assertThat(result).isFalse();

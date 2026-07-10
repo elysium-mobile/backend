@@ -59,7 +59,7 @@ class SurveyResponseCommandServiceImplTest {
 
         when(surveyRepository.existsById(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(true);
         when(surveyRepository.findById(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(Optional.of(survey));
-        when(externalIamServiceFromFeedback.existEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID))
+        when(externalIamServiceFromFeedback.existsEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID))
             .thenReturn(true);
         when(surveyResponseRepository.findBySurveyId(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(java.util.Collections.emptyList());
 
@@ -100,7 +100,7 @@ class SurveyResponseCommandServiceImplTest {
         // Arrange
         var command = FeedbackCommandFixtures.validCreateSurveyResponseCommand();
         when(surveyRepository.existsById(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(true);
-        when(externalIamServiceFromFeedback.existEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID))
+        when(externalIamServiceFromFeedback.existsEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID))
                 .thenReturn(false);
 
         // Act + Assert
@@ -108,7 +108,7 @@ class SurveyResponseCommandServiceImplTest {
         assertThat(ex.getMessage()).contains("Employee Profile ID: " + FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
         verify(surveyRepository, times(1)).existsById(FeedbackCommandFixtures.VALID_SURVEY_ID);
         verify(externalIamServiceFromFeedback, times(1))
-                .existEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
+                .existsEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
         verifyNoMoreInteractions(surveyRepository, externalIamServiceFromFeedback);
         verifyNoInteractions(surveyResponseRepository);
     }
@@ -122,7 +122,7 @@ class SurveyResponseCommandServiceImplTest {
 
         when(surveyRepository.existsById(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(true);
         when(surveyRepository.findById(FeedbackCommandFixtures.VALID_SURVEY_ID)).thenReturn(Optional.of(survey));
-        when(externalIamServiceFromFeedback.existEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID))
+        when(externalIamServiceFromFeedback.existsEmployeeProfileById(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID))
             .thenReturn(true);
         when(surveyResponseRepository.findBySurveyId(FeedbackCommandFixtures.VALID_SURVEY_ID))
             .thenReturn(java.util.Collections.emptyList());

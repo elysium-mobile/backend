@@ -113,7 +113,7 @@ class PaymentCommandServiceImplTest {
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating Payment").contains("db");
-        verify(eventPublisher, times(1)).publishEvent(any(PaymentRegisteredEvent.class));
+        verify(eventPublisher, never()).publishEvent(any(PaymentRegisteredEvent.class));
         verify(orderRepository, times(1)).existsById(command.orderId());
         verify(orderRepository, times(1)).findById(command.orderId());
         verify(paymentRepository, times(1)).save(any(Payment.class));

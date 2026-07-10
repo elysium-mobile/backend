@@ -7,6 +7,7 @@ import pe.edu.upc.soft.work.platform.notification.domain.model.commands.CreateNo
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.UpdateNotificationCommand;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.CreateNotificationRequest;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.NotificationResponse;
+import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.UpdateNotificationRequest;
 import pe.edu.upc.soft.work.platform.notification.test.fixtures.NotificationCommandFixtures;
 import pe.edu.upc.soft.work.platform.shared.test.util.ReflectionTestUtils;
 
@@ -32,16 +33,11 @@ class NotificationAssemblerTest {
         assertThat(command.userAccountId()).isEqualTo(NotificationCommandFixtures.VALID_USER_ACCOUNT_ID);
     }
 
-    /**
-     * Reflects the CURRENT behavior of the assembler: the update overload
-     * accepts a {@link CreateNotificationRequest} (not an UpdateNotificationRequest)
-     * as its second parameter. See risk report.
-     */
     @Test
-    @DisplayName("toCommandFromRequest(Long, CreateNotificationRequest) -> maps id and fields to UpdateNotificationCommand (AAA)")
+    @DisplayName("toCommandFromRequest(Long, UpdateNotificationRequest) -> maps id and fields to UpdateNotificationCommand (AAA)")
     void toCommandFromUpdateRequestMapsAllFields() {
         // Arrange
-        var request = new CreateNotificationRequest(
+        var request = new UpdateNotificationRequest(
                 true,
                 NotificationCommandFixtures.VALID_NOTIFICATION_TYPE.name(),
                 NotificationCommandFixtures.VALID_USER_ACCOUNT_ID);

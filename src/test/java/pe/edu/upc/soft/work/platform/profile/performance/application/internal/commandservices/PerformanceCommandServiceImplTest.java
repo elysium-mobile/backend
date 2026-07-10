@@ -101,7 +101,7 @@ class PerformanceCommandServiceImplTest {
         assertThat(ex.getMessage()).contains("Error creating Performance").contains("db");
         verify(externalIamServiceFromProfilePerformance, times(1))
             .existsEmployeeProfileById(ProfilePerformanceCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
-        verify(eventPublisher, times(1)).publishEvent(any(PerformanceRegisteredEvent.class));
+        verify(eventPublisher, never()).publishEvent(any(PerformanceRegisteredEvent.class));
         verify(performanceRepository, times(1)).save(any(Performance.class));
         verifyNoMoreInteractions(externalIamServiceFromProfilePerformance, performanceRepository, eventPublisher);
     }

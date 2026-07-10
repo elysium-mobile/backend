@@ -102,7 +102,7 @@ class NotificationCommandServiceImplTest {
         IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error saving notification").contains("db");
         verify(externalIamServiceFromNotification, times(1)).existsUserAccountById(NotificationCommandFixtures.VALID_USER_ACCOUNT_ID);
-        verify(eventPublisher, times(1)).publishEvent(any(NotificationCreatedEvent.class));
+        verify(eventPublisher, never()).publishEvent(any(NotificationCreatedEvent.class));
         verify(notificationRepository, times(1)).save(any(Notification.class));
         verifyNoMoreInteractions(externalIamServiceFromNotification, notificationRepository, eventPublisher);
     }

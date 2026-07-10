@@ -41,8 +41,7 @@ class AssetCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = WorkerForumCommandFixtures.validCreateAssetCommand();
-        // NOTE (source quirk): the service guards via attachmentRepository.existsById(command.messageId())
-        when(assetRepository.existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID)).thenReturn(true);
+        when(messageRepository.existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID)).thenReturn(true);
         when(assetRepository.save(any(Asset.class))).thenAnswer(inv -> {
             Asset a = inv.getArgument(0);
             ReflectionTestUtils.setId(a, ATTACHMENT_ID);
@@ -54,10 +53,9 @@ class AssetCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(ATTACHMENT_ID);
-        verify(assetRepository, times(1)).existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID);
+        verify(messageRepository, times(1)).existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID);
         verify(assetRepository, times(1)).save(any(Asset.class));
-        verifyNoMoreInteractions(assetRepository);
-        verifyNoInteractions(messageRepository);
+        verifyNoMoreInteractions(assetRepository, messageRepository);
     }
 
     @Test
@@ -65,14 +63,12 @@ class AssetCommandServiceImplTest {
     void handleCreateGuardFails() {
         // Arrange
         var command = WorkerForumCommandFixtures.validCreateAssetCommand();
-        when(assetRepository.existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID)).thenReturn(false);
 
         // Act + Assert
         NotFoundArgumentException ex = assertThrows(NotFoundArgumentException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Message ID: " + WorkerForumCommandFixtures.VALID_MESSAGE_ID);
-        verify(assetRepository, times(1)).existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID);
-        verifyNoMoreInteractions(assetRepository);
-        verifyNoInteractions(messageRepository);
+        verify(messageRepository, times(1)).existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID);
+        verifyNoMoreInteractions(assetRepository, messageRepository);
     }
 
     @Test
@@ -80,16 +76,15 @@ class AssetCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = WorkerForumCommandFixtures.validCreateAssetCommand();
-        when(assetRepository.existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID)).thenReturn(true);
+        when(messageRepository.existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID)).thenReturn(true);
         when(assetRepository.save(any(Asset.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating Attachment").contains("db");
-        verify(assetRepository, times(1)).existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID);
+        verify(messageRepository, times(1)).existsById(WorkerForumCommandFixtures.VALID_MESSAGE_ID);
         verify(assetRepository, times(1)).save(any(Asset.class));
-        verifyNoMoreInteractions(assetRepository);
-        verifyNoInteractions(messageRepository);
+        verifyNoMoreInteractions(assetRepository, messageRepository);
     }
 
     @Test
@@ -106,7 +101,6 @@ class AssetCommandServiceImplTest {
         );
         ReflectionTestUtils.setId(existing, ATTACHMENT_ID);
         var updateCommand = WorkerForumCommandFixtures.updateAssetCommand(ATTACHMENT_ID);
-        when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(true);
         when(assetRepository.findById(ATTACHMENT_ID)).thenReturn(Optional.of(existing));
         when(assetRepository.save(existing)).thenReturn(existing);
 
@@ -116,7 +110,6 @@ class AssetCommandServiceImplTest {
         // Assert
         assertThat(result).isPresent();
         assertThat(result.get().getName()).isEqualTo(WorkerForumCommandFixtures.VALID_ATTACHMENT_NAME);
-        verify(assetRepository, times(1)).existsById(ATTACHMENT_ID);
         verify(assetRepository, times(1)).findById(ATTACHMENT_ID);
         verify(assetRepository, times(1)).save(existing);
         verifyNoMoreInteractions(assetRepository);
@@ -146,14 +139,12 @@ class AssetCommandServiceImplTest {
         ReflectionTestUtils.setId(existing, ATTACHMENT_ID);
         var updateCommand = WorkerForumCommandFixtures.updateAssetCommand(ATTACHMENT_ID);
         when(assetRepository.findById(ATTACHMENT_ID)).thenReturn(Optional.of(existing));
-        when(assetRepository.existsById(ATTACHMENT_ID)).thenReturn(true);
         when(assetRepository.save(any(Asset.class))).thenThrow(new RuntimeException("boom"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(updateCommand));
         assertThat(ex.getMessage()).contains("Error updating Asset").contains("boom");
         verify(assetRepository).findById(ATTACHMENT_ID);
-        verify(assetRepository).existsById(ATTACHMENT_ID);
         verify(assetRepository).save(any(Asset.class));
         verifyNoMoreInteractions(assetRepository);
         verifyNoInteractions(messageRepository);

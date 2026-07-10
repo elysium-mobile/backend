@@ -170,6 +170,7 @@ class BenefitCommandServiceImplTest {
         // Assert
         verify(membershipPlanRepository, times(1)).save(any(MembershipPlan.class));
         verify(benefitRepository, never()).deleteById(anyLong());
+        verify(benefitRepository, times(1)).delete(any(Benefit.class));
         verifyNoMoreInteractions(benefitRepository, membershipPlanRepository);
     }
 

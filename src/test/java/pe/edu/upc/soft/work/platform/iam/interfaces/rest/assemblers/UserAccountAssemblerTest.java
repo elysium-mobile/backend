@@ -40,10 +40,8 @@ class UserAccountAssemblerTest {
 
         // Assert
         assertThat(command.userId()).isEqualTo(1L);
-        // The assembler currently passes request.password() as 'email' positional arg
-        assertThat(command.email()).isEqualTo(CommonCommandFixtures.VALID_PASSWORD);
-        // ...and request.email() as 'password' positional arg
-        assertThat(command.password()).isEqualTo(CommonCommandFixtures.VALID_EMAIL);
+        assertThat(command.email()).isEqualTo(CommonCommandFixtures.VALID_EMAIL);
+        assertThat(command.password()).isEqualTo(CommonCommandFixtures.VALID_PASSWORD);
         assertThat(command.anonymousName()).isEqualTo(CommonCommandFixtures.VALID_ANONYMOUS_NAME);
         assertThat(command.membershipId()).isEqualTo(new MembershipId(0L));
         assertThat(command.companyId()).isEqualTo(new CompanyId(0L));

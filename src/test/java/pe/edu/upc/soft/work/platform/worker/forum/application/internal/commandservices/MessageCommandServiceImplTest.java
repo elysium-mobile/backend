@@ -111,8 +111,10 @@ class MessageCommandServiceImplTest {
         verify(externalIamServiceFromWorkerForum).existsUserAccountById(any());
         verify(threadRepository).existsById(command.threadId());
         verify(threadRepository).findById(command.threadId());
-        verify(eventPublisher).publishEvent(any(MessagePostedEvent.class));
         verify(messageRepository).save(any(Message.class));
+        // The MessagePostedEvent is published only after a successful save, so no event
+        // must be emitted when persistence fails (verified via verifyNoMoreInteractions below).
+        verify(eventPublisher, never()).publishEvent(any(MessagePostedEvent.class));
         verifyNoMoreInteractions(externalIamServiceFromWorkerForum, messageRepository, threadRepository, eventPublisher, assetRepository);
     }
 

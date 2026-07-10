@@ -70,25 +70,25 @@ public class AssetController {
         @ApiResponse(responseCode = "404", description = "Asset not found",  content = @Content)
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<AssetResponse> createAttachment(
+    public ResponseEntity<AssetResponse> createAsset(
         @RequestParam("messageId") Long          messageId,
         @RequestParam("name")      String         name,
         @RequestParam("fileType")  FileType       fileType,
         @RequestParam("file")      MultipartFile  file) {
 
-        var createAttachmentCommand = new CreateAssetCommand(messageId, name, fileType);
-        var attachmentId = this.assetCommandService.handle(createAttachmentCommand, file);
+        var createAssetCommand = new CreateAssetCommand(messageId, name, fileType);
+        var assetId = this.assetCommandService.handle(createAssetCommand, file);
 
-        if (Objects.isNull(attachmentId) || attachmentId <= 0) {
+        if (Objects.isNull(assetId) || assetId <= 0) {
             return ResponseEntity.badRequest().build();
         }
 
-        var attachment = this.assetQueryService.handle(new GetAssetByIdQuery(attachmentId));
-        if (attachment.isEmpty()) {
+        var asset = this.assetQueryService.handle(new GetAssetByIdQuery(assetId));
+        if (asset.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        return new ResponseEntity<>(AssetAssembler.toResponseFromEntity(attachment.get()), HttpStatus.CREATED);
+        return new ResponseEntity<>(AssetAssembler.toResponseFromEntity(asset.get()), HttpStatus.CREATED);
     }
 
     /**
@@ -103,14 +103,14 @@ public class AssetController {
             @ApiResponse(responseCode = "404", description = "No Asset found", content = @Content)
     })
     @GetMapping
-    public ResponseEntity<List<AssetResponse>> getAllAttachments() {
-        var getAllAttachmentQuery = new GetAllAssetsQuery();
-        var attachments = this.assetQueryService.handle(getAllAttachmentQuery);
+    public ResponseEntity<List<AssetResponse>> getAllAssets() {
+        var getAllAssetsQuery = new GetAllAssetsQuery();
+        var assets = this.assetQueryService.handle(getAllAssetsQuery);
 
-        var attachmentResponses = attachments.stream()
+        var assetResponses = assets.stream()
                 .map(AssetAssembler::toResponseFromEntity)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(attachmentResponses);
+        return ResponseEntity.ok(assetResponses);
     }
 
     /**
@@ -126,16 +126,16 @@ public class AssetController {
             @ApiResponse(responseCode = "404", description = "Asset not found", content = @Content)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<AssetResponse> getAttachmentById(@PathVariable Long id) {
-        var getAttachmentByIdQuery = new GetAssetByIdQuery(id);
-        var attachment = assetQueryService.handle(getAttachmentByIdQuery);
+    public ResponseEntity<AssetResponse> getAssetById(@PathVariable Long id) {
+        var getAssetByIdQuery = new GetAssetByIdQuery(id);
+        var asset = assetQueryService.handle(getAssetByIdQuery);
 
-        if (attachment.isEmpty()) {
+        if (asset.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        var attachmentResponse = AssetAssembler.toResponseFromEntity(attachment.get());
-        return ResponseEntity.ok(attachmentResponse);
+        var assetResponse = AssetAssembler.toResponseFromEntity(asset.get());
+        return ResponseEntity.ok(assetResponse);
     }
 
     /**
@@ -153,14 +153,14 @@ public class AssetController {
             @ApiResponse(responseCode = "404", description = "Asset not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<AssetResponse> updateAttachment(@PathVariable Long id, @Valid @RequestBody UpdateAssetRequest request) {
-        var updateAttachmentCommand = AssetAssembler.toCommandFromRequest(id, request);
-        var updatedAttachment = this.assetCommandService.handle(updateAttachmentCommand);
-        if (updatedAttachment.isEmpty()) {
+    public ResponseEntity<AssetResponse> updateAsset(@PathVariable Long id, @Valid @RequestBody UpdateAssetRequest request) {
+        var updateAssetCommand = AssetAssembler.toCommandFromRequest(id, request);
+        var updatedAsset = this.assetCommandService.handle(updateAssetCommand);
+        if (updatedAsset.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        var attachmentResponse = AssetAssembler.toResponseFromEntity(updatedAttachment.get());
-        return ResponseEntity.ok(attachmentResponse);
+        var assetResponse = AssetAssembler.toResponseFromEntity(updatedAsset.get());
+        return ResponseEntity.ok(assetResponse);
     }
 
     /**
@@ -174,9 +174,9 @@ public class AssetController {
             @ApiResponse(responseCode = "404", description = "Asset not found", content = @Content)
     })
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteAttachmentById(@PathVariable Long id) {
-        var deleteAttachmentCommand = new DeleteAssetCommand(id);
-        this.assetCommandService.handle(deleteAttachmentCommand);
+    public ResponseEntity<?> deleteAssetById(@PathVariable Long id) {
+        var deleteAssetCommand = new DeleteAssetCommand(id);
+        this.assetCommandService.handle(deleteAssetCommand);
         return ResponseEntity.noContent().build();
     }
 

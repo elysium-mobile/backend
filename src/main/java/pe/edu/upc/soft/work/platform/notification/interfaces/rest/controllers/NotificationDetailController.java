@@ -21,6 +21,7 @@ import pe.edu.upc.soft.work.platform.notification.domain.services.NotificationDe
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.assemblers.NotificationDetailAssembler;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.CreateNotificationDetailRequest;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.NotificationDetailResponse;
+import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.UpdateNotificationDetailRequest;
 
 import java.util.List;
 import java.util.Objects;
@@ -97,7 +98,7 @@ public class NotificationDetailController {
             @ApiResponse(responseCode = "404", description = "Notification details not found", content = @Content)
     })
     @GetMapping
-    public ResponseEntity<List<NotificationDetailResponse>> getAllNotifications() {
+    public ResponseEntity<List<NotificationDetailResponse>> getAllNotificationDetails() {
         var getAllNotificationDetailQuery = new GetAllNotificationDetailQuery();
         var notificationDetails = this.notificationDetailQueryService.handle(getAllNotificationDetailQuery);
 
@@ -143,12 +144,12 @@ public class NotificationDetailController {
             )
     )
     @ApiResponses(value = {
-            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Notification detail updated successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = NotificationDetailResponse.class))),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Notification detail updated successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UpdateNotificationDetailRequest.class))),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Notification detail not found", content = @Content)
     })
     @PutMapping("/{notificationDetailId}")
-    public ResponseEntity<NotificationDetailResponse> updateNotificationDetail(@PathVariable Long notificationDetailId, @Valid @RequestBody CreateNotificationDetailRequest request){
+    public ResponseEntity<NotificationDetailResponse> updateNotificationDetail(@PathVariable Long notificationDetailId, @Valid @RequestBody UpdateNotificationDetailRequest request){
         var updateNotificationDetailCommand = NotificationDetailAssembler.toCommandFromRequest(notificationDetailId, request);
         var updatedNotificationDetailId = this.notificationDetailCommandService.handle(updateNotificationDetailCommand);
         if (updatedNotificationDetailId.isEmpty()){

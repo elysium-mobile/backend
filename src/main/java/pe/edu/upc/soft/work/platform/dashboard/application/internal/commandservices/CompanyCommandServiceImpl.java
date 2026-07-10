@@ -10,7 +10,6 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.model.events.CompanyCreate
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.CompanyCommandService;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.AreaCompanyRepository;
 import pe.edu.upc.soft.work.platform.dashboard.infrastructure.persistence.jpa.repositories.CompanyRepository;
-import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
 
 import java.util.Optional;
 
@@ -24,7 +23,6 @@ public class CompanyCommandServiceImpl implements CompanyCommandService {
     private final ApplicationEventPublisher eventPublisher;
     private final AreaCompanyRepository areaCompanyRepository;
     private final ExternalIamServiceFromDashboard externalIamServiceFromDashboard;
-    private final UserAccountRepository userAccountRepository;
 
     /**
      * Constructor for CompanyCommandServiceImpl.
@@ -33,13 +31,11 @@ public class CompanyCommandServiceImpl implements CompanyCommandService {
     public CompanyCommandServiceImpl(CompanyRepository companyRepository,
                                      ApplicationEventPublisher eventPublisher,
                                      AreaCompanyRepository areaCompanyRepository,
-                                     ExternalIamServiceFromDashboard externalIamServiceFromDashboard,
-                                     UserAccountRepository userAccountRepository) {
+                                     ExternalIamServiceFromDashboard externalIamServiceFromDashboard) {
         this.companyRepository = companyRepository;
         this.eventPublisher = eventPublisher;
         this.areaCompanyRepository = areaCompanyRepository;
         this.externalIamServiceFromDashboard = externalIamServiceFromDashboard;
-        this.userAccountRepository = userAccountRepository;
     }
 
     /**
@@ -127,10 +123,7 @@ public class CompanyCommandServiceImpl implements CompanyCommandService {
      */
     @Override
     public void handle(AddEmployeesToCompanyCommand command) {
-        if (!externalIamServiceFromDashboard.existsUserAccountById(command.employeeId())) {
-            throw new RuntimeException("UserAccount with ID " + command.employeeId() + " does not exist.");
-        }
-        var employee = userAccountRepository.findById(command.employeeId())
+        var employee = externalIamServiceFromDashboard.getUserAccountById(command.employeeId())
                 .orElseThrow(() -> new RuntimeException("UserAccount with ID " + command.employeeId() + " does not exist."));
         var company = companyRepository.findById(command.companyId())
                 .orElseThrow(() -> new RuntimeException("Company with ID " + command.companyId() + " does not exist."));

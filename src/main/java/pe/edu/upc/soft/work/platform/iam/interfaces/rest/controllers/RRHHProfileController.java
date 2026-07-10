@@ -73,7 +73,7 @@ public class RRHHProfileController {
         var createRRHHCommand = RRHHProfileAssembler.toCommandFromRequest(request);
         var rrhhId = this.rrhhProfileCommandService.handle(createRRHHCommand);
 
-        if (Objects.isNull(rrhhId)){
+        if (Objects.isNull(rrhhId) || rrhhId <= 0){
             return ResponseEntity.badRequest().build();
         }
 

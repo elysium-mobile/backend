@@ -20,6 +20,7 @@ import pe.edu.upc.soft.work.platform.notification.domain.services.NotificationQu
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.assemblers.NotificationAssembler;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.CreateNotificationRequest;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.NotificationResponse;
+import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.UpdateNotificationRequest;
 
 import java.util.List;
 import java.util.Objects;
@@ -142,7 +143,7 @@ public class NotificationController {
 
     })
     @PutMapping("/{notificationId}")
-    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable Long notificationId, @Valid @RequestBody CreateNotificationRequest request){
+    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable Long notificationId, @Valid @RequestBody UpdateNotificationRequest request){
         var updateNotificationCommand = NotificationAssembler.toCommandFromRequest(notificationId, request);
         var updatedNotification = this.notificationCommandService.handle(updateNotificationCommand);
 

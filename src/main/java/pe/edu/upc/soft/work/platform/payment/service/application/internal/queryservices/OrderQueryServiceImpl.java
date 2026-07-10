@@ -43,6 +43,6 @@ public class OrderQueryServiceImpl implements OrderQueryService {
 
     @Override
     public List<Order> handle(GetOrderByUserAccountIdQuery query) {
-        return orderRepository.findByUserAccountId(query.userAccountId());
+        return orderRepository.findByUserAccountId_UserAccountId(query.userAccountId());
     }
 }

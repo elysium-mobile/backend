@@ -6,6 +6,7 @@ import pe.edu.upc.soft.work.platform.notification.domain.model.commands.UpdateNo
 import pe.edu.upc.soft.work.platform.notification.domain.model.valueobjects.NotificationType;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.CreateNotificationRequest;
 import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.NotificationResponse;
+import pe.edu.upc.soft.work.platform.notification.interfaces.rest.resources.UpdateNotificationRequest;
 
 public class NotificationAssembler {
 
@@ -18,7 +19,7 @@ public class NotificationAssembler {
         );
     }
 
-    public static UpdateNotificationCommand toCommandFromRequest(Long notificationId, CreateNotificationRequest request){
+    public static UpdateNotificationCommand toCommandFromRequest(Long notificationId, UpdateNotificationRequest request){
         return new UpdateNotificationCommand(
                 notificationId,
                 request.seen(),

@@ -55,7 +55,7 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
                     String.format("[SurveyResponseCommandServiceImpl] Survey ID: %s not found in the external Feedback service",
                             command.surveyId()));
         }
-        if(!externalIamServiceFromFeedback.existEmployeeProfileById(command.employeeProfileId().employeeProfileId())){
+        if(!externalIamServiceFromFeedback.existsEmployeeProfileById(command.employeeProfileId().employeeProfileId())){
             throw new NotFoundArgumentException(
                     String.format("[SurveyResponseCommandServiceImpl] Employee Profile ID: %s not found in the external IAM service",
                             command.employeeProfileId().employeeProfileId()));

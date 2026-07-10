@@ -1,10 +1,13 @@
 package pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl;
 
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.EmployeeProfileRepository;
+import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.repositories.UserAccountRepository;
 import pe.edu.upc.soft.work.platform.iam.interfaces.acl.IamContextFacade;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Outbound service to interact with the IAM context from the Dashboard context.
@@ -19,6 +22,7 @@ public class ExternalIamServiceFromDashboard {
      */
     private final IamContextFacade iamContextFacade;
     private final EmployeeProfileRepository employeeProfileRepository;
+    private final UserAccountRepository userAccountRepository;
 
 
     /**
@@ -27,9 +31,11 @@ public class ExternalIamServiceFromDashboard {
      * @param iamContextFacade the IAM context facade
      */
     public ExternalIamServiceFromDashboard(IamContextFacade iamContextFacade,
-                                           EmployeeProfileRepository employeeProfileRepository) {
+                                           EmployeeProfileRepository employeeProfileRepository,
+                                           UserAccountRepository userAccountRepository) {
         this.iamContextFacade = iamContextFacade;
         this.employeeProfileRepository = employeeProfileRepository;
+        this.userAccountRepository = userAccountRepository;
 
     }
 
@@ -51,6 +57,16 @@ public class ExternalIamServiceFromDashboard {
      */
     public boolean existsEmployeeProfileById(Long employeeProfileId) {
         return this.iamContextFacade.existsEmployeeProfileById(employeeProfileId);
+    }
+
+    /**
+     * Get a UserAccount by its ID.
+     *
+     * @param userAccountId the ID of the user account
+     * @return an Optional containing the UserAccount if found
+     */
+    public Optional<UserAccount> getUserAccountById(Long userAccountId) {
+        return this.userAccountRepository.findById(userAccountId);
     }
 
     /**

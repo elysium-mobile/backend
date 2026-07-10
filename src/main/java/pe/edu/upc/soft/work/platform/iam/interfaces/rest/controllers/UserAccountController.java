@@ -150,6 +150,6 @@ public class UserAccountController {
     public ResponseEntity<?> deleteUserAccountById(@PathVariable Long id){
         var deleteUserAccountCommand = new DeleteUserAccountCommand(id);
         this.userAccountCommandService.handle( deleteUserAccountCommand );
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }

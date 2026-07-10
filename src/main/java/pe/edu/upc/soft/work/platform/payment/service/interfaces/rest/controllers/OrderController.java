@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -70,7 +69,7 @@ public class OrderController {
         var createOrderCommand = OrderAssembler.toCommandFromRequest(request);
         var orderId = this.orderCommandService.handle(createOrderCommand);
 
-        if (Objects.isNull(orderId))
+        if (Objects.isNull(orderId) || orderId <= 0)
         {
             return ResponseEntity.badRequest().build();
         }
@@ -99,8 +98,8 @@ public class OrderController {
     })
     @GetMapping
     public ResponseEntity<List<OrderResponse>> getAllOrders(){
-        var getALlOrderQuery = new GetAllOrderQuery();
-        var orders = this.orderQueryService.handle(getALlOrderQuery);
+        var getAllOrderQuery = new GetAllOrderQuery();
+        var orders = this.orderQueryService.handle(getAllOrderQuery);
 
         var orderResponses = orders.stream()
                 .map(OrderAssembler::toResponseFromEntity)

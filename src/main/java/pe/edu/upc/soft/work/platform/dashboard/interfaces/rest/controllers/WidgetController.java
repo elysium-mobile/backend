@@ -17,7 +17,6 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.services.WidgetCommandServ
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.WidgetQueryService;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers.WidgetAssembler;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.CreateWidgetRequest;
-import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateCompanyRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.UpdateWidgetRequest;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.WidgetResponse;
 

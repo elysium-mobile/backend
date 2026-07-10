@@ -92,9 +92,9 @@ public class UnitOfWorkCommandServiceImpl implements UnitOfWorkCommandService {
      */
     @Override
     public void handle(AddWorkTeamToUnitOfWork command) {
-        var workTeam = workTeamRepository.findById(command.widgetId())
+            var workTeam = workTeamRepository.findById(command.workTeamId())
                 .orElseThrow(() -> new RuntimeException(
-                        "WorkTeam with ID " + command.widgetId() + " does not exist."));
+                        "WorkTeam with ID " + command.workTeamId() + " does not exist."));
 
         var unitOfWork = unitofworkRepository.findById(command.unitOfWorkId())
                 .orElseThrow(() -> new RuntimeException(

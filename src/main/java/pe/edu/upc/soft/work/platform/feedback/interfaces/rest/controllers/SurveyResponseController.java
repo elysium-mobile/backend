@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetAllSurveyResponseQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetSurveyResponseByIdQuery;
+import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetSurveyResponsesBySurveyIdQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyResponseCommandService;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.SurveyResponseQueryService;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.assemblers.SurveyResponseAssembler;
@@ -112,10 +113,9 @@ public class SurveyResponseController {
     )
     @GetMapping("/survey/{surveyId}")
     public ResponseEntity<List<SurveyResponseResponse>> getSurveyResponsesBySurveyId(@PathVariable Long surveyId) {
-        var getAllSurveyResponseQuery = new GetAllSurveyResponseQuery();
-        var surveyResponses = this.surveyResponseQueryService.handle(getAllSurveyResponseQuery);
+        var getSurveyResponsesBySurveyIdQuery = new GetSurveyResponsesBySurveyIdQuery(surveyId);
+        var surveyResponses = this.surveyResponseQueryService.handle(getSurveyResponsesBySurveyIdQuery);
         var surveyResponseResponses = surveyResponses.stream()
-                .filter(surveyResponse -> surveyResponse.getSurveyId().equals(surveyId))
                 .map(SurveyResponseAssembler::toResponseFromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(surveyResponseResponses);

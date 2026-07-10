@@ -61,12 +61,12 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
 
         var survey = surveyRepository.findById(command.surveyId()).get();
         if (survey.getExpirationTime() != null && new Date().after(survey.getExpirationTime())) {
-            throw new RuntimeException("Cannot submit response: Survey has expired.");
+            throw new IllegalArgumentException("Survey has expired.");
         }
         boolean alreadyAnswered = surveyResponseRepository.findBySurveyId(command.surveyId()).stream()
             .anyMatch(response -> response.getEmployeeProfileId().equals(command.employeeProfileId()));
         if (alreadyAnswered) {
-            throw new RuntimeException("Employee has already submitted a response for this survey.");
+            throw new IllegalArgumentException("Employee has already submitted a response for this survey.");
         }
         var surveyResponse = new SurveyResponse(command);
         try {
@@ -87,7 +87,8 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
     public Optional<SurveyResponse> handle(UpdateSurveyResponseCommand command) {
         var surveyresponseId = command.surveyresponseId();
         if (!this.surveyResponseRepository.existsById(surveyresponseId)) {
-            throw new RuntimeException("SurveyResponse with ID " + surveyresponseId + " does not exist.");
+            throw new NotFoundArgumentException(
+                    String.format("SurveyResponse with ID %s does not exist.", surveyresponseId));
         }
 
         var surveyresponseToUpdate = this.surveyResponseRepository.findById(surveyresponseId).get();
@@ -107,7 +108,8 @@ public class SurveyResponseCommandServiceImpl implements SurveyResponseCommandSe
     @Override
     public void handle(DeleteSurveyResponseCommand command) {
         if (!surveyResponseRepository.existsById(command.surveyresponseId())) {
-            throw new RuntimeException("SurveyResponse with ID " + command.surveyresponseId() + " does not exist.");
+            throw new NotFoundArgumentException(
+                    String.format("SurveyResponse with ID %s does not exist.", command.surveyresponseId()));
         }
         try {
             surveyResponseRepository.deleteById(command.surveyresponseId());

@@ -16,7 +16,6 @@ import jakarta.validation.constraints.NotNull;
 public record CreateUserAccountRequest(
 
         @NotNull
-        @NotBlank
         Long userId,
 
         @NotNull
@@ -32,11 +31,9 @@ public record CreateUserAccountRequest(
         String anonymousName,
 
         @NotNull
-        @NotBlank
         Long membershipId,
 
         @NotNull
-        @NotBlank
         Long companyId
 
 

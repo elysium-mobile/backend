@@ -57,7 +57,7 @@ public class CompanyAssembler {
                         employee.getId(),
                         employee.getUserId(),
                         employee.getEmail(),
-                        employee.getPassword(),
+                        null,
                         employee.getAnonymousName(),
                         employee.getMembershipId().MembershipId(),
                         employee.getCompanyId().CompanyId()

@@ -19,7 +19,6 @@ public record CreateNotificationRequest(
         String notificationType,
 
         @NotNull
-        @NotBlank
         Long userAccountId
 
 

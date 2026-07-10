@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.DeleteNotificationDetailCommand;
 import pe.edu.upc.soft.work.platform.notification.domain.model.queries.GetAllNotificationDetailQuery;
 import pe.edu.upc.soft.work.platform.notification.domain.model.queries.GetNotificationByIdQuery;
@@ -66,7 +67,7 @@ public class NotificationDetailController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Notification detail not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<NotificationDetailResponse> createNotificationDetail(@RequestBody CreateNotificationDetailRequest request) {
+    public ResponseEntity<NotificationDetailResponse> createNotificationDetail(@Valid @RequestBody CreateNotificationDetailRequest request) {
         var createNotificationDetailCommand = NotificationDetailAssembler.toCommandFromRequest(request);
         var notificationDetailId = this.notificationDetailCommandService.handle(createNotificationDetailCommand);
 
@@ -147,7 +148,7 @@ public class NotificationDetailController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Notification detail not found", content = @Content)
     })
     @PutMapping("/{notificationDetailId}")
-    public ResponseEntity<NotificationDetailResponse> updateNotificationDetail(@PathVariable Long notificationDetailId, @RequestBody CreateNotificationDetailRequest request){
+    public ResponseEntity<NotificationDetailResponse> updateNotificationDetail(@PathVariable Long notificationDetailId, @Valid @RequestBody CreateNotificationDetailRequest request){
         var updateNotificationDetailCommand = NotificationDetailAssembler.toCommandFromRequest(notificationDetailId, request);
         var updatedNotificationDetailId = this.notificationDetailCommandService.handle(updateNotificationDetailCommand);
         if (updatedNotificationDetailId.isEmpty()){

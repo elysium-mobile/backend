@@ -3,7 +3,6 @@ package pe.edu.upc.soft.work.platform.notification.domain.model.entities;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
-import jdk.jfr.Name;
 import lombok.Getter;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.CreateNotificationDetailCommand;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.UpdateNotificationDetailCommand;

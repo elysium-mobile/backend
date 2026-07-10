@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.dashboard.domain.services.DashboardAssistantService;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers.DashboardAssistantAssembler;
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.resources.AnalyzeDashboardRequest;
@@ -44,7 +45,7 @@ public class DashboardAssistantController {
       summary = "Analyze a company's dashboard",
       description = "Gathers the company's climate metrics and asks the AI assistant for a diagnosis and recommendations")
   @PostMapping
-  public ResponseEntity<DashboardInsightResponse> analyze(@RequestBody AnalyzeDashboardRequest request) {
+  public ResponseEntity<DashboardInsightResponse> analyze(@Valid @RequestBody AnalyzeDashboardRequest request) {
     var command = DashboardAssistantAssembler.toCommandFromRequest(request);
     var insight = this.dashboardAssistantService.handle(command);
     return ResponseEntity.ok(DashboardAssistantAssembler.toResponseFromEntity(insight));

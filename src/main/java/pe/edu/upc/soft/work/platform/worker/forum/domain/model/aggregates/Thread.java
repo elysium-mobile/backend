@@ -36,7 +36,6 @@ public class Thread extends AuditableAbstractAggregateRoot<Thread> {
 
     @Getter
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "messages", nullable = true)
     private List<Message> messages;
 
     @Getter

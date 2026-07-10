@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.EmployeeAssistantService;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.assemblers.EmployeeAssistantAssembler;
 import pe.edu.upc.soft.work.platform.worker.forum.interfaces.rest.resources.AskEmployeeAssistantRequest;
@@ -43,7 +44,7 @@ public class EmployeeAssistantController {
       summary = "Ask the Employee Assistant",
       description = "Sends a prompt/concern to the AI assistant, optionally scoped to the employee's company")
   @PostMapping
-  public ResponseEntity<AssistantAnswerResponse> ask(@RequestBody AskEmployeeAssistantRequest request) {
+  public ResponseEntity<AssistantAnswerResponse> ask(@Valid @RequestBody AskEmployeeAssistantRequest request) {
     var command = EmployeeAssistantAssembler.toCommandFromRequest(request);
     var answer = this.employeeAssistantService.handle(command);
     return ResponseEntity.ok(EmployeeAssistantAssembler.toResponseFromEntity(answer));

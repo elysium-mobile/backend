@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteMembershipCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteMembershipPlanCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetAllMembershipPlanQuery;
@@ -68,7 +69,7 @@ public class MembershipPlanController {
             @ApiResponse(responseCode = "404", description = "Membership Plan not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<MembershipPlanResponse> createMembershipPlan(@RequestBody CreateMembershipPlanRequest request) {
+    public ResponseEntity<MembershipPlanResponse> createMembershipPlan(@Valid @RequestBody CreateMembershipPlanRequest request) {
         var createMembershipPlanCommand = MembershipPlanAssembler.toCommandFromRequest(request);
         var planId = this.membershipPlanCommandService.handle(createMembershipPlanCommand);
 
@@ -148,7 +149,7 @@ public class MembershipPlanController {
             @ApiResponse(responseCode = "404", description = "Membership Plan not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<MembershipPlanResponse> updateMembership(@PathVariable Long id, @RequestBody UpdateMembershipPlanRequest request) {
+    public ResponseEntity<MembershipPlanResponse> updateMembership(@PathVariable Long id, @Valid @RequestBody UpdateMembershipPlanRequest request) {
         var updateMembershipPlanCommand = MembershipPlanAssembler.toCommandFromRequest(id, request);
         var updatedMembership = this.membershipPlanCommandService.handle(updateMembershipPlanCommand);
         if (updatedMembership.isEmpty()) {
@@ -190,7 +191,7 @@ public class MembershipPlanController {
             @ApiResponse(responseCode = "404", description = "Membership Plan or Benefit not found", content = @Content)
     })
     @PostMapping("/{membershipPlanId}/benefits")
-    public ResponseEntity<MembershipPlanResponse> addBenefitToMembershipPlan(@PathVariable Long membershipPlanId, @RequestBody AddBenefitToMembershipPlanRequest request){
+    public ResponseEntity<MembershipPlanResponse> addBenefitToMembershipPlan(@PathVariable Long membershipPlanId, @Valid @RequestBody AddBenefitToMembershipPlanRequest request){
 
         var command= MembershipPlanAssembler.toCommandFromRequest(membershipPlanId, request);
         this.membershipPlanCommandService.handle(command);

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.iam.domain.services.EmployeeProfileCommandService;
 import pe.edu.upc.soft.work.platform.iam.domain.services.RRHHProfileCommandService;
 import pe.edu.upc.soft.work.platform.iam.domain.services.UserAccountCommandService;
@@ -51,7 +52,7 @@ public class AuthenticationController {
      * @return ResponseEntity containing the authenticated user account and access token
      */
     @PostMapping("/sign-in")
-    public ResponseEntity<AuthenticatedUserAccountResponse> signIn(@RequestBody SignInRequest request) {
+    public ResponseEntity<AuthenticatedUserAccountResponse> signIn(@Valid @RequestBody SignInRequest request) {
         var signInCommand = AuthenticationAssembler.toCommandFromRequestSignIn(request);
         var result = userAccountCommandService.handle(signInCommand);
         if (result.isEmpty()) return ResponseEntity.notFound().build();
@@ -70,7 +71,7 @@ public class AuthenticationController {
      * @return ResponseEntity containing the discriminated Google authentication response
      */
     @PostMapping("/google")
-    public ResponseEntity<GoogleAuthenticationResponse> signInWithGoogle(@RequestBody GoogleSignInRequest request) {
+    public ResponseEntity<GoogleAuthenticationResponse> signInWithGoogle(@Valid @RequestBody GoogleSignInRequest request) {
         var googleSignInCommand = AuthenticationAssembler.toCommandFromRequestGoogleSignIn(request);
         var result = userAccountCommandService.handle(googleSignInCommand);
         return ResponseEntity.ok(AuthenticationAssembler.toGoogleAuthenticationResponse(result));
@@ -84,7 +85,7 @@ public class AuthenticationController {
      * @return ResponseEntity containing the authenticated user account and access token
      */
     @PostMapping("/sign-up/employee/google")
-    public ResponseEntity<AuthenticatedUserAccountResponse> signUpEmployeeWithGoogle(@RequestBody GoogleEmployeeSignUpRequest request) {
+    public ResponseEntity<AuthenticatedUserAccountResponse> signUpEmployeeWithGoogle(@Valid @RequestBody GoogleEmployeeSignUpRequest request) {
         var command = AuthenticationAssembler.toCommandFromRequestGoogleSignUpEmployee(request);
         var result = employeeProfileCommandService.handle(command);
         if (result.isEmpty()) return ResponseEntity.badRequest().build();
@@ -101,7 +102,7 @@ public class AuthenticationController {
      * @return ResponseEntity containing the authenticated user account and access token
      */
     @PostMapping("/sign-up/rrhh/google")
-    public ResponseEntity<AuthenticatedUserAccountResponse> signUpRRHHWithGoogle(@RequestBody GoogleRRHHSignUpRequest request) {
+    public ResponseEntity<AuthenticatedUserAccountResponse> signUpRRHHWithGoogle(@Valid @RequestBody GoogleRRHHSignUpRequest request) {
         var command = AuthenticationAssembler.toCommandFromRequestGoogleSignUpRRHH(request);
         var result = rrhhProfileCommandService.handle(command);
         if (result.isEmpty()) return ResponseEntity.badRequest().build();
@@ -116,7 +117,7 @@ public class AuthenticationController {
      * @return ResponseEntity containing the created employee profile
      */
     @PostMapping("/sign-up/employee")
-    public ResponseEntity<EmployeeProfileResponse> signUpEmployee(@RequestBody EmployeeProfileSignUpRequest request) {
+    public ResponseEntity<EmployeeProfileResponse> signUpEmployee(@Valid @RequestBody EmployeeProfileSignUpRequest request) {
         var signUpCommand = AuthenticationAssembler.toCommandFromRequestSignUpEmployeeProfile(request);
         var employeeProfile = employeeProfileCommandService.handle(signUpCommand);
         if (employeeProfile.isEmpty()) return ResponseEntity.badRequest().build();
@@ -130,7 +131,7 @@ public class AuthenticationController {
      * @return ResponseEntity containing the created RRHH profile
      */
     @PostMapping("/sign-up/rrhh")
-    public ResponseEntity<RRHHProfileResponse> signUpRRHH(@RequestBody RRHHProfileSignUpRequest request) {
+    public ResponseEntity<RRHHProfileResponse> signUpRRHH(@Valid @RequestBody RRHHProfileSignUpRequest request) {
         var signUpCommand = AuthenticationAssembler.toCommandFromRequestSignUpRRHHProfile(request);
         var rrhhProfile = rrhhProfileCommandService.handle(signUpCommand);
         if (rrhhProfile.isEmpty()) return ResponseEntity.badRequest().build();

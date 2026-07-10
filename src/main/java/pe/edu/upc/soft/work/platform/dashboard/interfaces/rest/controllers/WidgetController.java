@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteWidgetCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAllWidgetQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetWidgetByIdQuery;
@@ -58,7 +59,7 @@ public class WidgetController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Widget not found")
     })
     @PostMapping
-    public ResponseEntity<WidgetResponse> createWidget(@RequestBody CreateWidgetRequest request)
+    public ResponseEntity<WidgetResponse> createWidget(@Valid @RequestBody CreateWidgetRequest request)
     {
         var createWidgetCommand = WidgetAssembler.toCommandFromRequest(request);
         var widgetId = this.widgetCommandService.handle(createWidgetCommand);
@@ -131,12 +132,12 @@ public class WidgetController {
             @ApiResponse(responseCode = "404", description = "Widget not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<WidgetResponse> updateWidget(@PathVariable Long id, @RequestBody UpdateWidgetRequest request){
+    public ResponseEntity<WidgetResponse> updateWidget(@PathVariable Long id, @Valid @RequestBody UpdateWidgetRequest request){
         var updateWidgetCommand= WidgetAssembler.toCommandFromRequest(id, request);
         var updatedWidget = this.widgetCommandService.handle(updateWidgetCommand);
 
         if (updatedWidget.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
         var widgetResponse = WidgetAssembler.toResponseFromEntity(updatedWidget.get());
         return ResponseEntity.ok(widgetResponse);

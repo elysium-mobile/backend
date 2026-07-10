@@ -32,7 +32,6 @@ public class Message extends AuditableAbstractAggregateRoot<Message> {
 
     @Getter
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "attachments", nullable = true)
     private List<Asset> assets;
 
     @Getter

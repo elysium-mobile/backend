@@ -15,11 +15,11 @@ public record UpdateReportCommand(Long reportId,
 
     public UpdateReportCommand{
         Objects.requireNonNull(reportId, "[UpdateReportCommand] reportId must not be null");
-        Objects.requireNonNull(reason, "[CreateReportCommand] reason must not be null");
-        Objects.requireNonNull(description, "[CreateReportCommand] description must not be null");
-        Objects.requireNonNull(userAccountId, "[CreateReportCommand] userAccountId must not be null");
-        Objects.requireNonNull(reportDate, "[CreateReportCommand] reportDate must not null");
-        Objects.requireNonNull(areaCompanyId, "[CreateReportCommand] areaCompanyId must not be null");
+        Objects.requireNonNull(reason, "[UpdateReportCommand] reason must not be null");
+        Objects.requireNonNull(description, "[UpdateReportCommand] description must not be null");
+        Objects.requireNonNull(userAccountId, "[UpdateReportCommand] userAccountId must not be null");
+        Objects.requireNonNull(reportDate, "[UpdateReportCommand] reportDate must not null");
+        Objects.requireNonNull(areaCompanyId, "[UpdateReportCommand] areaCompanyId must not be null");
 
     }
 }

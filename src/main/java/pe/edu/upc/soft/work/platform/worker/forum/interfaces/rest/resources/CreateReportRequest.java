@@ -19,15 +19,12 @@ public record CreateReportRequest(
         String description,
 
         @NotNull
-        @NotBlank
         Long userAccountId,
 
         @NotNull
-        @NotBlank
         Date reportDate,
 
         @NotNull
-        @NotBlank
         Long areaCompanyId
 
 ) {

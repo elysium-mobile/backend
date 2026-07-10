@@ -23,11 +23,11 @@ public record EmployeeProfileSignUpRequest(
         String password,
         @NotNull @NotBlank
         String anonymousName,
-        @NotNull @NotBlank
+        @NotNull
         Date dateStart,
         @NotNull @NotBlank
         String position,
-        @NotNull @NotBlank
+        @NotNull
         Integer salary
 
         ) {

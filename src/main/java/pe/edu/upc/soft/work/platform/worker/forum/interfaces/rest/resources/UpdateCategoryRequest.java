@@ -17,6 +17,5 @@ public record UpdateCategoryRequest(
         @NotBlank
         String description,
         @NotNull
-        @NotBlank
         Long forumId
 ) {}

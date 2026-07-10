@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeletePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetPaymentByIdQuery;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetAllPaymentQuery;
@@ -62,7 +63,7 @@ public class PaymentController {
             @ApiResponse(responseCode = "404", description = "Payment not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<PaymentResponse> createPayment(@RequestBody CreatePaymentRequest request) {
+    public ResponseEntity<PaymentResponse> createPayment(@Valid @RequestBody CreatePaymentRequest request) {
         var createPaymentCommand = PaymentAssembler.toCommandFromRequest(request);
         var paymentId = this.paymentCommandService.handle(createPaymentCommand);
 
@@ -142,7 +143,7 @@ public class PaymentController {
             @ApiResponse(responseCode = "404", description = "Payment not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<PaymentResponse> updatePayment(@PathVariable Long id, @RequestBody UpdatePaymentRequest request) {
+    public ResponseEntity<PaymentResponse> updatePayment(@PathVariable Long id, @Valid @RequestBody UpdatePaymentRequest request) {
         var updatePaymentCommand = PaymentAssembler.toCommandFromRequest(id, request);
         var updatedPayment = this.paymentCommandService.handle(updatePaymentCommand);
         if (updatedPayment.isEmpty()) {

@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteEmployeeProfileCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetAllEmployeeProfileQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetEmployeeProfileByIdQuery;
@@ -19,7 +20,6 @@ import pe.edu.upc.soft.work.platform.iam.domain.services.EmployeeProfileQuerySer
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers.EmployeeProfileAssembler;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.CreateEmployeeProfileRequest;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.EmployeeProfileResponse;
-import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserResponse;
 
 import java.util.List;
 import java.util.Objects;
@@ -65,12 +65,12 @@ public class EmployeeProfileController {
             ))
 
     @ApiResponses(value ={
-            @ApiResponse(responseCode = "201", description = "Employee created successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "201", description = "Employee created successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = EmployeeProfileResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @ApiResponse(responseCode = "404", description = "Employee not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<EmployeeProfileResponse> createEmployeeProfile(@RequestBody CreateEmployeeProfileRequest request) {
+    public ResponseEntity<EmployeeProfileResponse> createEmployeeProfile(@Valid @RequestBody CreateEmployeeProfileRequest request) {
         var createEmployeeProfileCommand = EmployeeProfileAssembler.toCommandFromRequest(request);
         var profileId = this.employeeProfileCommandService.handle(createEmployeeProfileCommand);
 
@@ -98,7 +98,7 @@ public class EmployeeProfileController {
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = UserResponse.class))),
+                            schema = @Schema(implementation = EmployeeProfileResponse.class))),
             @ApiResponse(responseCode = "404", description = "No users found", content = @Content)
     })
     @GetMapping
@@ -121,7 +121,7 @@ public class EmployeeProfileController {
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "User retrieved successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = UserResponse.class))),
+                            schema = @Schema(implementation = EmployeeProfileResponse.class))),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
     @GetMapping("/{id}")

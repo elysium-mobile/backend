@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteAreaCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAllAreaCompanyQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAreaCompanyByIdQuery;
@@ -56,7 +57,7 @@ public class AreaCompanyController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Area Company not found")
     })
     @PostMapping
-    public ResponseEntity<AreaCompanyResponse> createAreaCompany(@RequestBody CreateAreaCompanyRequest request){
+    public ResponseEntity<AreaCompanyResponse> createAreaCompany(@Valid @RequestBody CreateAreaCompanyRequest request){
         var createAreaCompanyCommand= AreaCompanyAssembler.toCommandFromRequest(request);
         var areaCompanyId = this.areaCompanyCommandService.handle(createAreaCompanyCommand);
 
@@ -131,7 +132,7 @@ public class AreaCompanyController {
     }
     )
     @PutMapping("/{id}")
-    public ResponseEntity<AreaCompanyResponse> updateAreaCompany(@PathVariable Long id, @RequestBody UpdateAreaCompanyRequest request){
+    public ResponseEntity<AreaCompanyResponse> updateAreaCompany(@PathVariable Long id, @Valid @RequestBody UpdateAreaCompanyRequest request){
         var updateAreaCompanyCommand= AreaCompanyAssembler.toCommandFromRequest(id, request);
         var updateAreaCompany= this.areaCompanyCommandService.handle(updateAreaCompanyCommand);
 
@@ -178,7 +179,7 @@ public class AreaCompanyController {
     @PostMapping("/{areaCompanyId}/unitsOfWork")
     public ResponseEntity<AreaCompanyResponse> addUnitOfWorkToAreaCompany(
             @PathVariable Long areaCompanyId,
-            @RequestBody AddUnitOfWorkToAreaCompanyRequest request
+            @Valid @RequestBody AddUnitOfWorkToAreaCompanyRequest request
             )
     {
         var command = AreaCompanyAssembler.toCommandFromRequest(areaCompanyId, request);

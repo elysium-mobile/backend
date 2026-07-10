@@ -25,6 +25,5 @@ public record UpdateDashboardRequest(
         String ruc,
 
         @NotNull
-        @NotBlank
         Long companyId
 ) {}

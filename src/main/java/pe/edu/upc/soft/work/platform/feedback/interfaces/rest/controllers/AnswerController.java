@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteAnswerCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetAllAnswerQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetAnswerByIdQuery;
@@ -58,7 +59,7 @@ public class AnswerController {
             @ApiResponse(responseCode = "404", description = "Answer not found")
     })
     @PostMapping
-    public ResponseEntity<AnswerResponse> createAnswer(@RequestBody CreateAnswerRequest request){
+    public ResponseEntity<AnswerResponse> createAnswer(@Valid @RequestBody CreateAnswerRequest request){
         var createAnswerCommand = AnswerAssembler.toCommandFromRequest(request);
         var answerId = this.answerCommandService.handle(createAnswerCommand);
 
@@ -131,7 +132,7 @@ public class AnswerController {
             @ApiResponse(responseCode = "404", description = "Answer not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<AnswerResponse> updateAnswer(@PathVariable Long id, @RequestBody UpdateAnswerRequest request){
+    public ResponseEntity<AnswerResponse> updateAnswer(@PathVariable Long id, @Valid @RequestBody UpdateAnswerRequest request){
         var updateAnswerCommand = AnswerAssembler.toCommandFromRequest(id,request);
         var updatedAnswer = this.answerCommandService.handle(updateAnswerCommand);
         if (updatedAnswer.isEmpty()){

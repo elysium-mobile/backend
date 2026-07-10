@@ -17,7 +17,6 @@ public record UpdateRRHHProfileRequest(
         String statusHierarchy,
 
         @NotNull
-        @NotBlank
         Long userAccountId
 
 ) {

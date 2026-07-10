@@ -17,6 +17,5 @@ public record CreateCategoryRequest(
         @NotBlank
         String description,
         @NotNull
-        @NotBlank
         Long forumId
 ) {}

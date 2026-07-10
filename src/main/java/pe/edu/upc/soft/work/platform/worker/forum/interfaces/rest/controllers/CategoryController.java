@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteCategoryCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllCategoryQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetCategoryByIdQuery;
@@ -64,7 +65,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<CategoryResponse> createCategory(@RequestBody CreateCategoryRequest request) {
+    public ResponseEntity<CategoryResponse> createCategory(@Valid @RequestBody CreateCategoryRequest request) {
         var createCategoryCommand = CategoryAssembler.toCommandFromRequest(request);
         var categoryId = this.categoryCommandService.handle(createCategoryCommand);
 
@@ -144,7 +145,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Category not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id, @RequestBody UpdateCategoryRequest request) {
+    public ResponseEntity<CategoryResponse> updateCategory(@PathVariable Long id, @Valid @RequestBody UpdateCategoryRequest request) {
         var updateCategoryCommand = CategoryAssembler.toCommandFromRequest(id, request);
         var updatedCategory = this.categoryCommandService.handle(updateCategoryCommand);
         if (updatedCategory.isEmpty()) {
@@ -186,7 +187,7 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Category or Thread not found", content = @Content)
     })
     @PostMapping("/{categoryId}/threads")
-    public ResponseEntity<CategoryResponse> addThreadToCategory(@PathVariable Long categoryId, @RequestBody AddThreadToCategoryRequest request){
+    public ResponseEntity<CategoryResponse> addThreadToCategory(@PathVariable Long categoryId, @Valid @RequestBody AddThreadToCategoryRequest request){
         var command = CategoryAssembler.toCommandFromRequest(categoryId, request);
         this.categoryCommandService.handle(command);
         var category = this.categoryQueryService.handle(new GetCategoryByIdQuery(categoryId));

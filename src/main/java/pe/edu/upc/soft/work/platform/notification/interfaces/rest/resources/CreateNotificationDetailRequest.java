@@ -18,7 +18,6 @@ public record CreateNotificationDetailRequest(
         String content,
 
         @NotNull
-        @NotBlank
         Long notificationId
 
         ) {

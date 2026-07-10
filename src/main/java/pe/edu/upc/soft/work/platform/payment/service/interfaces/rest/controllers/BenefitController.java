@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteBenefitCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetAllBenefitQuery;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetBenefitByIdQuery;
@@ -63,7 +64,7 @@ public class BenefitController {
             @ApiResponse(responseCode = "404", description = "Benefit not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<BenefitResponse> createBenefit(@RequestBody CreateBenefitRequest request){
+    public ResponseEntity<BenefitResponse> createBenefit(@Valid @RequestBody CreateBenefitRequest request){
         var createBenefitCommand = BenefitAssembler.toCommandFromRequest(request);
         var benefitId = this.benefitCommandService.handle(createBenefitCommand);
 
@@ -142,7 +143,7 @@ public class BenefitController {
             @ApiResponse(responseCode = "404", description = "Benefit not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<BenefitResponse> updateBenefit(@PathVariable Long id, @RequestBody UpdateBenefitRequest request){
+    public ResponseEntity<BenefitResponse> updateBenefit(@PathVariable Long id, @Valid @RequestBody UpdateBenefitRequest request){
         var updateBenefitCommand = BenefitAssembler.toCommandFromRequest(id,request);
         var updatedBenefit = this.benefitCommandService.handle(updateBenefitCommand);
         if (updatedBenefit.isEmpty()){

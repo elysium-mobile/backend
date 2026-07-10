@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteRRHHProfileCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetAllRRHHProfileQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetRRHHProfileByIdQuery;
@@ -20,7 +21,6 @@ import pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers.RRHHProfileA
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.CreateRRHHProfileRequest;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.RRHHProfileResponse;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UpdateRRHHProfileRequest;
-import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserResponse;
 
 import java.util.List;
 import java.util.Objects;
@@ -64,12 +64,12 @@ public class RRHHProfileController {
                     )
             ))
     @ApiResponses(value ={
-            @ApiResponse(responseCode = "201", description = "RRHHProfile created successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "201", description = "RRHHProfile created successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = RRHHProfileResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @ApiResponse(responseCode = "404", description = "RRHHProfile not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<RRHHProfileResponse> createRRHHProfile(@RequestBody CreateRRHHProfileRequest request){
+    public ResponseEntity<RRHHProfileResponse> createRRHHProfile(@Valid @RequestBody CreateRRHHProfileRequest request){
         var createRRHHCommand = RRHHProfileAssembler.toCommandFromRequest(request);
         var rrhhId = this.rrhhProfileCommandService.handle(createRRHHCommand);
 
@@ -151,7 +151,7 @@ public class RRHHProfileController {
             @ApiResponse(responseCode = "404", description = "RRHHProfile not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<RRHHProfileResponse> updateRRHHProfile(@PathVariable Long id, @RequestBody UpdateRRHHProfileRequest request)
+    public ResponseEntity<RRHHProfileResponse> updateRRHHProfile(@PathVariable Long id, @Valid @RequestBody UpdateRRHHProfileRequest request)
     {
         var updateRRHHCommand = RRHHProfileAssembler.toCommandFromRequest(id,request);
         var updateRRHH = this.rrhhProfileCommandService.handle(updateRRHHCommand);

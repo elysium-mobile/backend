@@ -8,11 +8,9 @@ import jakarta.validation.constraints.NotNull;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UpdateOrderRequest(
         @NotNull
-        @NotBlank
         Long userAccountId,
         Integer amount,
         @NotNull
-        @NotBlank
         Long membershipId
 ) {
 }

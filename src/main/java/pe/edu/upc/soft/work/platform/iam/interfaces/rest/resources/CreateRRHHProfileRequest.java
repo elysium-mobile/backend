@@ -22,7 +22,6 @@ public record CreateRRHHProfileRequest(
         String statusHierarchy,
 
         @NotNull
-        @NotBlank
         Long userAccountId
 ) {
 }

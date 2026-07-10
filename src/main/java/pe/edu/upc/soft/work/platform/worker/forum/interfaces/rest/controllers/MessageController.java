@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteMessageCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllMessageQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessageByIdQuery;
@@ -66,7 +67,7 @@ public class MessageController {
             @ApiResponse(responseCode = "404", description = "Message not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<MessageResponse> createMessage(@RequestBody CreateMessageRequest request) {
+    public ResponseEntity<MessageResponse> createMessage(@Valid @RequestBody CreateMessageRequest request) {
         var createMessageCommand = MessageAssembler.toCommandFromRequest(request);
         var messageId = this.messageCommandService.handle(createMessageCommand);
 
@@ -146,7 +147,7 @@ public class MessageController {
             @ApiResponse(responseCode = "404", description = "Message not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<MessageResponse> updateMessage(@PathVariable Long id, @RequestBody UpdateMessageRequest request) {
+    public ResponseEntity<MessageResponse> updateMessage(@PathVariable Long id, @Valid @RequestBody UpdateMessageRequest request) {
         var updateMessageCommand = MessageAssembler.toCommandFromRequest(id, request);
         var updatedMessage = this.messageCommandService.handle(updateMessageCommand);
         if (updatedMessage.isEmpty()) {
@@ -188,7 +189,7 @@ public class MessageController {
             @ApiResponse(responseCode = "404", description = "Message not found", content = @Content)
     })
     @PostMapping("/{messageId}/assets")
-    public ResponseEntity<MessageResponse> addAssetToMessage(@PathVariable Long messageId, @RequestBody AddAssetToMessageRequest request){
+    public ResponseEntity<MessageResponse> addAssetToMessage(@PathVariable Long messageId, @Valid @RequestBody AddAssetToMessageRequest request){
         var command = MessageAssembler.toCommandFromRequest(messageId, request);
         this.messageCommandService.handle(command);
 

@@ -21,7 +21,6 @@ public record UpdateWorkTeamRequest(
         @NotBlank
         String leaderOfTeam,
         @NotNull
-        @NotBlank
         Long unitOfWorkId
 
 ) {

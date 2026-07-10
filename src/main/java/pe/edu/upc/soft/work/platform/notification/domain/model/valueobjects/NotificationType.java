@@ -2,8 +2,6 @@ package pe.edu.upc.soft.work.platform.notification.domain.model.valueobjects;
 
 import java.util.Arrays;
 
-import static java.util.Locale.filter;
-
 /**
  * Enumeration representing the type of notification in the system
  */

@@ -14,11 +14,9 @@ public record CreateAreaCompanyRequest(
         @NotBlank
         String name,
         @NotNull
-        @NotBlank
         Integer annualBudget,
 
         @NotNull
-        @NotBlank
         Long companyId
 
 ) {

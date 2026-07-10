@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteForumCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllForumQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetForumByIdQuery;
@@ -65,7 +66,7 @@ public class ForumController {
             @ApiResponse(responseCode = "404", description = "Forum not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<ForumResponse> createForum(@RequestBody CreateForumRequest request) {
+    public ResponseEntity<ForumResponse> createForum(@Valid @RequestBody CreateForumRequest request) {
         var createForumCommand = ForumAssembler.toCommandFromRequest(request);
         var forumId = this.forumCommandService.handle(createForumCommand);
 
@@ -145,7 +146,7 @@ public class ForumController {
             @ApiResponse(responseCode = "404", description = "Forum not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<ForumResponse> updateForum(@PathVariable Long id, @RequestBody UpdateForumRequest request) {
+    public ResponseEntity<ForumResponse> updateForum(@PathVariable Long id, @Valid @RequestBody UpdateForumRequest request) {
         var updateForumCommand = ForumAssembler.toCommandFromRequest(id, request);
         var updatedForum = this.forumCommandService.handle(updateForumCommand);
         if (updatedForum.isEmpty()) {
@@ -187,7 +188,7 @@ public class ForumController {
             @ApiResponse(responseCode = "404", description = "Forum or Category not found", content = @Content)
     })
     @PostMapping("/{forumId}/categories")
-    public ResponseEntity<ForumResponse> addCategoryToForum(@PathVariable Long forumId, @RequestBody AddCategoryToForumRequest request){
+    public ResponseEntity<ForumResponse> addCategoryToForum(@PathVariable Long forumId, @Valid @RequestBody AddCategoryToForumRequest request){
         var command = ForumAssembler.toCommandFromRequest(forumId, request);
         this.forumCommandService.handle(command);
         var forum = this.forumQueryService.handle(new GetForumByIdQuery(forumId));

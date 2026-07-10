@@ -14,13 +14,11 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CreatePaymentRequest(
         @NotNull
-        @NotBlank
         Long orderId,
         @NotNull
         @NotBlank
         String transactionId,
         @NotNull
-        @NotBlank
         Date paymentDate,
 
         @NotNull

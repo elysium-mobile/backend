@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteMembershipCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetMembershipByIdQuery;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetAllMembershipQuery;
@@ -62,7 +63,7 @@ public class MembershipController {
             @ApiResponse(responseCode = "404", description = "Membership not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<MembershipResponse> createMembership(@RequestBody CreateMembershipRequest request) {
+    public ResponseEntity<MembershipResponse> createMembership(@Valid @RequestBody CreateMembershipRequest request) {
         var createMembershipCommand = MembershipAssembler.toCommandFromRequest(request);
         var membershipId = this.membershipCommandService.handle(createMembershipCommand);
 
@@ -142,7 +143,7 @@ public class MembershipController {
             @ApiResponse(responseCode = "404", description = "Membership not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<MembershipResponse> updateMembership(@PathVariable Long id, @RequestBody UpdateMembershipRequest request) {
+    public ResponseEntity<MembershipResponse> updateMembership(@PathVariable Long id, @Valid @RequestBody UpdateMembershipRequest request) {
         var updateMembershipCommand = MembershipAssembler.toCommandFromRequest(id, request);
         var updatedMembership = this.membershipCommandService.handle(updateMembershipCommand);
         if (updatedMembership.isEmpty()) {

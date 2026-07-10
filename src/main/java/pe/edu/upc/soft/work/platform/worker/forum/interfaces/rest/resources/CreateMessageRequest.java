@@ -11,12 +11,10 @@ import jakarta.validation.constraints.NotNull;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CreateMessageRequest(
         @NotNull
-        @NotBlank
         Long userAccountId,
         @NotNull
         @NotBlank
         String contentMessage,
         @NotNull
-        @NotBlank
         Long threadId
 ) {}

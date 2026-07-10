@@ -10,7 +10,6 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UpdateEmployeeProfileRequest(
         @NotNull
-        @NotBlank
         Date dateStart,
 
         @NotNull
@@ -18,15 +17,12 @@ public record UpdateEmployeeProfileRequest(
         String position,
 
         @NotNull
-        @NotBlank
         Integer salary,
 
         @NotNull
-        @NotBlank
         Long workOfTeamId,
 
         @NotNull
-        @NotBlank
         Long UserAccountId
 
 ) {

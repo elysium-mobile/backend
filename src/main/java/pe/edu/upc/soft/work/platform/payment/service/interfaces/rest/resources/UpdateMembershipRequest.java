@@ -15,13 +15,10 @@ import java.util.Date;
 public record UpdateMembershipRequest(
 
         @NotNull
-        @NotBlank
         Long membershipPlanId,
         @NotNull
-        @NotBlank
         Date membershipStart,
         @NotNull
-        @NotBlank
         Date membershipOver,
         @NotNull
         @NotBlank

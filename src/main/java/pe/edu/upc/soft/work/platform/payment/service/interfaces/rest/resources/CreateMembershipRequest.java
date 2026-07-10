@@ -14,13 +14,10 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CreateMembershipRequest(
         @NotNull
-        @NotBlank
         Long membershipPlanId,
         @NotNull
-        @NotBlank
         Date membershipStart,
         @NotNull
-        @NotBlank
         Date membershipOver,
         @NotNull
         @NotBlank

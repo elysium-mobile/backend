@@ -27,7 +27,6 @@ public class Category extends AuditableAbstractAggregateRoot<Category> {
 
     @Getter
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "threads", nullable = true)
     private List<Thread> threads;
 
     @Setter

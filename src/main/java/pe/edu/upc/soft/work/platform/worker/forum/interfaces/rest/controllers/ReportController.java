@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteReportCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllReportsQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetReportByIdQuery;
@@ -65,7 +66,7 @@ public class ReportController{
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Report not found", content = @io.swagger.v3.oas.annotations.media.Content)
     })
     @PostMapping
-    public ResponseEntity<ReportResponse> createReport(@RequestBody CreateReportRequest request){
+    public ResponseEntity<ReportResponse> createReport(@Valid @RequestBody CreateReportRequest request){
         var createReportCommand = ReportAssembler.toCommandFromRequest(request);
         var reportId = this.reportCommandService.handle(createReportCommand);
 
@@ -144,7 +145,7 @@ public class ReportController{
             @ApiResponse(responseCode = "404", description = "Report not found", content = @io.swagger.v3.oas.annotations.media.Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<ReportResponse> updateReport(@PathVariable Long id, @RequestBody UpdateReportRequest request){
+    public ResponseEntity<ReportResponse> updateReport(@PathVariable Long id, @Valid @RequestBody UpdateReportRequest request){
         var updateReportCommand = ReportAssembler.toCommandFromRequest(id, request);
         var updatedReport = this.reportCommandService.handle(updateReportCommand);
         if (updatedReport.isEmpty()){

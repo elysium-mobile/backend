@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteWorkTeamCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAllWorkTeamQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetWorkTeamByIdQuery;
@@ -58,7 +59,7 @@ public class WorkTeamController {
             }
     )
     @PostMapping
-    public ResponseEntity<WorkTeamResponse> createWorkTeam(@RequestBody CreateWorkTeamRequest request){
+    public ResponseEntity<WorkTeamResponse> createWorkTeam(@Valid @RequestBody CreateWorkTeamRequest request){
         var createWorkTeamCommand = WorkTeamAssembler.toCommandFromRequest(request);
         var workTeamId = this.workTeamCommandService.handle(createWorkTeamCommand);
 
@@ -135,7 +136,7 @@ public class WorkTeamController {
             @ApiResponse(responseCode = "404", description = "WorkTeam not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<WorkTeamResponse> updateWorkTeam(@PathVariable Long id, @RequestBody UpdateWorkTeamRequest request){
+    public ResponseEntity<WorkTeamResponse> updateWorkTeam(@PathVariable Long id, @Valid @RequestBody UpdateWorkTeamRequest request){
         var updateWorkTeamCommand = WorkTeamAssembler.toCommandFromRequest(id,request);
         var updatedWorkTeam= this.workTeamCommandService.handle(updateWorkTeamCommand);
         if (updatedWorkTeam.isEmpty()) {

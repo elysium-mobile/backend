@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteThreadCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetAllThreadQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetThreadByIdQuery;
@@ -66,7 +67,7 @@ public class ThreadController {
             @ApiResponse(responseCode = "404", description = "Thread not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<ThreadResponse> createThread(@RequestBody CreateThreadRequest request) {
+    public ResponseEntity<ThreadResponse> createThread(@Valid @RequestBody CreateThreadRequest request) {
         var createThreadCommand = ThreadAssembler.toCommandFromRequest(request);
         var threadId = this.threadCommandService.handle(createThreadCommand);
 
@@ -146,7 +147,7 @@ public class ThreadController {
             @ApiResponse(responseCode = "404", description = "Thread not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<ThreadResponse> updateThread(@PathVariable Long id, @RequestBody UpdateThreadRequest request) {
+    public ResponseEntity<ThreadResponse> updateThread(@PathVariable Long id, @Valid @RequestBody UpdateThreadRequest request) {
         var updateThreadCommand = ThreadAssembler.toCommandFromRequest(id, request);
         var updatedThread = this.threadCommandService.handle(updateThreadCommand);
         if (updatedThread.isEmpty()) {
@@ -188,7 +189,7 @@ public class ThreadController {
             @ApiResponse(responseCode = "404", description = "Thread not found", content = @Content)
     })
     @PostMapping("/{threadId}/messages")
-    public ResponseEntity<ThreadResponse> addMessageToThread(@PathVariable Long threadId, @RequestBody AddMessageToThreadRequest request){
+    public ResponseEntity<ThreadResponse> addMessageToThread(@PathVariable Long threadId, @Valid @RequestBody AddMessageToThreadRequest request){
         var command = ThreadAssembler.toCommandFromRequest(threadId,request);
         this.threadCommandService.handle(command);
 

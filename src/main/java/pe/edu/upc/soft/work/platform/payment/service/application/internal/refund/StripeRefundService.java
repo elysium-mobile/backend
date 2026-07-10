@@ -83,7 +83,7 @@ public class StripeRefundService implements RefundService {
 
             // Add reason and metadata
             if (command.reason() != null) {
-                params.setReason(RefundCreateParams.Reason.valueOf(command.reason()));
+                params.setReason(RefundCreateParams.Reason.valueOf(command.reason().toUpperCase()));
             }
 
             params.putMetadata("orderId", String.valueOf(command.orderId()));

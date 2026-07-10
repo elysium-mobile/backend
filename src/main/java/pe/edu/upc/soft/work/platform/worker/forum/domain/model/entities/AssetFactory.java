@@ -2,8 +2,6 @@ package pe.edu.upc.soft.work.platform.worker.forum.domain.model.entities;
 
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.valueObjects.FileType;
 
-import static org.hibernate.type.StandardBasicTypes.IMAGE;
-
 public class AssetFactory {
 
   private AssetFactory(){}

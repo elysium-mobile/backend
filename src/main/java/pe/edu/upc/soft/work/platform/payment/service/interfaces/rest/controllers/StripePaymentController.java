@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.payment.service.application.internal.retries.PaymentRetryService;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.CreateStripeCheckoutCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.InitiateRefundCommand;
@@ -92,7 +93,7 @@ public class StripePaymentController {
     })
     @PostMapping("/checkout")
     public ResponseEntity<StripeCheckoutResponse> createCheckout(
-        @RequestBody CreateStripeCheckoutRequest request) {
+        @Valid @RequestBody CreateStripeCheckoutRequest request) {
         LOGGER.info("[StripePaymentController] Creating checkout for Order ID: {}", request.orderId());
 
         var command = new CreateStripeCheckoutCommand(request.orderId(), request.currency());
@@ -117,7 +118,7 @@ public class StripePaymentController {
     @PostMapping("/{paymentId}/retry")
     public ResponseEntity<PaymentRetryResponse> retryPayment(
         @Parameter(description = "Payment ID to retry") @PathVariable Long paymentId,
-        @RequestBody RetryPaymentRequest request) {
+        @Valid @RequestBody RetryPaymentRequest request) {
         LOGGER.info("[StripePaymentController] Retrying payment ID: {} for Order: {}",
             paymentId, request.orderId());
 
@@ -147,7 +148,7 @@ public class StripePaymentController {
     @PostMapping("/{paymentId}/refund")
     public ResponseEntity<RefundResponse> initiateRefund(
         @Parameter(description = "Payment ID to refund") @PathVariable Long paymentId,
-        @RequestBody InitiateRefundRequest request) {
+        @Valid @RequestBody InitiateRefundRequest request) {
         LOGGER.info("[StripePaymentController] Initiating refund for Payment ID: {}", paymentId);
 
         var command = new InitiateRefundCommand(
@@ -228,6 +229,7 @@ public class StripePaymentController {
             .orElseThrow(() -> new RuntimeException("Could not deserialize PaymentIntent"));
 
         var orderIdStr = paymentIntentData.getMetadata().get("orderId");
+        if (orderIdStr == null) throw new RuntimeException("Missing orderId in PaymentIntent metadata");
         var orderId = Long.parseLong(orderIdStr);
 
         eventPublisher.publishEvent(new StripePaymentSucceededEvent(
@@ -245,6 +247,7 @@ public class StripePaymentController {
             .orElseThrow(() -> new RuntimeException("Could not deserialize PaymentIntent"));
 
         var orderIdStr = paymentIntentData.getMetadata().get("orderId");
+        if (orderIdStr == null) throw new RuntimeException("Missing orderId in PaymentIntent metadata");
         var orderId = Long.parseLong(orderIdStr);
         var failureReason = paymentIntentData.getLastPaymentError() != null
             ? paymentIntentData.getLastPaymentError().getMessage()

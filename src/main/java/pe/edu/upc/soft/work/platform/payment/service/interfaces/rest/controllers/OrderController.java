@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteOrderCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetAllOrderQuery;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.queries.GetOrderByIdQuery;
@@ -65,7 +66,7 @@ public class OrderController {
             @ApiResponse(responseCode = "404", description = "Order not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(@RequestBody CreateOrderRequest request){
+    public ResponseEntity<OrderResponse> createOrder(@Valid @RequestBody CreateOrderRequest request){
         var createOrderCommand = OrderAssembler.toCommandFromRequest(request);
         var orderId = this.orderCommandService.handle(createOrderCommand);
 
@@ -147,7 +148,7 @@ public class OrderController {
             @ApiResponse(responseCode = "404", description = "Order not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<OrderResponse> updateOrder(@PathVariable Long id, @RequestBody UpdateOrderRequest request){
+    public ResponseEntity<OrderResponse> updateOrder(@PathVariable Long id, @Valid @RequestBody UpdateOrderRequest request){
         var updateOrderCommand = OrderAssembler.toCommandFromRequest(id,request);
         var updateOrder = this.orderCommandService.handle(updateOrderCommand);
         if (updateOrder.isEmpty())

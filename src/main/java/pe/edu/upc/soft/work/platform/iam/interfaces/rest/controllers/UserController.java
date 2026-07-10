@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteUserCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetAllUsersQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetUserByIdQuery;
@@ -68,7 +69,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<UserResponse> createUser(@RequestBody CreateUserRequest request){
+    public ResponseEntity<UserResponse> createUser(@Valid @RequestBody CreateUserRequest request){
         var createUserCommand = UserAssembler.toCommandFromRequest(request);
         var userId = this.userCommandService.handle(createUserCommand);
 
@@ -155,7 +156,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request){
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @Valid @RequestBody UpdateUserRequest request){
         var updateUserCommand= UserAssembler.toCommandFromRequest(id, request);
         var updatedUser = this.userCommandService.handle(updateUserCommand);
         if (updatedUser.isEmpty())

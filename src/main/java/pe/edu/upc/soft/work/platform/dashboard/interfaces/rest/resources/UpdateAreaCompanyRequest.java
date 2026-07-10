@@ -17,10 +17,8 @@ public record UpdateAreaCompanyRequest(
         @NotBlank
         String name,
         @NotNull
-        @NotBlank
         Integer annualBudget,
         @NotNull
-        @NotBlank
         Long companyId
 ) {
 }

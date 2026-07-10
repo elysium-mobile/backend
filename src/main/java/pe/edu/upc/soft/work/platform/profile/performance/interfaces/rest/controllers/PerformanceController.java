@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeletePerformanceCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.GetPerformanceByIdQuery;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.GetPerformanceByEmployeeProfileIdQuery;
@@ -65,7 +66,7 @@ public class PerformanceController {
             @ApiResponse(responseCode = "404", description = "Performance not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<PerformanceResponse> createPerformance(@RequestBody CreatePerformanceRequest request) {
+    public ResponseEntity<PerformanceResponse> createPerformance(@Valid @RequestBody CreatePerformanceRequest request) {
         var createPerformanceCommand = PerformanceAssembler.toCommandFromRequest(request);
         var performanceId = this.performanceCommandService.handle(createPerformanceCommand);
 
@@ -145,7 +146,7 @@ public class PerformanceController {
             @ApiResponse(responseCode = "404", description = "Performance not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<PerformanceResponse> updatePerformance(@PathVariable Long id, @RequestBody UpdatePerformanceRequest request) {
+    public ResponseEntity<PerformanceResponse> updatePerformance(@PathVariable Long id, @Valid @RequestBody UpdatePerformanceRequest request) {
         var updatePerformanceCommand = PerformanceAssembler.toCommandFromRequest(id, request);
         var updatedPerformance = this.performanceCommandService.handle(updatePerformanceCommand);
         if (updatedPerformance.isEmpty()) {
@@ -187,7 +188,7 @@ public class PerformanceController {
             @ApiResponse(responseCode = "404", description = "Performance or CommentEmployee not found", content = @Content)
     })
     @PostMapping("/{performanceId}/comment-employee")
-    public ResponseEntity<PerformanceResponse> addCommentEmployeeToPerformance(@PathVariable Long performanceId, @RequestBody AddCommentEmployeeToPerformanceRequest request){
+    public ResponseEntity<PerformanceResponse> addCommentEmployeeToPerformance(@PathVariable Long performanceId, @Valid @RequestBody AddCommentEmployeeToPerformanceRequest request){
         var command = PerformanceAssembler.toCommandFromRequest(performanceId, request);
         this.performanceCommandService.handle(command);
 

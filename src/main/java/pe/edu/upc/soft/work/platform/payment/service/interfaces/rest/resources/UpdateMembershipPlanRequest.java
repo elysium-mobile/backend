@@ -8,7 +8,6 @@ import jakarta.validation.constraints.NotBlank;
 public record UpdateMembershipPlanRequest(
         @NotBlank
         String planName,
-        @NotBlank
         Integer price
 ) {
 }

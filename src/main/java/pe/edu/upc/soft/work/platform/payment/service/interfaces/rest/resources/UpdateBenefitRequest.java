@@ -10,7 +10,6 @@ public record UpdateBenefitRequest(
         @NotBlank
         String title,
         String description,
-        @NotBlank
         Long membershipPlanId
 ) {
 }

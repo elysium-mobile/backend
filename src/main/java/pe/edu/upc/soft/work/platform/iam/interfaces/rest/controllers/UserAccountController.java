@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetAllUserAccountQuery;
 import pe.edu.upc.soft.work.platform.iam.domain.model.queries.GetUserAccountByIdQuery;
@@ -20,8 +21,6 @@ import pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers.UserAccountA
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.CreateUserAccountRequest;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UpdateUserAccountRequest;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserAccountResponse;
-import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.UserResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,12 +63,12 @@ public class UserAccountController {
             ))
 
     @ApiResponses(value ={
-            @ApiResponse(responseCode = "201", description = "User Account created successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserResponse.class))),
+            @ApiResponse(responseCode = "201", description = "User Account created successfully", content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE, schema = @Schema(implementation = UserAccountResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @ApiResponse(responseCode = "404", description = "User Account not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<UserAccountResponse> createUserAccount(@RequestBody CreateUserAccountRequest request){
+    public ResponseEntity<UserAccountResponse> createUserAccount(@Valid @RequestBody CreateUserAccountRequest request){
 
         var createUserAccountCommand = UserAccountAssembler.toCommandFromRequest(request);
         var userAccountId = this.userAccountCommandService.handle( createUserAccountCommand );
@@ -97,7 +96,7 @@ public class UserAccountController {
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "Users retrieved successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = UserResponse.class))),
+                            schema = @Schema(implementation = UserAccountResponse.class))),
             @ApiResponse(responseCode = "404", description = "No users found", content = @Content)
     })
     @GetMapping
@@ -120,12 +119,12 @@ public class UserAccountController {
     @ApiResponses(value ={
             @ApiResponse(responseCode = "200", description = "User updated successfully",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = UserResponse.class))),
+                            schema = @Schema(implementation = UserAccountResponse.class))),
             @ApiResponse(responseCode = "400", description = "Invalid request", content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<UserAccountResponse> updateUserAccount(@PathVariable Long id, @RequestBody UpdateUserAccountRequest request){
+    public ResponseEntity<UserAccountResponse> updateUserAccount(@PathVariable Long id, @Valid @RequestBody UpdateUserAccountRequest request){
         var updateUserAccountCommand = UserAccountAssembler.toCommandFromRequest(id, request);
         var updated = this.userAccountCommandService.handle(updateUserAccountCommand);
         if (updated.isEmpty()){

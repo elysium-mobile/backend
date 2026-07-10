@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import org.springframework.web.multipart.MultipartFile;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateAssetCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteAssetCommand;
@@ -152,7 +153,7 @@ public class AssetController {
             @ApiResponse(responseCode = "404", description = "Asset not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<AssetResponse> updateAttachment(@PathVariable Long id, @RequestBody UpdateAssetRequest request) {
+    public ResponseEntity<AssetResponse> updateAttachment(@PathVariable Long id, @Valid @RequestBody UpdateAssetRequest request) {
         var updateAttachmentCommand = AssetAssembler.toCommandFromRequest(id, request);
         var updatedAttachment = this.assetCommandService.handle(updateAttachmentCommand);
         if (updatedAttachment.isEmpty()) {

@@ -20,9 +20,7 @@ public record UpdateCommentEmployeeRequest(
         @NotBlank
         String content,
         @NotNull
-        @NotBlank
         Long rrhhProfileId,
         @NotNull
-        @NotBlank
         Long performanceId
 ) {}

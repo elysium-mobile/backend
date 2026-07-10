@@ -18,7 +18,6 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CreateEmployeeProfileRequest(
         @NotNull
-        @NotBlank
         Date dateStart,
 
         @NotNull
@@ -26,15 +25,12 @@ public record CreateEmployeeProfileRequest(
         String position,
 
         @NotNull
-        @NotBlank
         Integer salary,
 
         @NotNull
-        @NotBlank
         Long workOfTeamId,
 
         @NotNull
-        @NotBlank
         Long UserAccountId
 
 ) { }

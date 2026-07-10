@@ -93,6 +93,7 @@ public class BenefitCommandServiceImpl implements BenefitCommandService {
         try {
             membershipPlan.removeBenefit(command.benefitId());
             membershipPlanRepository.save(membershipPlan);
+            benefitRepository.delete(benefit);
         } catch (Exception e) {
             throw new RuntimeException("Error deleting Benefit: " + e.getMessage(), e);
         }

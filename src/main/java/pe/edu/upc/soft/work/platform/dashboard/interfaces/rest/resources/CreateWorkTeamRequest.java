@@ -22,7 +22,6 @@ public record CreateWorkTeamRequest(
         String leaderOfTeam,
 
         @NotNull
-        @NotBlank
         Long unitOfWorkId
 
 ) {

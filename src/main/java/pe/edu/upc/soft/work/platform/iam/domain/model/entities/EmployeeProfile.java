@@ -63,5 +63,6 @@ public class EmployeeProfile extends AuditableAbstractAggregateRoot<EmployeeProf
         this.dateStart = command.dateStart();
         this.position = command.position();
         this.salary = command.salary();
+        this.workOfTeamId = command.workOfTeamId();
     }
 }

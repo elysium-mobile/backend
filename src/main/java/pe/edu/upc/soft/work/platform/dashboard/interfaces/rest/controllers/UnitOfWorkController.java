@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteUnitOfWorkCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.entities.UnitOfWork;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetAllUnitOfWorkQuery;
@@ -64,7 +65,7 @@ public class UnitOfWorkController {
             }
     )
     @PostMapping
-    public ResponseEntity<UnitOfWorkResponse> createUnitOfWork(@RequestBody CreateUnitOfWorkRequest request){
+    public ResponseEntity<UnitOfWorkResponse> createUnitOfWork(@Valid @RequestBody CreateUnitOfWorkRequest request){
         var createUnitOfWorkCommand = UnitOfWorkAssembler.toCommandFromRequest(request);
         var unitOfWorkId = this.unitOfWorkCommandService.handle(createUnitOfWorkCommand);
 
@@ -142,7 +143,7 @@ public class UnitOfWorkController {
             }
     )
     @PutMapping("/{id}")
-    public ResponseEntity<UnitOfWorkResponse> updateUnitOfWork(@PathVariable Long id, @RequestBody UpdateUnitOfWorkRequest request){
+    public ResponseEntity<UnitOfWorkResponse> updateUnitOfWork(@PathVariable Long id, @Valid @RequestBody UpdateUnitOfWorkRequest request){
         var updateUnitOfWorkCommand= UnitOfWorkAssembler.toCommandFromRequest(id, request);
         var updatedUnit = this.unitOfWorkCommandService.handle(updateUnitOfWorkCommand);
         if (updatedUnit.isEmpty()) {
@@ -191,7 +192,7 @@ public class UnitOfWorkController {
     @PostMapping("/{uniOfWorkId}/work-teams")
     public ResponseEntity<UnitOfWorkResponse> addWorkTeamToUnitOfWork(
             @PathVariable Long uniOfWorkId,
-            @RequestBody AddWorkTeamToUnitOFWorkRequest request) {
+            @Valid @RequestBody AddWorkTeamToUnitOFWorkRequest request) {
 
         var command = UnitOfWorkAssembler.toCommandFromRequest(uniOfWorkId, request);
         this.unitOfWorkCommandService.handle(command);

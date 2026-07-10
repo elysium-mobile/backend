@@ -12,7 +12,6 @@ public record CreateBenefitRequest(
         @NotBlank
         String description,
 
-        @NotBlank
         Long membershipPlanId
 
 ) {

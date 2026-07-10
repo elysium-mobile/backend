@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurveyResponseCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetAllSurveyResponseQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetSurveyResponseByIdQuery;
@@ -64,7 +65,7 @@ public class SurveyResponseController {
             @ApiResponse(responseCode = "404", description = "Survey-Response not found")
     })
     @PostMapping
-    public ResponseEntity<SurveyResponseResponse> createSurveyResponse(@RequestBody CreateSurveyResponseRequest request){
+    public ResponseEntity<SurveyResponseResponse> createSurveyResponse(@Valid @RequestBody CreateSurveyResponseRequest request){
         var createSurveyResponseCommand = SurveyResponseAssembler.toCommandFromRequest(request);
         var responseId= this.surveyResponseCommandService.handle(createSurveyResponseCommand);
 
@@ -136,7 +137,7 @@ public class SurveyResponseController {
         @ApiResponse(responseCode = "404", description = "Survey Response not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<SurveyResponseResponse> updateSurveyResponse(@PathVariable Long id, @RequestBody UpdateSurveyResponseRequest request){
+    public ResponseEntity<SurveyResponseResponse> updateSurveyResponse(@PathVariable Long id, @Valid @RequestBody UpdateSurveyResponseRequest request){
         var updateSurveyResponseCommand= SurveyResponseAssembler.toCommandFromRequest(id,request);
         var updatedSurveyResponse = this.surveyResponseCommandService.handle(updateSurveyResponseCommand);
 

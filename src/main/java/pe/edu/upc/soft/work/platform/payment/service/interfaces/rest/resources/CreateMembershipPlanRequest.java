@@ -9,7 +9,6 @@ public record CreateMembershipPlanRequest(
         @NotBlank
         String planName,
 
-        @NotBlank
         Integer price
 ) {
 }

@@ -16,7 +16,6 @@ public record UpdateNotificationDetailRequest(
         String content,
 
         @NotNull
-        @NotBlank
         Long notificationId
 
 ) {

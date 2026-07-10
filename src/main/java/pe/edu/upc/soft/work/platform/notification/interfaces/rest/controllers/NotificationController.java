@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.notification.domain.model.commands.DeleteNotificationCommand;
 import pe.edu.upc.soft.work.platform.notification.domain.model.queries.GetAllNotificationsQuery;
 import pe.edu.upc.soft.work.platform.notification.domain.model.queries.GetNotificationByIdQuery;
@@ -66,7 +67,7 @@ public class NotificationController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Notification not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<NotificationResponse> createNotification(@RequestBody CreateNotificationRequest request){
+    public ResponseEntity<NotificationResponse> createNotification(@Valid @RequestBody CreateNotificationRequest request){
         var createNotificationCommand = NotificationAssembler.toCommandFromRequest(request);
         var notificationId = this.notificationCommandService.handle(createNotificationCommand);
 
@@ -141,12 +142,12 @@ public class NotificationController {
 
     })
     @PutMapping("/{notificationId}")
-    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable Long notificationId, @RequestBody CreateNotificationRequest request){
+    public ResponseEntity<NotificationResponse> updateNotification(@PathVariable Long notificationId, @Valid @RequestBody CreateNotificationRequest request){
         var updateNotificationCommand = NotificationAssembler.toCommandFromRequest(notificationId, request);
         var updatedNotification = this.notificationCommandService.handle(updateNotificationCommand);
 
         if (updatedNotification.isEmpty()){
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.notFound().build();
         }
 
         var notificationResponse = NotificationAssembler.toResponseFromEntity(updatedNotification.get());

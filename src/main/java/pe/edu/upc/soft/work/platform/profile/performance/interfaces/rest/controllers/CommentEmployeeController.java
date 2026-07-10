@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.commands.DeleteCommentEmployeeCommand;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.GetCommentEmployeeByIdQuery;
 import pe.edu.upc.soft.work.platform.profile.performance.domain.model.queries.GetAllCommentEmployeeQuery;
@@ -62,7 +63,7 @@ public class CommentEmployeeController {
             @ApiResponse(responseCode = "404", description = "CommentEmployee not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<CommentEmployeeResponse> createCommentEmployee(@RequestBody CreateCommentEmployeeRequest request) {
+    public ResponseEntity<CommentEmployeeResponse> createCommentEmployee(@Valid @RequestBody CreateCommentEmployeeRequest request) {
         var createCommentEmployeeCommand = CommentEmployeeAssembler.toCommandFromRequest(request);
         var commentemployeeId = this.commentemployeeCommandService.handle(createCommentEmployeeCommand);
 
@@ -142,7 +143,7 @@ public class CommentEmployeeController {
             @ApiResponse(responseCode = "404", description = "CommentEmployee not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<CommentEmployeeResponse> updateCommentEmployee(@PathVariable Long id, @RequestBody UpdateCommentEmployeeRequest request) {
+    public ResponseEntity<CommentEmployeeResponse> updateCommentEmployee(@PathVariable Long id, @Valid @RequestBody UpdateCommentEmployeeRequest request) {
         var updateCommentEmployeeCommand = CommentEmployeeAssembler.toCommandFromRequest(id, request);
         var updatedCommentEmployee = this.commentemployeeCommandService.handle(updateCommentEmployeeCommand);
         if (updatedCommentEmployee.isEmpty()) {

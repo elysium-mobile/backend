@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteDashboardCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.*;
 
@@ -62,7 +63,7 @@ public class DashboardController {
         @ApiResponse(responseCode = "404", description = "Dashboard not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<DashboardResponse> createDashboard(@RequestBody CreateDashboardRequest request) {
+    public ResponseEntity<DashboardResponse> createDashboard(@Valid @RequestBody CreateDashboardRequest request) {
         var createDashboardCommand = DashboardAssembler.toCommandFromRequest(request);
         var dashboardId = this.dashboardCommandService.handle(createDashboardCommand);
 
@@ -142,7 +143,7 @@ public class DashboardController {
         @ApiResponse(responseCode = "404", description = "Dashboard not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<DashboardResponse> updateDashboard(@PathVariable Long id, @RequestBody UpdateDashboardRequest request) {
+    public ResponseEntity<DashboardResponse> updateDashboard(@PathVariable Long id, @Valid @RequestBody UpdateDashboardRequest request) {
         var updateDashboardCommand = DashboardAssembler.toCommandFromRequest(id, request);
         var updatedDashboard = this.dashboardCommandService.handle(updateDashboardCommand);
         if (updatedDashboard.isEmpty()) {
@@ -190,7 +191,7 @@ public class DashboardController {
     @PostMapping("/{dashboardId}/widgets")
     public ResponseEntity<DashboardResponse> addWidgetToDashboard(
         @PathVariable Long dashboardId,
-        @RequestBody AddWidgetToDashboardRequest request) {
+        @Valid @RequestBody AddWidgetToDashboardRequest request) {
 
         var command = DashboardAssembler.toCommandFromRequest(dashboardId, request);
         this.dashboardCommandService.handle(command);

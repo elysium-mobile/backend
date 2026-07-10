@@ -16,15 +16,11 @@ public record CreateThreadRequest(
         @NotBlank
         String title,
         @NotNull
-        @NotBlank
         Long areaCompanyId,
         @NotNull
-        @NotBlank
         Date lastMessage,
         @NotNull
-        @NotBlank
         Long categoryId,
         @NotNull
-        @NotBlank
         Integer messageCount
 ) {}

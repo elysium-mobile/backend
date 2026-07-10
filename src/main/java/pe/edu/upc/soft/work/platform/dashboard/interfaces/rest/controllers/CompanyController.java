@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.commands.DeleteCompanyCommand;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetCompaniesByNameQuery;
 import pe.edu.upc.soft.work.platform.dashboard.domain.model.queries.GetCompanyByIdQuery;
@@ -59,7 +60,7 @@ public class CompanyController {
             @ApiResponse(responseCode = "404", description = "Company not found", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<CompanyResponse> createCompany(@RequestBody CreateCompanyRequest request) {
+    public ResponseEntity<CompanyResponse> createCompany(@Valid @RequestBody CreateCompanyRequest request) {
         var createCompanyCommand = CompanyAssembler.toCommandFromRequest(request);
         var companyId = this.companyCommandService.handle(createCompanyCommand);
 
@@ -139,7 +140,7 @@ public class CompanyController {
             @ApiResponse(responseCode = "404", description = "Company not found", content = @Content)
     })
     @PutMapping("/{id}")
-    public ResponseEntity<CompanyResponse> updateCompany(@PathVariable Long id, @RequestBody UpdateCompanyRequest request) {
+    public ResponseEntity<CompanyResponse> updateCompany(@PathVariable Long id, @Valid @RequestBody UpdateCompanyRequest request) {
         var updateCompanyCommand = CompanyAssembler.toCommandFromRequest(id, request);
         var updatedCompany = this.companyCommandService.handle(updateCompanyCommand);
         if (updatedCompany.isEmpty()) {
@@ -184,7 +185,7 @@ public class CompanyController {
             @ApiResponse(responseCode = "404", description = "Company or Employee not found", content = @Content)
     })
     @PostMapping("/{companyId}/employees")
-    public ResponseEntity<CompanyResponse> addEmployeeToCompany(@PathVariable Long companyId, @RequestBody AddEmployeeToCompanyRequest request){
+    public ResponseEntity<CompanyResponse> addEmployeeToCompany(@PathVariable Long companyId, @Valid @RequestBody AddEmployeeToCompanyRequest request){
         var command = CompanyAssembler.toCommandFromRequest(companyId, request);
         this.companyCommandService.handle(command);
 
@@ -212,7 +213,7 @@ public class CompanyController {
             @ApiResponse(responseCode = "404", description = "Company or AreaCompany not found", content = @Content)
     })
     @PostMapping("/{companyId}/area-companies")
-    public ResponseEntity<CompanyResponse> addAreaCompanyToCompany(@PathVariable Long companyId, @RequestBody AddAreaCompanyToCompanyRequest request) {
+    public ResponseEntity<CompanyResponse> addAreaCompanyToCompany(@PathVariable Long companyId, @Valid @RequestBody AddAreaCompanyToCompanyRequest request) {
 
         var command = CompanyAssembler.toCommandFromRequest(companyId, request);
         this.companyCommandService.handle(command);

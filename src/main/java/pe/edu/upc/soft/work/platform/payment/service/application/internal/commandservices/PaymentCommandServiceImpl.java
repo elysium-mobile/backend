@@ -8,7 +8,6 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.Creat
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateMembershipCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdatePaymentCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeletePaymentCommand;
-import pe.edu.upc.soft.work.platform.payment.service.domain.model.entities.Order;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.events.MembershipActivatedEvent;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.events.PaymentRegisteredEvent;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.PaymentCommandService;

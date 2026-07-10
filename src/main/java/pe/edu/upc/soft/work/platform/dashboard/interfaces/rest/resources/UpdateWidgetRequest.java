@@ -18,11 +18,9 @@ public record UpdateWidgetRequest(
         String title,
 
         @NotNull
-        @NotBlank
         Integer refreshPeriod,
 
         @NotNull
-        @NotBlank
         Long dashboardId
 
 ) {

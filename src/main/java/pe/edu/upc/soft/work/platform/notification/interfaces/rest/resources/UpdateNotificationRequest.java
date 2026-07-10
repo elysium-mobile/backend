@@ -18,7 +18,6 @@ public record UpdateNotificationRequest(
         String notificationType,
 
         @NotNull
-        @NotBlank
         Long userAccountId
 
 ) {

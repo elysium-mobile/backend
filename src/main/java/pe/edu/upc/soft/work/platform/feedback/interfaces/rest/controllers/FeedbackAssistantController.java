@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.feedback.domain.services.FeedbackAssistantService;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.assemblers.AssistantAssembler;
 import pe.edu.upc.soft.work.platform.feedback.interfaces.rest.resources.AskAssistantRequest;
@@ -42,7 +43,7 @@ public class FeedbackAssistantController {
       summary = "Ask the Feedback Assistant",
       description = "Sends a prompt to the AI assistant, optionally scoped to a survey")
   @PostMapping
-  public ResponseEntity<AssistantAnswerResponse> ask(@RequestBody AskAssistantRequest request) {
+  public ResponseEntity<AssistantAnswerResponse> ask(@Valid @RequestBody AskAssistantRequest request) {
     var command = AssistantAssembler.toCommandFromRequest(request);
     var answer = this.feedbackAssistantService.handle(command);
     return ResponseEntity.ok(AssistantAssembler.toResponseFromEntity(answer));

@@ -2,8 +2,6 @@ package pe.edu.upc.soft.work.platform.feedback.application.internal.commandservi
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import pe.edu.upc.soft.work.platform.dashboard.application.internal.outboundservices.acl.ExternalIamServiceFromDashboard;
-import pe.edu.upc.soft.work.platform.feedback.application.internal.outboundservices.acl.ExternalIamServiceFromFeedback;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.CreateAnswerCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteAnswerCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.UpdateAnswerCommand;
@@ -20,16 +18,13 @@ import java.util.Optional;
 @Transactional
 public class AnswerCommandServiceImpl implements AnswerCommandService {
     private final AnswerRepository answerRepository;
-    private final ExternalIamServiceFromFeedback externalIamServiceFromFeedback;
 
     /**
      * Constructor for AnswerCommandServiceImpl.
      * @param answerRepository the repository for Answer persistence
      */
-    public AnswerCommandServiceImpl(AnswerRepository answerRepository,
-                                    ExternalIamServiceFromFeedback externalIamServiceFromFeedback) {
+    public AnswerCommandServiceImpl(AnswerRepository answerRepository) {
         this.answerRepository = answerRepository;
-        this.externalIamServiceFromFeedback = externalIamServiceFromFeedback;
     }
 
     /**

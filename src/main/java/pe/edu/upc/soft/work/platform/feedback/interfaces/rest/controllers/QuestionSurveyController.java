@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteQuestionSurveyCommand;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetAllQuestionSurveyQuery;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.queries.GetQuestionSurveyByIdQuery;
@@ -57,7 +58,7 @@ public class QuestionSurveyController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Question-Survey not found")
     })
     @PostMapping
-    public ResponseEntity<QuestionSurveyResponse> createQuestionSurvey(@RequestBody CreateQuestionSurveyRequest request){
+    public ResponseEntity<QuestionSurveyResponse> createQuestionSurvey(@Valid @RequestBody CreateQuestionSurveyRequest request){
         var createQuestionSurveyCommand = QuestionSurveyAssembler.toCommandFromRequest(request);
         var questionSurveyId = this.questionSurveyCommandService.handle(createQuestionSurveyCommand);
 
@@ -133,7 +134,7 @@ public class QuestionSurveyController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Question-Survey not found")
     })
     @PutMapping("/{id}")
-    public ResponseEntity<QuestionSurveyResponse> updateQuestionSurvey(@PathVariable Long id, @RequestBody UpdateQuestionSurveyRequest request){
+    public ResponseEntity<QuestionSurveyResponse> updateQuestionSurvey(@PathVariable Long id, @Valid @RequestBody UpdateQuestionSurveyRequest request){
         var updateQuestionSurveyCommand = QuestionSurveyAssembler.toCommandFromRequest(id, request);
         var updatedQuestionSurvey = this.questionSurveyCommandService.handle(updateQuestionSurveyCommand);
         if (updatedQuestionSurvey.isEmpty()){

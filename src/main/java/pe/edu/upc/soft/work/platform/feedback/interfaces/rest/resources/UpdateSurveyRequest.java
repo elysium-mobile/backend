@@ -22,6 +22,5 @@ public record UpdateSurveyRequest(
         @NotBlank
         String targetType,
         @NotNull
-        @NotBlank
         Date expirationTime
 ) {}

@@ -12,10 +12,8 @@ import jakarta.validation.constraints.NotNull;
 public record CreateAnswerRequest(
 
         @NotNull
-        @NotBlank
         Long value,
         @NotNull
-        @NotBlank
         Integer scoreAnswer
 
 ) {

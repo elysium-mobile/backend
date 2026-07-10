@@ -17,7 +17,6 @@ public record CreateQuestionSurveyRequest(
         @NotBlank
         String questionType,
         @NotNull
-        @NotBlank
         Long surveyId
 ) {
 }

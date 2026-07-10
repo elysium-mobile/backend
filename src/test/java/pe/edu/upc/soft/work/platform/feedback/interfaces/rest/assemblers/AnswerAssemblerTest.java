@@ -59,7 +59,7 @@ class AnswerAssemblerTest {
         AnswerResponse response = AnswerAssembler.toResponseFromEntity(entity);
 
         // Assert
-        assertThat(response.id()).isEqualTo(21L);
+        assertThat(response.answerId()).isEqualTo(21L);
         assertThat(response.value()).isEqualTo(FeedbackCommandFixtures.VALID_ANSWER_VALUE);
         assertThat(response.scoreAnswer()).isEqualTo(FeedbackCommandFixtures.VALID_ANSWER_SCORE);
     }

@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pe.edu.upc.soft.work.platform.feedback.domain.model.commands.DeleteSurveyResponseCommand;
@@ -76,7 +77,7 @@ public class SurveyResponseController {
             return ResponseEntity.notFound().build();
         }
         var surveyResponseResponse = SurveyResponseAssembler.toResponseFromEntity(surveyResponse.get());
-        return ResponseEntity.ok(surveyResponseResponse);
+        return new ResponseEntity<>(surveyResponseResponse, HttpStatus.CREATED);
     }
 
 

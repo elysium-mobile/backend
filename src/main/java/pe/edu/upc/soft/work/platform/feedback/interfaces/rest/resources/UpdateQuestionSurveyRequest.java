@@ -14,7 +14,6 @@ public record UpdateQuestionSurveyRequest(
         @NotBlank
         String questionType,
         @NotNull
-        @NotBlank
         Long surveyId
 ) {
 }

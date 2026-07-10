@@ -8,10 +8,8 @@ import jakarta.validation.constraints.NotNull;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UpdateAnswerRequest(
         @NotNull
-        @NotBlank
         Long value,
         @NotNull
-        @NotBlank
         Integer scoreAnswer
 )
 {

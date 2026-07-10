@@ -81,7 +81,7 @@ class SurveyResponseAssemblerTest {
         assertThat(response.surveyResponseId()).isEqualTo(31L);
         assertThat(response.surveyId()).isEqualTo(FeedbackCommandFixtures.VALID_SURVEY_ID);
         assertThat(response.employeeProfileId()).isEqualTo(FeedbackCommandFixtures.VALID_EMPLOYEE_PROFILE_ID);
-        assertThat(response.SubmittedAt()).isEqualTo(FeedbackCommandFixtures.VALID_SUBMITTED_AT);
+        assertThat(response.submittedAt()).isEqualTo(FeedbackCommandFixtures.VALID_SUBMITTED_AT);
         assertThat(response.commentary()).isEqualTo(FeedbackCommandFixtures.VALID_COMMENTARY);
         assertThat(response.cause()).isEqualTo(FeedbackCommandFixtures.VALID_CAUSE);
     }

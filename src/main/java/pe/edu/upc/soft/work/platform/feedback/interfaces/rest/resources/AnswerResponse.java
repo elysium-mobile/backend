@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record AnswerResponse(
-    Long id,
+    Long answerId,
     Long value,
     Integer scoreAnswer
 

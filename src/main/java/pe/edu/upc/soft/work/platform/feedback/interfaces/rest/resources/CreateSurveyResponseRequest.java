@@ -10,13 +10,10 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record CreateSurveyResponseRequest(
         @NotNull
-        @NotBlank
         Long surveyId,
         @NotNull
-        @NotBlank
         Long employeeProfileId,
         @NotNull
-        @NotBlank
         Date submittedAt,
         @NotNull
         @NotBlank

@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.iam.application.internal.commandservices;
 import jakarta.transaction.Transactional;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.google.GoogleTokenService;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.tokens.TokenService;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.User;
@@ -18,6 +19,7 @@ import pe.edu.upc.soft.work.platform.iam.infrastructure.persistence.jpa.reposito
 import pe.edu.upc.soft.work.platform.shared.domain.exceptions.NotFoundArgumentException;
 
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Service implementation for handling RRHHProfile commands.
@@ -30,6 +32,7 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
     private final HashingService hashingService;
     private final TokenService tokenService;
     private final UserRepository userRepository;
+    private final GoogleTokenService googleTokenService;
 
     /**
      * Constructor for RRHHProfileCommandServiceImpl.
@@ -38,17 +41,20 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
      * @param hashingService the service for password hashing
      * @param tokenService the service for token management
      * @param userRepository the repository for User persistence
+     * @param googleTokenService the outbound service for Google id_token validation
      */
     public RRHHProfileCommandServiceImpl(RRHHProfileRepository rrhhProfileRepository,
                                          UserAccountRepository userAccountRepository,
                                          HashingService hashingService,
                                          TokenService tokenService,
-                                         UserRepository userRepository) {
+                                         UserRepository userRepository,
+                                         GoogleTokenService googleTokenService) {
         this.rrhhProfileRepository = rrhhProfileRepository;
         this.userAccountRepository = userAccountRepository;
         this.hashingService = hashingService;
         this.tokenService=tokenService;
         this.userRepository = userRepository;
+        this.googleTokenService = googleTokenService;
     }
 
     /**
@@ -149,6 +155,56 @@ public class RRHHProfileCommandServiceImpl implements RRHHProfileCommandService 
             return Optional.of(rrhhProfile);
         } catch (Exception e) {
             throw new IllegalArgumentException("Error during RRHH sign up: %s".formatted(e.getMessage()));
+        }
+    }
+
+    /**
+     * Handles the sign-up completion for an RRHH user authenticated through Google.
+     * The Google id_token is re-validated to obtain the trusted email; the User, its Google-backed
+     * UserAccount (with a random encoded password, since access is delegated to Google) and the
+     * RRHHProfile are then created with the real data provided in the completion form.
+     * A fresh application access token is returned so the user ends the flow authenticated.
+     * @param command the command containing the Google id_token and the RRHH profile data
+     * @return an Optional containing the created UserAccount and the application access token
+     */
+    @Transactional
+    @Override
+    public Optional<ImmutablePair<UserAccount, String>> handle(GoogleRRHHSignUpCommand command) {
+        var googleUserInfo = googleTokenService.verify(command.idToken());
+        if (userAccountRepository.existsByEmail(googleUserInfo.email())) {
+            throw new IllegalArgumentException("Email already exists");
+        }
+
+        var user = new User(new CreateUserCommand(
+                command.name(),
+                command.lastName(),
+                command.phoneNumber(),
+                command.dni()
+        ));
+
+        try {
+            userRepository.save(user);
+            var userAccount = new UserAccount(new CreateUserAccountCommand(
+                    user.getId(),
+                    googleUserInfo.email(),
+                    hashingService.encode(UUID.randomUUID().toString()),
+                    UserAccount.generateAnonymousName(),
+                    new MembershipId(0L),
+                    new CompanyId(0L)
+            ));
+            userAccountRepository.save(userAccount);
+
+            var rrhhProfile = new RRHHProfile(new CreateRRHHProfileCommand(
+                    command.RRHHDepartment(),
+                    command.statusHierarchy(),
+                    userAccount.getId()
+            ));
+            rrhhProfileRepository.save(rrhhProfile);
+
+            var token = tokenService.generateToken(userAccount.getEmail());
+            return Optional.of(ImmutablePair.of(userAccount, token));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error during Google RRHH sign up: %s".formatted(e.getMessage()));
         }
     }
 

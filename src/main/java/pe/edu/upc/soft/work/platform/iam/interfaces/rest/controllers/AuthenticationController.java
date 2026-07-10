@@ -61,20 +61,53 @@ public class AuthenticationController {
     }
 
     /**
-     * Endpoint for user sign-in through Google authentication.
-     * Validates the provided Google id_token, loads or creates the local user account,
-     * and returns the authenticated user account along with the application access token.
+     * Endpoint for the Google sign-in step.
+     * Validates the provided Google id_token and, if a local account already exists for the
+     * verified email, returns a registered response carrying the application access token.
+     * When no account exists yet, it returns a registration-required response so the frontend
+     * routes the user to the Google sign-up completion form. No account is created here.
      * @param request Request object containing the Google id_token
-     * @return ResponseEntity containing the authenticated user account and access token
+     * @return ResponseEntity containing the discriminated Google authentication response
      */
     @PostMapping("/google")
-    public ResponseEntity<AuthenticatedUserAccountResponse> signInWithGoogle(@RequestBody GoogleSignInRequest request) {
+    public ResponseEntity<GoogleAuthenticationResponse> signInWithGoogle(@RequestBody GoogleSignInRequest request) {
         var googleSignInCommand = AuthenticationAssembler.toCommandFromRequestGoogleSignIn(request);
         var result = userAccountCommandService.handle(googleSignInCommand);
-        if (result.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(AuthenticationAssembler.toGoogleAuthenticationResponse(result));
+    }
+
+    /**
+     * Endpoint for completing an employee sign-up started with Google authentication.
+     * Re-validates the Google id_token, creates the User, its Google-backed UserAccount and the
+     * EmployeeProfile with the real form data, and returns the authenticated user account and token.
+     * @param request Request object containing the Google id_token and employee registration details
+     * @return ResponseEntity containing the authenticated user account and access token
+     */
+    @PostMapping("/sign-up/employee/google")
+    public ResponseEntity<AuthenticatedUserAccountResponse> signUpEmployeeWithGoogle(@RequestBody GoogleEmployeeSignUpRequest request) {
+        var command = AuthenticationAssembler.toCommandFromRequestGoogleSignUpEmployee(request);
+        var result = employeeProfileCommandService.handle(command);
+        if (result.isEmpty()) return ResponseEntity.badRequest().build();
         var response = AuthenticationAssembler.toResponseFromEntityUserAccount(
                 result.get().getLeft(), result.get().getRight());
-        return ResponseEntity.ok(response);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    /**
+     * Endpoint for completing an RRHH sign-up started with Google authentication.
+     * Re-validates the Google id_token, creates the User, its Google-backed UserAccount and the
+     * RRHHProfile with the real form data, and returns the authenticated user account and token.
+     * @param request Request object containing the Google id_token and RRHH registration details
+     * @return ResponseEntity containing the authenticated user account and access token
+     */
+    @PostMapping("/sign-up/rrhh/google")
+    public ResponseEntity<AuthenticatedUserAccountResponse> signUpRRHHWithGoogle(@RequestBody GoogleRRHHSignUpRequest request) {
+        var command = AuthenticationAssembler.toCommandFromRequestGoogleSignUpRRHH(request);
+        var result = rrhhProfileCommandService.handle(command);
+        if (result.isEmpty()) return ResponseEntity.badRequest().build();
+        var response = AuthenticationAssembler.toResponseFromEntityUserAccount(
+                result.get().getLeft(), result.get().getRight());
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     /**

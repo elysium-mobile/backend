@@ -5,6 +5,8 @@ import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateRRHHProfile
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.EmployeeSignUpCommand;
+import pe.edu.upc.soft.work.platform.iam.domain.model.commands.GoogleEmployeeSignUpCommand;
+import pe.edu.upc.soft.work.platform.iam.domain.model.commands.GoogleRRHHSignUpCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.GoogleSignInCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.RRHHSignUpCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.SignInCommand;
@@ -80,6 +82,29 @@ public final class IamCommandFixtures {
 
     public static GoogleSignInCommand googleSignInCommand() {
         return new GoogleSignInCommand(VALID_GOOGLE_ID_TOKEN);
+    }
+
+    public static GoogleEmployeeSignUpCommand googleEmployeeSignUpCommandFrom(UserInputFixture input) {
+        return new GoogleEmployeeSignUpCommand(
+                VALID_GOOGLE_ID_TOKEN,
+                input.getName(),
+                input.getLastName(),
+                input.getPhoneNumber(),
+                input.getDni(),
+                new Date(0L),
+                "Engineer",
+                5000);
+    }
+
+    public static GoogleRRHHSignUpCommand googleRRHHSignUpCommandFrom(UserInputFixture input) {
+        return new GoogleRRHHSignUpCommand(
+                VALID_GOOGLE_ID_TOKEN,
+                input.getName(),
+                input.getLastName(),
+                input.getPhoneNumber(),
+                input.getDni(),
+                "Recruiting",
+                "Senior");
     }
 
     public static CreateEmployeeProfileCommand validCreateEmployeeProfileCommand(

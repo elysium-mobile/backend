@@ -7,6 +7,9 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.google.GoogleTokenService;
+import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.google.GoogleUserInfo;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.tokens.TokenService;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.User;
@@ -49,6 +52,8 @@ class RRHHProfileCommandServiceImplTest {
     private TokenService tokenService;
     @Mock
     private UserRepository userRepository;
+    @Mock
+    private GoogleTokenService googleTokenService;
 
     @InjectMocks
     private RRHHProfileCommandServiceImpl service;
@@ -263,5 +268,64 @@ class RRHHProfileCommandServiceImplTest {
         verify(userAccountRepository).existsByEmail(CommonCommandFixtures.VALID_EMAIL);
         verify(userRepository).save(any(User.class));
         verifyNoMoreInteractions(userAccountRepository, userRepository);
+    }
+
+    @Test
+    @DisplayName("handle(GoogleRRHHSignUpCommand) -> creates User, UserAccount, RRHHProfile and returns token (AAA)")
+    void handleGoogleSignUpSuccess() {
+        // Arrange
+        var command = IamCommandFixtures.googleRRHHSignUpCommandFrom(UserInputFixture.valid());
+        var googleUserInfo = new GoogleUserInfo(
+                "1234567890", CommonCommandFixtures.VALID_EMAIL,
+                CommonCommandFixtures.VALID_NAME, CommonCommandFixtures.VALID_LAST_NAME);
+        when(googleTokenService.verify(command.idToken())).thenReturn(googleUserInfo);
+        when(userAccountRepository.existsByEmail(CommonCommandFixtures.VALID_EMAIL)).thenReturn(false);
+        when(hashingService.encode(any(CharSequence.class))).thenReturn("hashed-random");
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> {
+            User u = inv.getArgument(0);
+            ReflectionTestUtils.setId(u, 1L);
+            return u;
+        });
+        when(userAccountRepository.save(any(UserAccount.class))).thenAnswer(inv -> {
+            UserAccount ua = inv.getArgument(0);
+            ReflectionTestUtils.setId(ua, 2L);
+            return ua;
+        });
+        when(rrhhProfileRepository.save(any(RRHHProfile.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(tokenService.generateToken(CommonCommandFixtures.VALID_EMAIL)).thenReturn("token-google");
+
+        // Act
+        Optional<ImmutablePair<UserAccount, String>> result = service.handle(command);
+
+        // Assert
+        assertThat(result).isPresent();
+        assertThat(result.get().getLeft().getEmail()).isEqualTo(CommonCommandFixtures.VALID_EMAIL);
+        assertThat(result.get().getRight()).isEqualTo("token-google");
+        verify(googleTokenService).verify(command.idToken());
+        verify(userAccountRepository).existsByEmail(CommonCommandFixtures.VALID_EMAIL);
+        verify(userRepository).save(any(User.class));
+        verify(userAccountRepository).save(any(UserAccount.class));
+        verify(rrhhProfileRepository).save(any(RRHHProfile.class));
+        verify(tokenService).generateToken(CommonCommandFixtures.VALID_EMAIL);
+    }
+
+    @Test
+    @DisplayName("handle(GoogleRRHHSignUpCommand) -> throws IllegalArgumentException when email already exists (AAA)")
+    void handleGoogleSignUpEmailExists() {
+        // Arrange
+        var command = IamCommandFixtures.googleRRHHSignUpCommandFrom(UserInputFixture.valid());
+        var googleUserInfo = new GoogleUserInfo(
+                "1234567890", CommonCommandFixtures.VALID_EMAIL,
+                CommonCommandFixtures.VALID_NAME, CommonCommandFixtures.VALID_LAST_NAME);
+        when(googleTokenService.verify(command.idToken())).thenReturn(googleUserInfo);
+        when(userAccountRepository.existsByEmail(CommonCommandFixtures.VALID_EMAIL)).thenReturn(true);
+
+        // Act + Assert
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.handle(command));
+        assertThat(ex.getMessage()).contains("Email already exists");
+        verify(googleTokenService).verify(command.idToken());
+        verify(userAccountRepository).existsByEmail(CommonCommandFixtures.VALID_EMAIL);
+        verifyNoMoreInteractions(userAccountRepository);
+        verifyNoInteractions(userRepository, hashingService, rrhhProfileRepository, tokenService);
     }
 }

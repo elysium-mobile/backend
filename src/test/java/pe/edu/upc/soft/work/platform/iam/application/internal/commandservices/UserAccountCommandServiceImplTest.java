@@ -12,7 +12,6 @@ import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.g
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.google.GoogleUserInfo;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.tokens.TokenService;
-import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.User;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.GoogleSignInCommand;
@@ -296,35 +295,25 @@ class UserAccountCommandServiceImplTest {
     }
 
     @Test
-    @DisplayName("handle(GoogleSignInCommand) -> provisions User and UserAccount when email is unknown (AAA)")
-    void handleGoogleSignInNewAccount() {
+    @DisplayName("handle(GoogleSignInCommand) -> returns empty and persists nothing when email is not registered (AAA)")
+    void handleGoogleSignInNotRegistered() {
         // Arrange
         var command = IamCommandFixtures.googleSignInCommand();
         var googleUserInfo = new GoogleUserInfo(
                 "1234567890", "new.user@gmail.com", "New", "User");
         when(googleTokenService.verify(command.idToken())).thenReturn(googleUserInfo);
         when(userAccountRepository.findByEmail("new.user@gmail.com")).thenReturn(Optional.empty());
-        when(userRepository.save(any(User.class))).thenAnswer(inv -> {
-            User user = inv.getArgument(0);
-            ReflectionTestUtils.setId(user, USER_ID);
-            return user;
-        });
-        when(hashingService.encode(any(CharSequence.class))).thenReturn("hashed-random");
-        when(userAccountRepository.save(any(UserAccount.class))).thenAnswer(inv -> inv.getArgument(0));
-        when(tokenService.generateToken("new.user@gmail.com")).thenReturn("token-new");
 
         // Act
         Optional<ImmutablePair<UserAccount, String>> result = service.handle(command);
 
         // Assert
-        assertThat(result).isPresent();
-        assertThat(result.get().getLeft().getEmail()).isEqualTo("new.user@gmail.com");
-        assertThat(result.get().getLeft().getUserId()).isEqualTo(USER_ID);
-        assertThat(result.get().getRight()).isEqualTo("token-new");
+        assertThat(result).isEmpty();
         verify(googleTokenService).verify(command.idToken());
-        verify(userRepository).save(any(User.class));
-        verify(userAccountRepository).save(any(UserAccount.class));
-        verify(tokenService).generateToken("new.user@gmail.com");
+        verify(userAccountRepository).findByEmail("new.user@gmail.com");
+        verifyNoMoreInteractions(userAccountRepository);
+        verifyNoInteractions(userRepository, hashingService, tokenService,
+                employeeProfileRepository, rrhhProfileRepository);
     }
 
     @Test

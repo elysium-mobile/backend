@@ -43,4 +43,18 @@ public interface EmployeeProfileCommandService {
      */
     Optional<EmployeeProfile> handle(EmployeeSignUpCommand command);
 
+    /**
+     * Handles the sign-up completion for an employee authenticated through Google.
+     * This operation re-validates the Google id_token to obtain the trusted email, then
+     * orchestrates the creation of the User, its Google-backed UserAccount and the associated
+     * EmployeeProfile with the real data supplied in the completion form. On success it returns
+     * the created UserAccount together with a freshly generated application access token, so the
+     * user ends the flow authenticated.
+     *
+     * @param command the command containing the Google id_token and the employee profile data
+     * @return an Optional containing a pair of the created UserAccount and the application access
+     *         token, or an empty Optional if the process failed
+     */
+    Optional<ImmutablePair<UserAccount, String>> handle(GoogleEmployeeSignUpCommand command);
+
 }

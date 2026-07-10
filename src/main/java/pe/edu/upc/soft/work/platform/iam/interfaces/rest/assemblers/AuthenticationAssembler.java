@@ -2,10 +2,12 @@ package pe.edu.upc.soft.work.platform.iam.interfaces.rest.assemblers;
 
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.EmployeeSignUpCommand;
+import pe.edu.upc.soft.work.platform.iam.domain.model.commands.GoogleSignInCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.RRHHSignUpCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.SignInCommand;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.AuthenticatedUserAccountResponse;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.EmployeeProfileSignUpRequest;
+import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.GoogleSignInRequest;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.RRHHProfileSignUpRequest;
 import pe.edu.upc.soft.work.platform.iam.interfaces.rest.resources.SignInRequest;
 
@@ -62,6 +64,17 @@ public class AuthenticationAssembler {
                 request.anonymousName(),
                 request.RRHHDepartment(),
                 request.statusHierarchy()
+        );
+    }
+
+    /**
+     * Converts a GoogleSignInRequest to a GoogleSignInCommand.
+     * @param request the GoogleSignInRequest to be converted
+     * @return a GoogleSignInCommand containing the Google id_token from the request
+     */
+    public static GoogleSignInCommand toCommandFromRequestGoogleSignIn(GoogleSignInRequest request){
+        return new GoogleSignInCommand(
+                request.idToken()
         );
     }
 

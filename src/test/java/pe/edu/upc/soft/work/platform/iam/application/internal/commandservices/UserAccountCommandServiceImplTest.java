@@ -8,10 +8,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.google.GoogleTokenService;
+import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.google.GoogleUserInfo;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.hashing.HashingService;
 import pe.edu.upc.soft.work.platform.iam.application.internal.outboundservices.tokens.TokenService;
+import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.User;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteUserAccountCommand;
+import pe.edu.upc.soft.work.platform.iam.domain.model.commands.GoogleSignInCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.SignInCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.valueobjects.CompanyId;
@@ -56,6 +60,8 @@ class UserAccountCommandServiceImplTest {
     private UserRepository userRepository;
     @Mock
     private ApplicationEventPublisher eventPublisher;
+    @Mock
+    private GoogleTokenService googleTokenService;
 
     @InjectMocks
     private UserAccountCommandServiceImpl service;
@@ -258,5 +264,82 @@ class UserAccountCommandServiceImplTest {
         verify(hashingService).matches("wrong", CommonCommandFixtures.VALID_PASSWORD);
         verifyNoMoreInteractions(userAccountRepository, hashingService);
         verifyNoInteractions(tokenService, employeeProfileRepository, rrhhProfileRepository, userRepository);
+    }
+
+    @Test
+    @DisplayName("handle(GoogleSignInCommand) -> returns pair of (account,token) when email already exists (AAA)")
+    void handleGoogleSignInExistingAccount() {
+        // Arrange
+        var account = new UserAccount(
+                IamCommandFixtures.createUserAccountCommandFrom(USER_ID, UserInputFixture.valid()));
+        ReflectionTestUtils.setId(account, ACCOUNT_ID);
+        var command = IamCommandFixtures.googleSignInCommand();
+        var googleUserInfo = new GoogleUserInfo(
+                "1234567890", CommonCommandFixtures.VALID_EMAIL,
+                CommonCommandFixtures.VALID_NAME, CommonCommandFixtures.VALID_LAST_NAME);
+        when(googleTokenService.verify(command.idToken())).thenReturn(googleUserInfo);
+        when(userAccountRepository.findByEmail(CommonCommandFixtures.VALID_EMAIL)).thenReturn(Optional.of(account));
+        when(tokenService.generateToken(CommonCommandFixtures.VALID_EMAIL)).thenReturn("token-google");
+
+        // Act
+        Optional<ImmutablePair<UserAccount, String>> result = service.handle(command);
+
+        // Assert
+        assertThat(result).isPresent();
+        assertThat(result.get().getLeft()).isSameAs(account);
+        assertThat(result.get().getRight()).isEqualTo("token-google");
+        verify(googleTokenService).verify(command.idToken());
+        verify(userAccountRepository).findByEmail(CommonCommandFixtures.VALID_EMAIL);
+        verify(tokenService).generateToken(CommonCommandFixtures.VALID_EMAIL);
+        verifyNoMoreInteractions(userAccountRepository, tokenService);
+        verifyNoInteractions(userRepository, hashingService, employeeProfileRepository, rrhhProfileRepository);
+    }
+
+    @Test
+    @DisplayName("handle(GoogleSignInCommand) -> provisions User and UserAccount when email is unknown (AAA)")
+    void handleGoogleSignInNewAccount() {
+        // Arrange
+        var command = IamCommandFixtures.googleSignInCommand();
+        var googleUserInfo = new GoogleUserInfo(
+                "1234567890", "new.user@gmail.com", "New", "User");
+        when(googleTokenService.verify(command.idToken())).thenReturn(googleUserInfo);
+        when(userAccountRepository.findByEmail("new.user@gmail.com")).thenReturn(Optional.empty());
+        when(userRepository.save(any(User.class))).thenAnswer(inv -> {
+            User user = inv.getArgument(0);
+            ReflectionTestUtils.setId(user, USER_ID);
+            return user;
+        });
+        when(hashingService.encode(any(CharSequence.class))).thenReturn("hashed-random");
+        when(userAccountRepository.save(any(UserAccount.class))).thenAnswer(inv -> inv.getArgument(0));
+        when(tokenService.generateToken("new.user@gmail.com")).thenReturn("token-new");
+
+        // Act
+        Optional<ImmutablePair<UserAccount, String>> result = service.handle(command);
+
+        // Assert
+        assertThat(result).isPresent();
+        assertThat(result.get().getLeft().getEmail()).isEqualTo("new.user@gmail.com");
+        assertThat(result.get().getLeft().getUserId()).isEqualTo(USER_ID);
+        assertThat(result.get().getRight()).isEqualTo("token-new");
+        verify(googleTokenService).verify(command.idToken());
+        verify(userRepository).save(any(User.class));
+        verify(userAccountRepository).save(any(UserAccount.class));
+        verify(tokenService).generateToken("new.user@gmail.com");
+    }
+
+    @Test
+    @DisplayName("handle(GoogleSignInCommand) -> propagates IllegalArgumentException when token is invalid (AAA)")
+    void handleGoogleSignInInvalidToken() {
+        // Arrange
+        var command = IamCommandFixtures.googleSignInCommand();
+        when(googleTokenService.verify(command.idToken()))
+                .thenThrow(new IllegalArgumentException("Invalid Google id_token"));
+
+        // Act + Assert
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> service.handle(command));
+        assertThat(ex.getMessage()).contains("Invalid Google id_token");
+        verify(googleTokenService).verify(command.idToken());
+        verifyNoInteractions(userAccountRepository, userRepository, hashingService, tokenService,
+                employeeProfileRepository, rrhhProfileRepository);
     }
 }

@@ -61,6 +61,23 @@ public class AuthenticationController {
     }
 
     /**
+     * Endpoint for user sign-in through Google authentication.
+     * Validates the provided Google id_token, loads or creates the local user account,
+     * and returns the authenticated user account along with the application access token.
+     * @param request Request object containing the Google id_token
+     * @return ResponseEntity containing the authenticated user account and access token
+     */
+    @PostMapping("/google")
+    public ResponseEntity<AuthenticatedUserAccountResponse> signInWithGoogle(@RequestBody GoogleSignInRequest request) {
+        var googleSignInCommand = AuthenticationAssembler.toCommandFromRequestGoogleSignIn(request);
+        var result = userAccountCommandService.handle(googleSignInCommand);
+        if (result.isEmpty()) return ResponseEntity.notFound().build();
+        var response = AuthenticationAssembler.toResponseFromEntityUserAccount(
+                result.get().getLeft(), result.get().getRight());
+        return ResponseEntity.ok(response);
+    }
+
+    /**
      * Endpoint for employee sign-up.
      * @param request Request object containing employee registration details
      * @return ResponseEntity containing the created employee profile

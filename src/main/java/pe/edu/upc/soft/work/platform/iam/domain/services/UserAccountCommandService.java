@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import pe.edu.upc.soft.work.platform.iam.domain.model.aggregates.UserAccount;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.DeleteUserAccountCommand;
+import pe.edu.upc.soft.work.platform.iam.domain.model.commands.GoogleSignInCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.SignInCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateUserAccountCommand;
 
@@ -42,4 +43,14 @@ public interface UserAccountCommandService {
      *         and the generated access token, or an empty Optional if authentication fails
      */
     Optional<ImmutablePair<UserAccount, String>> handle(SignInCommand command);
+
+    /**
+     * Handles the Google sign-in process, validating the Google id_token, loading or creating
+     * the local user account, and generating the application access token.
+     *
+     * @param command the command containing the Google id_token to be validated
+     * @return an Optional containing an ImmutablePair with the authenticated UserAccount
+     *         and the generated access token, or an empty Optional if authentication fails
+     */
+    Optional<ImmutablePair<UserAccount, String>> handle(GoogleSignInCommand command);
 }

@@ -5,6 +5,7 @@ import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateRRHHProfile
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserAccountCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.CreateUserCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.EmployeeSignUpCommand;
+import pe.edu.upc.soft.work.platform.iam.domain.model.commands.GoogleSignInCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.RRHHSignUpCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.SignInCommand;
 import pe.edu.upc.soft.work.platform.iam.domain.model.commands.UpdateUserCommand;
@@ -73,6 +74,12 @@ public final class IamCommandFixtures {
 
     public static SignInCommand signInCommandFrom(UserInputFixture input) {
         return new SignInCommand(input.getEmail(), input.getPassword());
+    }
+
+    public static final String VALID_GOOGLE_ID_TOKEN = "valid.google.id-token";
+
+    public static GoogleSignInCommand googleSignInCommand() {
+        return new GoogleSignInCommand(VALID_GOOGLE_ID_TOKEN);
     }
 
     public static CreateEmployeeProfileCommand validCreateEmployeeProfileCommand(

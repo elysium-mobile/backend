@@ -10,9 +10,6 @@ public record CreateMembershipPlanRequest(
         String planName,
 
         @NotBlank
-        Integer price,
-
-        @NotBlank
-        Long membershipId
+        Integer price
 ) {
 }

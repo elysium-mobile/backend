@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.payment.service.application.internal.payme
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import com.stripe.net.RequestOptions;
 import com.stripe.param.PaymentIntentCreateParams;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
@@ -53,39 +54,43 @@ public class StripePaymentGatewayAdapter implements PaymentGatewayAdapter {
     @Override
     public PaymentGatewayResponse createPaymentIntent(CreateStripeCheckoutCommand command) {
         var order = orderRepository.findById(command.orderId())
-                .orElseThrow(() -> new NotFoundArgumentException(
-                        String.format("[StripePaymentGatewayAdapter] Order ID: %s not found",
-                                command.orderId())));
+            .orElseThrow(() -> new NotFoundArgumentException(
+                String.format("[StripePaymentGatewayAdapter] Order ID: %s not found",
+                    command.orderId())));
 
         var currency = (command.currency() != null && !command.currency().isBlank())
-                ? command.currency().toLowerCase()
-                : "usd";
+            ? command.currency().toLowerCase()
+            : "usd";
 
         try {
             var params = PaymentIntentCreateParams.builder()
-                    .setAmount((long) order.getAmount() * 100L)
-                    .setCurrency(currency)
-                    .setAutomaticPaymentMethods(
-                            PaymentIntentCreateParams
-                                .AutomaticPaymentMethods.builder()
-                                    .setEnabled(true)
-                                    .build())
-                    .putMetadata("orderId", String.valueOf(command.orderId()))
-                    .putMetadata("membershipId", String.valueOf(order.getMembershipId()))
-                    .build();
+                .setAmount((long) order.getAmount() * 100L)
+                .setCurrency(currency)
+                .setAutomaticPaymentMethods(
+                    PaymentIntentCreateParams
+                        .AutomaticPaymentMethods.builder()
+                        .setEnabled(true)
+                        .build())
+                .putMetadata("orderId", String.valueOf(command.orderId()))
+                .putMetadata("membershipId", String.valueOf(order.getMembershipId()))
+                .build();
 
-            var paymentIntent = PaymentIntent.create(params);
+            var requestOptions = RequestOptions.builder()
+                .setIdempotencyKey(command.idempotencyKey())
+                .build();
+
+            var paymentIntent = PaymentIntent.create(params, requestOptions);
 
             return new PaymentGatewayResponse(
-                    paymentIntent.getClientSecret(),
-                    paymentIntent.getId(),
-                    "CREDIT_CARD"  // Default payment method; could be more dynamic
+                paymentIntent.getClientSecret(),
+                paymentIntent.getId(),
+                "CREDIT_CARD"  // Default payment method; could be more dynamic
             );
 
         } catch (StripeException e) {
             throw new RuntimeException(
-                    "[StripePaymentGatewayAdapter] Failed to create Stripe PaymentIntent: "
-                            + e.getMessage(), e);
+                "[StripePaymentGatewayAdapter] Failed to create Stripe PaymentIntent: "
+                    + e.getMessage(), e);
         }
     }
 }

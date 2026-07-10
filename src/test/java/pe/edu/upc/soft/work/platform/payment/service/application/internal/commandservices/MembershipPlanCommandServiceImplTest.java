@@ -47,7 +47,6 @@ class MembershipPlanCommandServiceImplTest {
     void handleCreateSuccess() {
         // Arrange
         var command = PaymentCommandFixtures.validCreateMembershipPlanCommand();
-        when(membershipRepository.existsById(command.membershipId())).thenReturn(true);
         when(membershipplanRepository.save(any(MembershipPlan.class))).thenAnswer(inv -> {
             MembershipPlan p = inv.getArgument(0);
             ReflectionTestUtils.setId(p, PLAN_ID);
@@ -59,7 +58,6 @@ class MembershipPlanCommandServiceImplTest {
 
         // Assert
         assertThat(resultId).isEqualTo(PLAN_ID);
-        verify(membershipRepository).existsById(command.membershipId());
         verify(membershipplanRepository).save(any(MembershipPlan.class));
     }
 
@@ -68,13 +66,11 @@ class MembershipPlanCommandServiceImplTest {
     void handleCreateSaveFailure() {
         // Arrange
         var command = PaymentCommandFixtures.validCreateMembershipPlanCommand();
-        when(membershipRepository.existsById(command.membershipId())).thenReturn(true);
         when(membershipplanRepository.save(any(MembershipPlan.class))).thenThrow(new RuntimeException("db"));
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error creating MembershipPlan").contains("db");
-        verify(membershipRepository, times(1)).existsById(command.membershipId());
         verify(membershipplanRepository, times(1)).save(any(MembershipPlan.class));
         verifyNoMoreInteractions(membershipRepository, membershipplanRepository);
     }
@@ -86,7 +82,6 @@ class MembershipPlanCommandServiceImplTest {
         var existing = new MembershipPlan(PaymentCommandFixtures.validCreateMembershipPlanCommand());
         ReflectionTestUtils.setId(existing, PLAN_ID);
         var command = PaymentCommandFixtures.updateMembershipPlanCommand(PLAN_ID);
-        when(membershipRepository.existsById(command.membershipId())).thenReturn(true);
         when(membershipplanRepository.existsById(PLAN_ID)).thenReturn(true);
         when(membershipplanRepository.findById(PLAN_ID)).thenReturn(Optional.of(existing));
         when(membershipplanRepository.save(any(MembershipPlan.class))).thenReturn(existing);
@@ -96,7 +91,6 @@ class MembershipPlanCommandServiceImplTest {
 
         // Assert
         assertThat(result).isPresent();
-        verify(membershipRepository).existsById(command.membershipId());
         verify(membershipplanRepository).existsById(PLAN_ID);
         verify(membershipplanRepository).save(any(MembershipPlan.class));
     }
@@ -106,13 +100,11 @@ class MembershipPlanCommandServiceImplTest {
     void handleUpdateMissing() {
         // Arrange
         var command = PaymentCommandFixtures.updateMembershipPlanCommand(PLAN_ID);
-        when(membershipRepository.existsById(command.membershipId())).thenReturn(true);
         when(membershipplanRepository.existsById(PLAN_ID)).thenReturn(false);
 
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains(String.valueOf(PLAN_ID)).contains("does not exist");
-        verify(membershipRepository, times(1)).existsById(command.membershipId());
         verify(membershipplanRepository, times(1)).existsById(PLAN_ID);
         verifyNoMoreInteractions(membershipRepository, membershipplanRepository);
     }
@@ -124,7 +116,6 @@ class MembershipPlanCommandServiceImplTest {
         var existing = new MembershipPlan(PaymentCommandFixtures.validCreateMembershipPlanCommand());
         ReflectionTestUtils.setId(existing, PLAN_ID);
         var command = PaymentCommandFixtures.updateMembershipPlanCommand(PLAN_ID);
-        when(membershipRepository.existsById(command.membershipId())).thenReturn(true);
         when(membershipplanRepository.existsById(PLAN_ID)).thenReturn(true);
         when(membershipplanRepository.findById(PLAN_ID)).thenReturn(Optional.of(existing));
         when(membershipplanRepository.save(any(MembershipPlan.class))).thenThrow(new RuntimeException("boom"));
@@ -132,7 +123,6 @@ class MembershipPlanCommandServiceImplTest {
         // Act + Assert
         RuntimeException ex = assertThrows(RuntimeException.class, () -> service.handle(command));
         assertThat(ex.getMessage()).contains("Error updating MembershipPlan").contains("boom");
-        verify(membershipRepository, times(1)).existsById(command.membershipId());
         verify(membershipplanRepository, times(1)).existsById(PLAN_ID);
         verify(membershipplanRepository, times(1)).findById(PLAN_ID);
         verify(membershipplanRepository, times(1)).save(any(MembershipPlan.class));

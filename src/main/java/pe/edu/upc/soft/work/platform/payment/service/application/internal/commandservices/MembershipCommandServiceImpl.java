@@ -6,6 +6,7 @@ import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.Creat
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.UpdateMembershipCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.model.commands.DeleteMembershipCommand;
 import pe.edu.upc.soft.work.platform.payment.service.domain.services.MembershipCommandService;
+import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipPlanRepository;
 import pe.edu.upc.soft.work.platform.payment.service.infrastructure.persistence.jpa.repositories.MembershipRepository;
 
 import java.util.Optional;
@@ -16,13 +17,16 @@ import java.util.Optional;
 @Service
 public class MembershipCommandServiceImpl implements MembershipCommandService {
     private final MembershipRepository membershipRepository;
+    private final MembershipPlanRepository membershipPlanRepository;
 
     /**
      * Constructor for MembershipCommandServiceImpl
      * @param membershipRepository the repository for Membership persistence
      */
-    public MembershipCommandServiceImpl(MembershipRepository membershipRepository) {
+    public MembershipCommandServiceImpl(MembershipRepository membershipRepository,
+                                        MembershipPlanRepository membershipPlanRepository) {
         this.membershipRepository = membershipRepository;
+        this.membershipPlanRepository = membershipPlanRepository;
     }
 
     /**
@@ -32,6 +36,9 @@ public class MembershipCommandServiceImpl implements MembershipCommandService {
      */
     @Override
     public Long handle(CreateMembershipCommand command) {
+        if (!membershipPlanRepository.existsById(command.membershipPlanId())) {
+            throw new RuntimeException("Membership Plan with ID " + command.membershipPlanId() + " does not exist.");
+        }
         var membership = new Membership(command);
         try {
             membershipRepository.save(membership);
@@ -48,6 +55,9 @@ public class MembershipCommandServiceImpl implements MembershipCommandService {
      */
     @Override
     public Optional<Membership> handle(UpdateMembershipCommand command) {
+        if (!membershipPlanRepository.existsById(command.membershipPlanId())) {
+            throw new RuntimeException("Membership Plan with ID " + command.membershipPlanId() + " does not exist.");
+        }
         var membershipId = command.membershipId();
         if (!this.membershipRepository.existsById(membershipId)) {
             throw new RuntimeException("Membership with ID " + membershipId + " does not exist.");

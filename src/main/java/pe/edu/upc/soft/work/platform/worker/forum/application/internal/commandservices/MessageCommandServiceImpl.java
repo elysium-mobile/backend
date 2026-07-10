@@ -54,14 +54,14 @@ public class MessageCommandServiceImpl implements MessageCommandService {
     public Long handle(CreateMessageCommand command) {
         if(!externalIamServiceFromWorkerForum.existsUserAccountById(command.userAccountId().userAccountId())){
             throw new NotFoundArgumentException(
-                    String.format("[MessageCommandServiceImpl] User Account ID: %s not found in the external IAM service",
-                            command.userAccountId().userAccountId())
+                String.format("[MessageCommandServiceImpl] User Account ID: %s not found in the external IAM service",
+                    command.userAccountId().userAccountId())
             );
         }
         if (!threadRepository.existsById(command.threadId())) {
             throw new NotFoundArgumentException(
-                    String.format("[MessageCommandServiceImpl] Thread ID: %s not found in the Thread repository",
-                            command.threadId())
+                String.format("[MessageCommandServiceImpl] Thread ID: %s not found in the Thread repository",
+                    command.threadId())
             );
         }
         var message = new Message(command);
@@ -71,7 +71,7 @@ public class MessageCommandServiceImpl implements MessageCommandService {
             thread.incrementMessageCount();
             messageRepository.save(message);
             threadRepository.save(thread);
-            eventPublisher.publishEvent(new MessagePostedEvent(this, message.getId(), null, message.getUserAccountId()));
+            eventPublisher.publishEvent(new MessagePostedEvent(this, message.getId(), message.getThreadId(), message.getUserAccountId()));
 
         } catch (Exception e) {
             throw new RuntimeException("Error creating Message: " + e.getMessage(), e);
@@ -88,8 +88,8 @@ public class MessageCommandServiceImpl implements MessageCommandService {
     public Optional<Message> handle(UpdateMessageCommand command) {
         if (!threadRepository.existsById(command.threadId())) {
             throw new NotFoundArgumentException(
-                    String.format("[MessageCommandServiceImpl] Thread ID: %s not found in the Thread repository",
-                            command.threadId())
+                String.format("[MessageCommandServiceImpl] Thread ID: %s not found in the Thread repository",
+                    command.threadId())
             );
         }
         var messageId = command.messageId();
@@ -136,11 +136,11 @@ public class MessageCommandServiceImpl implements MessageCommandService {
     @Override
     public void handle(AddAssetToMessageCommand command) {
         var attachment = assetRepository.findById(command.attachmentId()).orElseThrow(() -> new NotFoundArgumentException(
-                String.format("[MessageCommandServiceImpl] Attachment ID: %s not found in the database",
-                        command.attachmentId())));
+            String.format("[MessageCommandServiceImpl] Attachment ID: %s not found in the database",
+                command.attachmentId())));
         var message = messageRepository.findById(command.messageId()).orElseThrow(() -> new NotFoundArgumentException(
-                String.format("[MessageCommandServiceImpl] Message ID: %s not found in the database",
-                        command.messageId())));
+            String.format("[MessageCommandServiceImpl] Message ID: %s not found in the database",
+                command.messageId())));
         try {
             message.addAttachment(attachment);
             messageRepository.save(message);

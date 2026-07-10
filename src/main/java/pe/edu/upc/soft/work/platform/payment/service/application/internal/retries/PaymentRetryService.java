@@ -46,60 +46,65 @@ public class PaymentRetryService {
     @Transactional
     public PaymentRetryResponse retryPayment(RetryPaymentCommand command) {
         LOGGER.info("[PaymentRetryService] Retrying payment ID: {} for Order: {}",
-                command.paymentId(), command.orderId());
+            command.paymentId(), command.orderId());
 
         // Validate payment exists and is in FAILED state
         var payment = paymentRepository.findById(command.paymentId())
-                .orElseThrow(() -> new NotFoundArgumentException(
-                        String.format("[PaymentRetryService] Payment ID: %s not found",
-                                command.paymentId())));
+            .orElseThrow(() -> new NotFoundArgumentException(
+                String.format("[PaymentRetryService] Payment ID: %s not found",
+                    command.paymentId())));
 
         if (!payment.isFailed()) {
             throw new IllegalStateException(
-                    String.format("[PaymentRetryService] Cannot retry Payment in status: %s. Only FAILED payments can be retried.",
-                            payment.getPaymentStatus()));
+                String.format("[PaymentRetryService] Cannot retry Payment in status: %s. Only FAILED payments can be retried.",
+                    payment.getPaymentStatus()));
         }
 
-        // Create a new PaymentIntent through the gateway adapter
-        var gatewayCommand = new CreateStripeCheckoutCommand(command.orderId(), command.currency());
+        // Create a new PaymentIntent through the gateway adapter.
+        // IMPORTANT: this must use a DIFFERENT idempotency key than the original
+        // checkout (retry-payment-{paymentId}-{uuid}, not checkout-order-{orderId}).
+        // Reusing the checkout key here would make Stripe return the same, already
+        // failed PaymentIntent instead of creating a fresh one to retry with.
+        var idempotencyKey = "retry-payment-" + command.paymentId() + "-" + java.util.UUID.randomUUID();
+        var gatewayCommand = new CreateStripeCheckoutCommand(command.orderId(), command.currency(), idempotencyKey);
         var gatewayResponse = paymentGatewayAdapter.createPaymentIntent(gatewayCommand);
 
         LOGGER.info("[PaymentRetryService] New PaymentIntent created: {}", gatewayResponse.transactionId());
 
         // Update the Payment with the new transaction ID
         var updateCommand = new UpdatePaymentCommand(
-                command.paymentId(),
-                command.orderId(),
-                gatewayResponse.transactionId(),
-                new java.util.Date(),
-                PaymentStatus.PENDING,  // Reset to PENDING for retry
-                null);  // Clear payment method
+            command.paymentId(),
+            command.orderId(),
+            gatewayResponse.transactionId(),
+            new java.util.Date(),
+            PaymentStatus.PENDING,  // Reset to PENDING for retry
+            null);  // Clear payment method
 
         payment.updatePayment(updateCommand);
         paymentRepository.save(payment);
 
-        LOGGER.info("[PaymentRetryService] Payment updated with new transaction ID: {}", 
-                gatewayResponse.transactionId());
+        LOGGER.info("[PaymentRetryService] Payment updated with new transaction ID: {}",
+            gatewayResponse.transactionId());
 
         // Publish event for audit trail
         eventPublisher.publishEvent(new PaymentRetryInitiatedEvent(
-                this,
-                command.paymentId(),
-                command.orderId(),
-                gatewayResponse.transactionId(),
-                command.currency()));
+            this,
+            command.paymentId(),
+            command.orderId(),
+            gatewayResponse.transactionId(),
+            command.currency()));
 
         return new PaymentRetryResponse(
-                payment.getId(),
-                gatewayResponse.clientSecret(),
-                gatewayResponse.transactionId());
+            payment.getId(),
+            gatewayResponse.clientSecret(),
+            gatewayResponse.transactionId());
     }
 
     /**
      * Response from payment retry operation
      */
     public record PaymentRetryResponse(
-            Long paymentId,
-            String clientSecret,
-            String newTransactionId) {}
+        Long paymentId,
+        String clientSecret,
+        String newTransactionId) {}
 }

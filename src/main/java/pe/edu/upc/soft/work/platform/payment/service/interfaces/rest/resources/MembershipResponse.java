@@ -12,6 +12,7 @@ import java.util.Date;
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record MembershipResponse(
         Long membershipId,
+        Long membershipPlanId,
         Date membershipStart,
         Date membershipOver,
         String membershipStatus

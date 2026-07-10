@@ -4,9 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
+import pe.edu.upc.soft.work.platform.notification.domain.model.valueobjects.NotificationType;
+import pe.edu.upc.soft.work.platform.notification.interfaces.acl.NotificationContextFacade;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.events.MessagePostedEvent;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessageByIdQuery;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.queries.GetMessagesByThreadIdQuery;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageQueryService;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Event handler responsible for reacting to a successful MessagePostedEvent.
@@ -15,14 +21,17 @@ import pe.edu.upc.soft.work.platform.worker.forum.domain.services.MessageQuerySe
 public class MessagePostedEventHandler {
 
     private final MessageQueryService messageQueryService;
+    private final NotificationContextFacade notificationContextFacade;
     private static final Logger LOGGER = LoggerFactory.getLogger(MessagePostedEventHandler.class);
 
     /**
      * Constructor for MessagePostedEventHandler.
      * @param messageQueryService service to query the Message aggregate
      */
-    public MessagePostedEventHandler(MessageQueryService messageQueryService) {
+    public MessagePostedEventHandler(MessageQueryService messageQueryService,
+                                     NotificationContextFacade notificationContextFacade) {
         this.messageQueryService = messageQueryService;
+        this.notificationContextFacade = notificationContextFacade;
     }
 
     /**
@@ -39,6 +48,35 @@ public class MessagePostedEventHandler {
                     event.getMessageId(), event.getThreadId(), event.getUserAccountId());
         } else {
             LOGGER.warn("Error: Message with ID {} could not be found after posting.", event.getMessageId());
+        }
+    }
+
+
+    private void notifyOtherThreadParticipants(MessagePostedEvent event) {
+        if (event.getThreadId() == null) {
+            LOGGER.warn("Cannot resolve thread participants for Message ID: {} because threadId is null.",
+                event.getMessageId());
+            return;
+        }
+
+        var authorId = event.getUserAccountId().userAccountId();
+        var threadMessages = messageQueryService.handle(new GetMessagesByThreadIdQuery(event.getThreadId()));
+
+        Set<Long> recipients = new HashSet<>();
+        for (var threadMessage : threadMessages) {
+            var participantId = threadMessage.getUserAccountId().userAccountId();
+            if (!participantId.equals(authorId)) {
+                recipients.add(participantId);
+            }
+        }
+
+        for (Long recipientId : recipients) {
+            try {
+                notificationContextFacade.createNotification(NotificationType.MESSAGE, recipientId);
+            } catch (Exception e) {
+                LOGGER.warn("Could not create notification for UserAccount ID: {} on Message ID: {}. Reason: {}",
+                    recipientId, event.getMessageId(), e.getMessage());
+            }
         }
     }
 }

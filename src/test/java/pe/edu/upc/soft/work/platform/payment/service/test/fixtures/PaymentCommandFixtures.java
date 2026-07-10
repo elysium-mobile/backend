@@ -64,20 +64,20 @@ public final class PaymentCommandFixtures {
 
     // ---------- Membership ----------
     public static CreateMembershipCommand validCreateMembershipCommand() {
-        return new CreateMembershipCommand(VALID_MEMBERSHIP_START, VALID_MEMBERSHIP_OVER, VALID_MEMBERSHIP_STATUS);
+        return new CreateMembershipCommand(VALID_MEMBERSHIP_PLAN_ID,VALID_MEMBERSHIP_START, VALID_MEMBERSHIP_OVER, VALID_MEMBERSHIP_STATUS);
     }
 
     public static UpdateMembershipCommand updateMembershipCommand(Long membershipId) {
-        return new UpdateMembershipCommand(membershipId, VALID_MEMBERSHIP_START, VALID_MEMBERSHIP_OVER, VALID_MEMBERSHIP_STATUS);
+        return new UpdateMembershipCommand(membershipId,VALID_MEMBERSHIP_PLAN_ID, VALID_MEMBERSHIP_START, VALID_MEMBERSHIP_OVER, VALID_MEMBERSHIP_STATUS);
     }
 
     // ---------- MembershipPlan ----------
     public static CreateMembershipPlanCommand validCreateMembershipPlanCommand() {
-        return new CreateMembershipPlanCommand(VALID_PLAN_NAME, VALID_PLAN_PRICE,null, VALID_MEMBERSHIP_ID);
+        return new CreateMembershipPlanCommand(VALID_PLAN_NAME, VALID_PLAN_PRICE,null);
     }
 
     public static UpdateMembershipPlanCommand updateMembershipPlanCommand(Long planId) {
-        return new UpdateMembershipPlanCommand(planId, VALID_PLAN_NAME, VALID_PLAN_PRICE, VALID_MEMBERSHIP_ID);
+        return new UpdateMembershipPlanCommand(planId, VALID_PLAN_NAME, VALID_PLAN_PRICE);
     }
 
     // ---------- Order ----------

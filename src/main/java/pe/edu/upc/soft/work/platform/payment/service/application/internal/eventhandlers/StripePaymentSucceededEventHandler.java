@@ -65,33 +65,40 @@ public class StripePaymentSucceededEventHandler {
     public void on(StripePaymentSucceededEvent event) {
         LOGGER.info("[StripePaymentSucceededEventHandler] Processing succeeded payment for Order ID: {}", event.getOrderId());
 
+        if (paymentRepository.existsByTransactionId(event.getStripePaymentIntentId())) {
+            LOGGER.info("[StripePaymentSucceededEventHandler] Payment for transaction {} already exists, skipping",
+                event.getStripePaymentIntentId());
+            return;
+        }
+
         var order = orderRepository.findById(event.getOrderId())
-                .orElseThrow(() -> new NotFoundArgumentException(
-                        String.format("[StripePaymentSucceededEventHandler] Order ID: %s not found",
-                                event.getOrderId())));
+            .orElseThrow(() -> new NotFoundArgumentException(
+                String.format("[StripePaymentSucceededEventHandler] Order ID: %s not found",
+                    event.getOrderId())));
 
         var createPaymentCommand = new CreatePaymentCommand(
-                order.getId(),
-                event.getStripePaymentIntentId(),
-                new Date(),
-                PaymentStatus.SUCCEEDED,
+            order.getId(),
+            event.getStripePaymentIntentId(),
+            new Date(),
+            PaymentStatus.SUCCEEDED,
             "CREDIT_CARD"
-            );
+        );
         var payment = new Payment(createPaymentCommand);
         paymentRepository.save(payment);
         eventPublisher.publishEvent(new PaymentRegisteredEvent(this, payment.getId(), payment.getOrderId()));
         LOGGER.info("[StripePaymentSucceededEventHandler] Payment created with ID: {}", payment.getId());
 
         var membership = membershipRepository.findById(order.getMembershipId())
-                .orElseThrow(() -> new NotFoundArgumentException(
-                        String.format("[StripePaymentSucceededEventHandler] Membership ID: %s not found",
-                                order.getMembershipId())));
+            .orElseThrow(() -> new NotFoundArgumentException(
+                String.format("[StripePaymentSucceededEventHandler] Membership ID: %s not found",
+                    order.getMembershipId())));
 
         membership.updateMembership(new UpdateMembershipCommand(
-                membership.getId(),
-                membership.getMembershipStart(),
-                membership.getMembershipOver(),
-                MembershipStatus.ACTIVE));
+            membership.getId(),
+            membership.getMembershipPlanId(),
+            membership.getMembershipStart(),
+            membership.getMembershipOver(),
+            MembershipStatus.ACTIVE));
         membershipRepository.save(membership);
         eventPublisher.publishEvent(new MembershipActivatedEvent(this, membership.getId(), MembershipStatus.ACTIVE));
         LOGGER.info("[StripePaymentSucceededEventHandler] Membership ID: {} set to ACTIVE", membership.getId());

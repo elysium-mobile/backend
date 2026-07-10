@@ -23,7 +23,7 @@ class MembershipPlanAssemblerTest {
         // Arrange
         var request = new CreateMembershipPlanRequest(
                 PaymentCommandFixtures.VALID_PLAN_NAME,
-                PaymentCommandFixtures.VALID_PLAN_PRICE,PaymentCommandFixtures.VALID_MEMBERSHIP_ID);
+                PaymentCommandFixtures.VALID_PLAN_PRICE);
 
         // Act
         CreateMembershipPlanCommand command = MembershipPlanAssembler.toCommandFromRequest(request);
@@ -31,7 +31,6 @@ class MembershipPlanAssemblerTest {
         // Assert
         assertThat(command.planName()).isEqualTo(PaymentCommandFixtures.VALID_PLAN_NAME);
         assertThat(command.price()).isEqualTo(PaymentCommandFixtures.VALID_PLAN_PRICE);
-        assertThat(command.membershipId()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_ID);
     }
 
     @Test
@@ -40,8 +39,7 @@ class MembershipPlanAssemblerTest {
         // Arrange
         var request = new UpdateMembershipPlanRequest(
                 PaymentCommandFixtures.VALID_PLAN_NAME,
-                PaymentCommandFixtures.VALID_PLAN_PRICE,
-            PaymentCommandFixtures.VALID_MEMBERSHIP_ID);
+                PaymentCommandFixtures.VALID_PLAN_PRICE);
 
         // Act
         UpdateMembershipPlanCommand command = MembershipPlanAssembler.toCommandFromRequest(31L, request);
@@ -50,7 +48,6 @@ class MembershipPlanAssemblerTest {
         assertThat(command.membershipplanId()).isEqualTo(31L);
         assertThat(command.planName()).isEqualTo(PaymentCommandFixtures.VALID_PLAN_NAME);
         assertThat(command.price()).isEqualTo(PaymentCommandFixtures.VALID_PLAN_PRICE);
-        assertThat(command.membershipId()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_ID);
     }
 
     @Test
@@ -68,6 +65,6 @@ class MembershipPlanAssemblerTest {
         assertThat(response.planId()).isEqualTo(31L);
         assertThat(response.planName()).isEqualTo(PaymentCommandFixtures.VALID_PLAN_NAME);
         assertThat(response.price()).isEqualTo(PaymentCommandFixtures.VALID_PLAN_PRICE);
-        assertThat(response.membershipId()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_ID);
+
     }
 }

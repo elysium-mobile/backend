@@ -42,9 +42,6 @@ public class MembershipPlanCommandServiceImpl implements MembershipPlanCommandSe
      */
     @Override
     public Long handle(CreateMembershipPlanCommand command) {
-        if (!membershipRepository.existsById(command.membershipId())) {
-            throw new RuntimeException("Membership with ID " + command.membershipId() + " does not exist.");
-        }
         var membershipplan = new MembershipPlan(command);
         try {
             membershipplanRepository.save(membershipplan);
@@ -61,9 +58,6 @@ public class MembershipPlanCommandServiceImpl implements MembershipPlanCommandSe
      */
     @Override
     public Optional<MembershipPlan> handle(UpdateMembershipPlanCommand command) {
-        if (!membershipRepository.existsById(command.membershipId())) {
-            throw new RuntimeException("Membership with ID " + command.membershipId() + " does not exist.");
-        }
         var membershipplanId = command.membershipplanId();
         if (!this.membershipplanRepository.existsById(membershipplanId)) {
             throw new RuntimeException("MembershipPlan with ID " + membershipplanId + " does not exist.");

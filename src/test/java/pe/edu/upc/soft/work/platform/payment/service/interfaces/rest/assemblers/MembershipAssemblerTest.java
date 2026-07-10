@@ -20,6 +20,7 @@ class MembershipAssemblerTest {
     void toCommandFromCreateRequestMapsAllFields() {
         // Arrange
         var request = new CreateMembershipRequest(
+                PaymentCommandFixtures.VALID_MEMBERSHIP_PLAN_ID,
                 PaymentCommandFixtures.VALID_MEMBERSHIP_START,
                 PaymentCommandFixtures.VALID_MEMBERSHIP_OVER,
                 PaymentCommandFixtures.VALID_MEMBERSHIP_STATUS.name());
@@ -28,6 +29,7 @@ class MembershipAssemblerTest {
         CreateMembershipCommand command = MembershipAssembler.toCommandFromRequest(request);
 
         // Assert
+        assertThat(command.membershipPlanId()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_PLAN_ID);
         assertThat(command.membershipStart()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_START);
         assertThat(command.membershipOver()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_OVER);
         assertThat(command.membershipStatus()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_STATUS);
@@ -38,6 +40,7 @@ class MembershipAssemblerTest {
     void toCommandFromUpdateRequestMapsAllFields() {
         // Arrange
         var request = new UpdateMembershipRequest(
+            PaymentCommandFixtures.VALID_MEMBERSHIP_PLAN_ID,
                 PaymentCommandFixtures.VALID_MEMBERSHIP_START,
                 PaymentCommandFixtures.VALID_MEMBERSHIP_OVER,
                 PaymentCommandFixtures.VALID_MEMBERSHIP_STATUS.name());
@@ -47,6 +50,7 @@ class MembershipAssemblerTest {
 
         // Assert
         assertThat(command.membershipId()).isEqualTo(5L);
+        assertThat(command.membershipPlanId()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_PLAN_ID);
         assertThat(command.membershipStart()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_START);
         assertThat(command.membershipOver()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_OVER);
         assertThat(command.membershipStatus()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_STATUS);
@@ -64,6 +68,7 @@ class MembershipAssemblerTest {
 
         // Assert
         assertThat(response.membershipId()).isEqualTo(5L);
+        assertThat(response.membershipStart()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_START);
         assertThat(response.membershipStart()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_START);
         assertThat(response.membershipOver()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_OVER);
         assertThat(response.membershipStatus()).isEqualTo(PaymentCommandFixtures.VALID_MEMBERSHIP_STATUS.name());

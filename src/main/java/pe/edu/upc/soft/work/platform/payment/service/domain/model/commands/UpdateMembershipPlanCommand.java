@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Command to update an existing MembershipPlan
  */
-public record UpdateMembershipPlanCommand(Long membershipplanId, String planName, Integer price, Long membershipId) {
+public record UpdateMembershipPlanCommand(Long membershipplanId, String planName, Integer price) {
 
     /**
      * Constructor with validation

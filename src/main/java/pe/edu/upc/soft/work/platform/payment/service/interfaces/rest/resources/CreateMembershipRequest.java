@@ -15,6 +15,9 @@ import java.util.Date;
 public record CreateMembershipRequest(
         @NotNull
         @NotBlank
+        Long membershipPlanId,
+        @NotNull
+        @NotBlank
         Date membershipStart,
         @NotNull
         @NotBlank

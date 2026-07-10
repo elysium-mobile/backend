@@ -101,7 +101,7 @@ class ForumCommandServiceImplTest {
         assertThat(ex.getMessage()).contains("Error creating Forum").contains("db");
         verify(externalDashboardServiceFromWorkerForum, times(1))
             .existsCompanyById(WorkerForumCommandFixtures.VALID_COMPANY_ID);
-        verify(eventPublisher, times(1)).publishEvent(any(ForumCreatedEvent.class));
+        verify(eventPublisher, never()).publishEvent(any(ForumCreatedEvent.class));
         verify(forumRepository, times(1)).save(any(Forum.class));
         verifyNoMoreInteractions(externalDashboardServiceFromWorkerForum, forumRepository, eventPublisher);
     }

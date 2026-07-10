@@ -20,7 +20,7 @@ public class Payment extends AuditableAbstractAggregateRoot<Payment> {
     @Column(name = "order_id", nullable = false)
     private Long orderId;
     @Getter
-    @Column(name = "transaction_id", nullable = false, length = 50)
+    @Column(name = "transaction_id", nullable = false, unique = true, length = 50)
     private String transactionId;
     @Getter
     @Column(name = "payment_date", nullable = false)

@@ -1,11 +1,13 @@
 package pe.edu.upc.soft.work.platform.worker.forum.application.internal.commandservices;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import pe.edu.upc.soft.work.platform.worker.forum.application.internal.outboundservices.acl.ExternalIamServiceFromWorkerForum;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.aggregates.Report;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.CreateReportCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.DeleteReportCommand;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.model.commands.UpdateReportCommand;
+import pe.edu.upc.soft.work.platform.worker.forum.domain.model.events.ReportCreatedEvent;
 import pe.edu.upc.soft.work.platform.worker.forum.domain.services.ReportCommandService;
 import pe.edu.upc.soft.work.platform.worker.forum.infrastructure.persistence.jpa.repositories.ReportRepository;
 
@@ -18,15 +20,19 @@ import java.util.Optional;
 public class ReportCommandServiceImpl implements ReportCommandService {
     private final ReportRepository reportRepository;
     private final ExternalIamServiceFromWorkerForum externalIamServiceFromWorkerForum;
+    private final ApplicationEventPublisher eventPublisher;
 
     /**
      * Constructor for ReportCommandServiceImpl
      * @param reportRepository the repository for Report persistence
      * @param externalIamServiceFromWorkerForum the external service for validating user accounts when creating or updating reports
      */
-    public ReportCommandServiceImpl(ReportRepository reportRepository, ExternalIamServiceFromWorkerForum externalIamServiceFromWorkerForum) {
+    public ReportCommandServiceImpl(ReportRepository reportRepository,
+                                    ExternalIamServiceFromWorkerForum externalIamServiceFromWorkerForum,
+                                    ApplicationEventPublisher eventPublisher) {
         this.reportRepository = reportRepository;
         this.externalIamServiceFromWorkerForum = externalIamServiceFromWorkerForum;
+        this.eventPublisher = eventPublisher;
     }
 
     /**
@@ -43,6 +49,8 @@ public class ReportCommandServiceImpl implements ReportCommandService {
         var report = new Report(command);
         try{
             reportRepository.save(report);
+            eventPublisher.publishEvent(new ReportCreatedEvent(this, report.getId(), report.getUserAccountId(), report.getAreaCompanyId()));
+
         }catch (Exception e) {
             throw new RuntimeException("Error creating Report: " + e.getMessage(), e);
         }

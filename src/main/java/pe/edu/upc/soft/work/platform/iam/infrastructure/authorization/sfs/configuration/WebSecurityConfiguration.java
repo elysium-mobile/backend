@@ -60,7 +60,7 @@ public class WebSecurityConfiguration {
      */
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
@@ -96,27 +96,28 @@ public class WebSecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors(corsConfigurer ->
-                corsConfigurer.configurationSource(request -> {
-                    var cors = new CorsConfiguration();
-                    cors.setAllowedOriginPatterns(List.of("*"));
-                    cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
-                    cors.setAllowedHeaders(List.of("*"));
-                    cors.setAllowCredentials(true);
-                    return cors;
-                }));
+            corsConfigurer.configurationSource(request -> {
+                var cors = new CorsConfiguration();
+                cors.setAllowedOriginPatterns(List.of("*"));
+                cors.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE"));
+                cors.setAllowedHeaders(List.of("*"));
+                cors.setAllowCredentials(true);
+                return cors;
+            }));
         http.csrf(AbstractHttpConfigurer::disable)
-                .exceptionHandling(exceptionHandling ->
-                        exceptionHandling.authenticationEntryPoint(unauthorizedRequestHandler))
-                .sessionManagement(customizer ->
-                        customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(authorizeRequests ->
-                        authorizeRequests
-                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers("/api/v1/authentication/**", "/v3/api-docs/**",
-                                        "/swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**")
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated());
+            .exceptionHandling(exceptionHandling ->
+                exceptionHandling.authenticationEntryPoint(unauthorizedRequestHandler))
+            .sessionManagement(customizer ->
+                customizer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(authorizeRequests ->
+                authorizeRequests
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers("/api/v1/authentication/**", "/v3/api-docs/**",
+                        "/swagger-ui.html", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**",
+                        "/api/v1/payments/stripe/webhook")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated());
         http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authorizationRequestFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
@@ -131,9 +132,9 @@ public class WebSecurityConfiguration {
      * @param authenticationEntryPoint The authentication entry point
      */
     public WebSecurityConfiguration(
-            @Qualifier("defaultUserDetailsService") UserDetailsService userDetailsService,
-            BearerTokenService tokenService, BcryptHashingService hashingService,
-            AuthenticationEntryPoint authenticationEntryPoint) {
+        @Qualifier("defaultUserDetailsService") UserDetailsService userDetailsService,
+        BearerTokenService tokenService, BcryptHashingService hashingService,
+        AuthenticationEntryPoint authenticationEntryPoint) {
 
         this.userDetailsService = userDetailsService;
         this.tokenService = tokenService;

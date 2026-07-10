@@ -59,6 +59,7 @@ public class StripePaymentFailedEventHandler {
 
         membership.updateMembership(new UpdateMembershipCommand(
                 membership.getId(),
+                membership.getMembershipPlanId(),
                 membership.getMembershipStart(),
                 membership.getMembershipOver(),
                 MembershipStatus.FAILED));

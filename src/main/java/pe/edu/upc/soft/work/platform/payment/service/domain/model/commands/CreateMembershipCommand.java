@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Command to create a new Membership
  */
-public record CreateMembershipCommand(Date membershipStart, Date membershipOver, MembershipStatus membershipStatus) {
+public record CreateMembershipCommand(Long membershipPlanId,Date membershipStart, Date membershipOver, MembershipStatus membershipStatus) {
 
     /**
      * Constructor with validation

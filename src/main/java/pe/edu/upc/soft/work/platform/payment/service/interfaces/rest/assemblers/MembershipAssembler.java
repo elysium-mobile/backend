@@ -14,20 +14,20 @@ public class MembershipAssembler {
      * Converts a CreateMembershipRequest to a CreateMembershipCommand.
      */
     public static CreateMembershipCommand toCommandFromRequest(CreateMembershipRequest request) {
-        return new CreateMembershipCommand(request.membershipStart(), request.membershipOver(), MembershipStatus.valueOf(request.membershipStatus()));
+        return new CreateMembershipCommand( request.membershipPlanId(),request.membershipStart(), request.membershipOver(), MembershipStatus.valueOf(request.membershipStatus()));
     }
 
     /**
      * Converts an UpdateMembershipRequest to an UpdateMembershipCommand.
      */
     public static UpdateMembershipCommand toCommandFromRequest(Long membershipId, UpdateMembershipRequest request) {
-        return new UpdateMembershipCommand(membershipId, request.membershipStart(), request.membershipOver(), MembershipStatus.valueOf(request.membershipStatus()));
+        return new UpdateMembershipCommand(membershipId, request.membershipPlanId(), request.membershipStart(), request.membershipOver(), MembershipStatus.valueOf(request.membershipStatus()));
     }
 
     /**
      * Converts a Membership entity to a MembershipResponse.
      */
     public static MembershipResponse toResponseFromEntity(Membership membership) {
-        return new MembershipResponse(membership.getId(), membership.getMembershipStart(), membership.getMembershipOver(), membership.getMembershipStatus().name());
+        return new MembershipResponse(membership.getId(),membership.getMembershipPlanId(), membership.getMembershipStart(), membership.getMembershipOver(), membership.getMembershipStatus().name());
     }
 }

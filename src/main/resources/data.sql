@@ -14,11 +14,11 @@ VALUES
     (1, 'TechCorp SAC',      '20123456781', 'contacto@techcorp.pe',   '014567890', NOW(), NOW()),
     (2, 'InnovatePeru SRL',  '20987654322', 'info@innovateperu.com',  '016789012', NOW(), NOW());
 
-INSERT INTO memberships (id, membership_start, membership_over, membership_status, created_at, updated_at)
+INSERT INTO memberships (id,membership_plan_id, membership_start, membership_over, membership_status, created_at, updated_at)
 VALUES
-    (1, '2024-01-01', '2025-01-01', 'ACTIVE',  NOW(), NOW()),
-    (2, '2024-03-01', '2025-03-01', 'ACTIVE',  NOW(), NOW()),
-    (3, '2024-06-01', '2024-12-01', 'PENDING', NOW(), NOW());
+    (1, 1,'2024-01-01', '2025-01-01', 'ACTIVE',  NOW(), NOW()),
+    (2, 2,'2024-03-01', '2025-03-01', 'ACTIVE',  NOW(), NOW()),
+    (3, 2,'2024-06-01', '2024-12-01', 'PENDING', NOW(), NOW());
 
 INSERT INTO user_accounts (id, user_id, email, password, anonymous_name, membership_id, company_id, created_at, updated_at)
 VALUES
@@ -120,11 +120,11 @@ VALUES
     (1, 1), (2, 2), (3, 3), (4, 4), (5, 5);
 
 
-INSERT INTO membership_plans (id, plan_name, price, membership_id, created_at, updated_at)
+INSERT INTO membership_plans (id, plan_name, price, created_at, updated_at)
 VALUES
-    (1, 'Plan Básico',      49,  1, NOW(), NOW()),
-    (2, 'Plan Profesional', 99,  2, NOW(), NOW()),
-    (3, 'Plan Enterprise',  199, 2, NOW(), NOW());
+    (1, 'Plan Básico',      49,   NOW(), NOW()),
+    (2, 'Plan Profesional', 99,   NOW(), NOW()),
+    (3, 'Plan Enterprise',  199,  NOW(), NOW());
 
 
 INSERT INTO benefits (id, title, description, membership_plan_id, created_at, updated_at)

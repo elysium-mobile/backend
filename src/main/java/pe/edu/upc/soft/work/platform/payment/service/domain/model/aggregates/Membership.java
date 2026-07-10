@@ -31,7 +31,9 @@ public class Membership extends AuditableAbstractAggregateRoot<Membership> {
     @Enumerated(EnumType.STRING)
     @Column(name = "membership_status", nullable = false, length = 20)
     private MembershipStatus membershipStatus;
-
+    @Getter
+    @Column(name = "membership_plan_id", nullable = false)
+    private Long membershipPlanId;
     /**
      * Default constructor for JPA.
      */
@@ -42,6 +44,7 @@ public class Membership extends AuditableAbstractAggregateRoot<Membership> {
      * @param command the command containing membership details
      */
     public Membership(CreateMembershipCommand command) {
+        this.membershipPlanId = command.membershipPlanId();
         this.membershipStart = command.membershipStart();
         this.membershipOver = command.membershipOver();
         this.membershipStatus = command.membershipStatus();
@@ -52,6 +55,7 @@ public class Membership extends AuditableAbstractAggregateRoot<Membership> {
      * @param command the command containing updated membership details
      */
     public void updateMembership(UpdateMembershipCommand command) {
+        this.membershipPlanId = command.membershipPlanId();
         this.membershipStart = command.membershipStart();
         this.membershipOver = command.membershipOver();
         this.membershipStatus = command.membershipStatus();

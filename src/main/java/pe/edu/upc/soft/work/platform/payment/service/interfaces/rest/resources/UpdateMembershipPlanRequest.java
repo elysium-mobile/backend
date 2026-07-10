@@ -9,8 +9,6 @@ public record UpdateMembershipPlanRequest(
         @NotBlank
         String planName,
         @NotBlank
-        Integer price,
-        @NotBlank
-        Long membershipId
+        Integer price
 ) {
 }

@@ -3,6 +3,7 @@ package pe.edu.upc.soft.work.platform.payment.service.application.internal.refun
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Refund;
+import com.stripe.net.RequestOptions;
 import com.stripe.param.RefundCreateParams;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
@@ -57,23 +58,23 @@ public class StripeRefundService implements RefundService {
     @Transactional
     public RefundResponse initiateRefund(InitiateRefundCommand command) {
         LOGGER.info("[StripeRefundService] Initiating refund for Payment ID: {} (Order: {})",
-                command.paymentId(), command.orderId());
+            command.paymentId(), command.orderId());
 
         // Validate payment exists and is succeeded
         var payment = paymentRepository.findById(command.paymentId())
-                .orElseThrow(() -> new NotFoundArgumentException(
-                        String.format("[StripeRefundService] Payment ID: %s not found",
-                                command.paymentId())));
+            .orElseThrow(() -> new NotFoundArgumentException(
+                String.format("[StripeRefundService] Payment ID: %s not found",
+                    command.paymentId())));
 
         if (!payment.isSucceeded()) {
             throw new IllegalStateException(
-                    String.format("[StripeRefundService] Cannot refund Payment in status: %s",
-                            payment.getPaymentStatus()));
+                String.format("[StripeRefundService] Cannot refund Payment in status: %s",
+                    payment.getPaymentStatus()));
         }
 
         try {
             var params = RefundCreateParams.builder()
-                    .setPaymentIntent(payment.getTransactionId());
+                .setPaymentIntent(payment.getTransactionId());
 
             // Set partial refund amount if provided
             if (command.refundAmountCents() != null) {
@@ -88,30 +89,34 @@ public class StripeRefundService implements RefundService {
             params.putMetadata("orderId", String.valueOf(command.orderId()));
             params.putMetadata("paymentId", String.valueOf(command.paymentId()));
 
-            var refund = Refund.create(params.build());
+            var requestOptions = RequestOptions.builder()
+                .setIdempotencyKey(command.idempotencyKey())
+                .build();
+
+            var refund = Refund.create(params.build(), requestOptions);
 
             LOGGER.info("[StripeRefundService] Refund created with ID: {} (Status: {})",
-                    refund.getId(), refund.getStatus());
+                refund.getId(), refund.getStatus());
 
             // Publish event for async handling
             eventPublisher.publishEvent(new RefundInitiatedEvent(
-                    this,
-                    refund.getId(),
-                    command.paymentId(),
-                    command.orderId(),
-                    Math.toIntExact(refund.getAmount()),
-                    command.reason()));
+                this,
+                refund.getId(),
+                command.paymentId(),
+                command.orderId(),
+                Math.toIntExact(refund.getAmount()),
+                command.reason()));
 
             return new RefundResponse(
-                    refund.getId(),
-                    refund.getPaymentIntent(),
-                    Math.toIntExact(refund.getAmount()),
-                    refund.getStatus());
+                refund.getId(),
+                refund.getPaymentIntent(),
+                Math.toIntExact(refund.getAmount()),
+                refund.getStatus());
 
         } catch (StripeException e) {
             LOGGER.error("[StripeRefundService] Failed to create refund: {}", e.getMessage(), e);
             throw new RuntimeException(
-                    "[StripeRefundService] Failed to create Stripe refund: " + e.getMessage(), e);
+                "[StripeRefundService] Failed to create Stripe refund: " + e.getMessage(), e);
         }
     }
 }

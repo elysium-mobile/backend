@@ -30,9 +30,7 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Benefit> benefits;
 
-    @Getter
-    @Column(name = "membership_id", nullable = false)
-    private Long membershipId;
+
 
     /**
      * Default constructor for JPA.
@@ -47,7 +45,6 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
         this.planName = command.planName();
         this.price = command.price();
         this.benefits=command.benefits();
-        this.membershipId = command.membershipId();
     }
 
     /**
@@ -57,7 +54,6 @@ public class MembershipPlan extends AuditableAbstractAggregateRoot<MembershipPla
     public void updateMembershipPlan(UpdateMembershipPlanCommand command) {
         this.planName = command.planName();
         this.price = command.price();
-        this.membershipId = command.membershipId();
     }
 
     public void addBenefit(Benefit benefit){

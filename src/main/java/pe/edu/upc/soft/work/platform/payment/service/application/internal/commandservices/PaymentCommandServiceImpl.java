@@ -68,6 +68,7 @@ public class PaymentCommandServiceImpl implements PaymentCommandService {
                 ));
             membership.updateMembership(new UpdateMembershipCommand(
                     membership.getId(),
+                membership.getMembershipPlanId(),
                 membership.getMembershipStart(),
                 membership.getMembershipOver(),
                 membership.getMembershipStatus()

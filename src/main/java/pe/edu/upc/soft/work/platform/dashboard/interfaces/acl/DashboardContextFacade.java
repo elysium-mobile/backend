@@ -10,6 +10,7 @@ import pe.edu.upc.soft.work.platform.dashboard.domain.services.WorkTeamQueryServ
 import pe.edu.upc.soft.work.platform.dashboard.interfaces.rest.assemblers.CompanyAssembler;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Facade for the Dashboard Bounded Context.
@@ -93,5 +94,20 @@ public class DashboardContextFacade {
 
     public void addEmployeeToCompany(Long userAccountId, Long companyId){
         this.companyCommandService.handle(new AddEmployeesToCompanyCommand(userAccountId,companyId));
+    }
+
+    /**
+     * Retrieves the name of a company by its ID.
+     * Useful for other Bounded Contexts (e.g. the Assistant BC) that need to
+     * enrich AI prompts with basic company context without depending directly
+     * on the Company aggregate.
+     *
+     * @param companyId the ID of the company
+     * @return an Optional containing the company name, or empty if not found
+     */
+    public Optional<String> getCompanyNameById(Long companyId) {
+        var query = new GetCompanyByIdQuery(companyId);
+        return this.companyQueryService.handle(query).map(
+            pe.edu.upc.soft.work.platform.dashboard.domain.model.aggregates.Company::getName);
     }
 }

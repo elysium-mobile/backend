@@ -34,7 +34,7 @@ public class ForumAssembler {
      * Converts a Forum entity to a ForumResponse.
      */
     public static ForumResponse toResponseFromEntity(Forum forum) {
-        List<CategoryResponse> categoryResponses = forum.getCategories().stream()
+        List<CategoryResponse> categoryResponses = forum.getCategories() != null ? forum.getCategories().stream()
                 .map(category -> {
                     List<ThreadResponse> threadResponses = category.getThreads().stream()
                             .map(thread -> {
@@ -78,7 +78,7 @@ public class ForumAssembler {
                             threadResponses
                     );
                 })
-                .toList();
+                .toList() : new ArrayList<>();
 
         return new ForumResponse(forum.getId(), forum.getTitle(), forum.getDescription(), forum.getCompanyId().companyId(), categoryResponses);
     }

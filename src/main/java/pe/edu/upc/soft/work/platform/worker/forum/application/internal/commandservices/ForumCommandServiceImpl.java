@@ -52,12 +52,12 @@ public class ForumCommandServiceImpl implements ForumCommandService {
         }
 
         var forum = new Forum(command);
-        eventPublisher.publishEvent(new ForumCreatedEvent(this, forum.getId(), forum.getCompanyId(), forum.getTitle()));
         try {
             forumRepository.save(forum);
         } catch (Exception e) {
             throw new RuntimeException("Error creating Forum: " + e.getMessage(), e);
         }
+        eventPublisher.publishEvent(new ForumCreatedEvent(this, forum.getId(), forum.getCompanyId(), forum.getTitle()));
         return forum.getId();
     }
 
@@ -70,7 +70,8 @@ public class ForumCommandServiceImpl implements ForumCommandService {
     public Optional<Forum> handle(UpdateForumCommand command) {
         var forumId = command.forumId();
         if (!this.forumRepository.existsById(forumId)) {
-            throw new RuntimeException("Forum with ID " + forumId + " does not exist.");
+            throw new NotFoundArgumentException(
+                    String.format("Forum with ID %s does not exist.", forumId));
         }
 
         var forumToUpdate = this.forumRepository.findById(forumId).get();
@@ -90,7 +91,8 @@ public class ForumCommandServiceImpl implements ForumCommandService {
     @Override
     public void handle(DeleteForumCommand command) {
         if (!forumRepository.existsById(command.forumId())) {
-            throw new RuntimeException("Forum with ID " + command.forumId() + " does not exist.");
+            throw new NotFoundArgumentException(
+                    String.format("Forum with ID %s does not exist.", command.forumId()));
         }
         try {
             forumRepository.deleteById(command.forumId());

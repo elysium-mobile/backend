@@ -36,7 +36,6 @@ public class Forum extends AuditableAbstractAggregateRoot<Forum> {
 
     @Getter
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "categories", nullable = true)
     private List<Category> categories;
     /**
      * Default constructor for JPA.
